@@ -13,13 +13,24 @@
 
   function rr(ctx,x,y,w,h,r){
     r=Math.max(0,Math.min(r,Math.min(w,h)/2));
-    ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();
+    ctx.beginPath();
+    ctx.moveTo(x+r,y);
+    ctx.arcTo(x+w,y,x+w,y+h,r);
+    ctx.arcTo(x+w,y+h,x,y+h,r);
+    ctx.arcTo(x,y+h,x,y,r);
+    ctx.arcTo(x,y,x+w,y,r);
+    ctx.closePath();
   }
 
   function localRect(el,rootRect){
     if(!el) return {x:0,y:0,w:0,h:0};
     const r=el.getBoundingClientRect();
-    return {x:r.left-rootRect.left,y:r.top-rootRect.top,w:r.width,h:r.height};
+    return {
+      x:r.left-rootRect.left,
+      y:r.top-rootRect.top,
+      w:r.width,
+      h:r.height
+    };
   }
 
   function glass(ctx,r,alpha=.22,radius=24){
@@ -313,20 +324,9 @@
         sc.y+sc.h
       );
 
-    shade.addColorStop(
-      0,
-      'rgba(0,0,0,.05)'
-    );
-
-    shade.addColorStop(
-      .45,
-      'rgba(0,0,0,0)'
-    );
-
-    shade.addColorStop(
-      1,
-      'rgba(0,0,0,.15)'
-    );
+    shade.addColorStop(0,'rgba(0,0,0,.05)');
+    shade.addColorStop(.45,'rgba(0,0,0,0)');
+    shade.addColorStop(1,'rgba(0,0,0,.15)');
 
     ctx.save();
 
@@ -417,29 +417,12 @@
     ctx.lineWidth=2;
 
     ctx.beginPath();
-
-    ctx.arc(
-      cx-2,
-      cy-1,
-      8,
-      0,
-      Math.PI*2
-    );
-
+    ctx.arc(cx-2,cy-1,8,0,Math.PI*2);
     ctx.stroke();
 
     ctx.beginPath();
-
-    ctx.moveTo(
-      cx+4,
-      cy+5
-    );
-
-    ctx.lineTo(
-      cx+10,
-      cy+11
-    );
-
+    ctx.moveTo(cx+4,cy+5);
+    ctx.lineTo(cx+10,cy+11);
     ctx.stroke();
 
     ctx.restore();
@@ -447,15 +430,9 @@
 
   function drawDday(ctx,s,t,final=false){
     const base=s.rects.dday;
-    const hasSubtext=!!s.dday?.hasSubtext;
     const labelRect=s.rects.ddayLabel;
     const countRect=s.rects.ddayCount;
-    const dateRect=s.rects.ddayDate;
-
-    const bottomPadding=Math.max(
-      0,
-      s.dday?.bottomPadding??15
-    );
+    const bottomPadding=Math.max(0,s.dday?.bottomPadding??15);
 
     const compactH=
       countRect&&countRect.h
@@ -468,9 +445,7 @@
 
     const r={
       ...base,
-      h:hasSubtext
-        ? base.h
-        : compactH
+      h:compactH
     };
 
     const ds=ddayState(
@@ -529,10 +504,7 @@
         .45+
         .55*
         easeOutCubic(
-          Math.min(
-            1,
-            p/.55
-          )
+          Math.min(1,p/.55)
         );
 
       ctx.translate(
@@ -591,30 +563,6 @@
 
       ctx.restore();
     }
-
-    if(hasSubtext && s.text.ddayDate){
-      const dateX=
-        dateRect&&dateRect.w
-          ? dateRect.x
-          : r.x+17;
-
-      const dateY=
-        dateRect&&dateRect.h
-          ? dateRect.y+dateRect.h/2
-          : r.y+r.h-13;
-
-      drawText(
-        ctx,
-        s.text.ddayDate,
-        dateX,
-        dateY,
-        9,
-        500,
-        'rgba(255,255,255,.68)',
-        'left',
-        'middle'
-      );
-    }
   }
 
   function drawEqualizer(ctx,x,y,t){
@@ -661,17 +609,10 @@
   }
 
   function formatClock(sec){
-    sec=
-      Math.max(
-        0,
-        Math.round(sec)
-      );
+    sec=Math.max(0,Math.round(sec));
 
-    const m=
-      Math.floor(sec/60);
-
-    const s=
-      sec%60;
+    const m=Math.floor(sec/60);
+    const s=sec%60;
 
     return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
   }
@@ -969,9 +910,7 @@
 
     ctx.save();
 
-    ctx.font=
-      '600 10px Inter, Pretendard, Arial, sans-serif';
-
+    ctx.font='600 10px Inter, Pretendard, Arial, sans-serif';
     ctx.textAlign='left';
     ctx.textBaseline='bottom';
 
@@ -1037,9 +976,7 @@
 
     const dur=num('duration',5);
     const f=dur/5;
-
     const ddayEl=$('#ddayWidget');
-    const ddaySubtext=val('ddaySubtext');
 
     return {
       w:540,
@@ -1100,11 +1037,6 @@
           rootRect
         ),
 
-        ddayDate:localRect(
-          $('#ddayDateOut'),
-          rootRect
-        ),
-
         music:localRect(
           $('#musicWidget'),
           rootRect
@@ -1140,9 +1072,10 @@
 
       queue,
 
-      postVisible:visible(
-        $('#postWidget')
-      ),
+      postVisible:
+        visible(
+          $('#postWidget')
+        ),
 
       controls:{
         bgZoom:num('bgZoom',1),
@@ -1188,9 +1121,6 @@
           ddayEl?.dataset.finalText||
           txt('#ddayCount'),
 
-        ddayDate:
-          ddaySubtext,
-
         song:
           txt('#songOut'),
 
@@ -1229,9 +1159,6 @@
         prefix:
           ddayEl?.dataset.prefix||
           'D+',
-
-        hasSubtext:
-          !!ddaySubtext,
 
         bottomPadding:
           parseFloat(
@@ -1454,7 +1381,7 @@
   }
 
   window.PairExportRenderer={
-    version:'20261007-22',
+    version:'20261007-23',
     captureState,
     render
   };
