@@ -7,14 +7,14 @@
   <title>PAIR GLASS GIF</title>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gif.js.optimized@1.0.1/dist/gif.js"></script>
-  <script src="./export-renderer.js?v=20261007-6" onerror="console.warn('external export-renderer.js not found; embedded fallback will be used')"></script>
+  <script src="./export-renderer.js?v=20261007-7" onerror="console.warn('external export-renderer.js not found; embedded fallback will be used')"></script>
   <style>
     *{box-sizing:border-box}
     html,body{margin:0;min-height:100%;background:#0e0f13;color:#f7f7f7;font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Pretendard","Noto Sans KR",Segoe UI,sans-serif}
     button,input,textarea,select{font:inherit}
     body{min-height:100vh;overflow-x:hidden;background:radial-gradient(circle at 12% 10%,rgba(255,255,255,.08),transparent 26%),radial-gradient(circle at 80% 20%,rgba(161,181,255,.11),transparent 32%),#0d0f14}
     .app{width:min(1440px,100%);margin:0 auto;padding:24px;display:grid;grid-template-columns:minmax(300px,380px) minmax(0,1fr);gap:28px;align-items:start}
-    .panel{position:sticky;top:18px;background:rgba(20,21,27,.88);border:1px solid rgba(255,255,255,.10);border-radius:24px;padding:18px;box-shadow:0 24px 80px rgba(0,0,0,.28);max-height:calc(100vh - 36px);overflow:auto}
+    .panel{position:relative;top:0;background:rgba(20,21,27,.88);border:1px solid rgba(255,255,255,.10);border-radius:24px;padding:18px;box-shadow:0 24px 80px rgba(0,0,0,.28);max-height:none;overflow:visible}
     .brand{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:16px}.brand h1{font-size:17px;letter-spacing:.04em;margin:0;font-weight:720}.brand small{font-size:11px;color:rgba(255,255,255,.44)}
     .section{padding:0;border-top:1px solid rgba(255,255,255,.08)}.section:first-of-type{border-top:0}.section-title{font-size:12px;font-weight:700;color:rgba(255,255,255,.72);letter-spacing:.08em;text-transform:uppercase;margin:0}.accordion>summary{list-style:none;cursor:pointer;padding:15px 2px;display:flex;align-items:center;justify-content:space-between;user-select:none}.accordion>summary::-webkit-details-marker{display:none}.accordion>summary:after{content:"＋";font-size:14px;color:rgba(255,255,255,.42);font-weight:500}.accordion[open]>summary:after{content:"−"}.section-body{padding:0 0 15px}.panel-tools{display:flex;gap:7px;margin:-4px 0 8px}.panel>section.section{padding:15px 0}.mini-btn{flex:1;padding:7px 9px;border-radius:10px;font-size:10px;background:rgba(255,255,255,.055);color:rgba(255,255,255,.66);border:1px solid rgba(255,255,255,.08)}.subhead{font-size:10px;font-weight:700;color:rgba(255,255,255,.48);letter-spacing:.08em;text-transform:uppercase;margin:12px 0 8px}.subhead:first-child{margin-top:0}
     .grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;align-items:start}.field{display:grid;gap:7px;margin-bottom:10px;align-content:start;min-width:0}.field:last-child{margin-bottom:0}.grid2>.field{grid-template-rows:auto minmax(24px,auto)}label{font-size:11px;line-height:1.35;color:rgba(255,255,255,.56);min-height:15px;display:flex;align-items:flex-end}
@@ -157,16 +157,25 @@
   function measureSearchWidth(text=''){if(searchMeasureCtx){searchMeasureCtx.font='500 14px Inter, Pretendard, Arial, sans-serif'; const tw=searchMeasureCtx.measureText(text||'').width; return Math.max(88,Math.min(300,Math.ceil(tw+86)));} return Math.max(88,Math.min(300,86+(text||'').length*8));}
   function setSearchTypingState(elapsed=0,forceFull=false){const full=$('#searchTextInput')?.value||''; const speed=+$('#typingSpeed')?.value||18; const visible=forceFull?full.length:Math.max(0,Math.min(full.length,Math.floor(Math.max(0,elapsed)*speed))); const shown=full.slice(0,visible); if(searchWidget)searchWidget.style.width=measureSearchWidth(shown)+'px'; const out=$('#searchTextOut'); if(out)out.innerHTML=`${shown}<span class="typing-caret"></span>`;}
   function updateCanvasLayout(){
-    const postY=+$('#postWY').value||0, postScale=+$('#postWidgetScale').value||1;
+    const searchY=+$('#searchWY').value||0, postY=+$('#postWY').value||0;
     sceneShift=0;
     if(sceneContent)sceneContent.style.transform='none';
+
+    // 위쪽은 검색창의 실제 위치를 그대로 여백으로 사용한다.
+    // 아래쪽도 같은 값으로 계산해서 위/아래 여백이 항상 같아지게 한다.
+    const searchTop=(searchWidget?.offsetTop||85)+searchY;
+    const edgeGap=Math.max(8,Math.round(searchTop));
+
     const phoneBottom=118+646;
     const postVisible=postWidget && !postWidget.classList.contains('hidden');
-    const basePostTop=postWidget?.offsetTop||570, basePostHeight=postWidget?.offsetHeight||0;
-    const postBottom=postVisible ? (basePostTop+postY+(basePostHeight*postScale)) : 0;
+    const basePostTop=postWidget?.offsetTop||570;
+    const basePostHeight=postWidget?.offsetHeight||0;
+
+    // post-card의 transform-origin이 bottom이므로 크기 배율은 아래 끝 위치를 바꾸지 않는다.
+    const postBottom=postVisible ? (basePostTop+postY+basePostHeight) : 0;
     const bottomEdge=Math.max(phoneBottom,postBottom);
-    const bottomPadding=8;
-    canvasHeight=Math.min(1280,Math.ceil(bottomEdge+bottomPadding));
+
+    canvasHeight=Math.min(1280,Math.ceil(bottomEdge+edgeGap));
     capture.style.height=`${canvasHeight}px`;
     fitCapture();
   }
@@ -444,7 +453,7 @@
     rendererLoadPromise=(async()=>{
       const urls=[
         new URL('export-renderer.js?v=20261007-6',document.baseURI).href,
-        new URL('./export-renderer.js?v=20261007-6',location.href).href
+        new URL('./export-renderer.js?v=20261007-7',location.href).href
       ];
       for(const url of [...new Set(urls)]){
         try{
