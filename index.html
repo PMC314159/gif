@@ -7,7 +7,7 @@
   <title>PHONE SCREEN MOTION MAKER</title>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gif.js.optimized@1.0.1/dist/gif.js"></script>
-  <script src="./export-renderer.js?v=20261007-17" onerror="console.warn('export-renderer.js not found; expert-renderer.js and embedded fallback will be tried')"></script>
+  <script src="./export-renderer.js?v=20261007-18" onerror="console.warn('export-renderer.js not found; expert-renderer.js and embedded fallback will be tried')"></script>
   <style>
     *{box-sizing:border-box}
     html,body{margin:0;min-height:100%;background:#0e0f13;color:#f7f7f7;font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Pretendard","Noto Sans KR",Segoe UI,sans-serif}
@@ -171,11 +171,29 @@
   }
   function parseDuration(v){const m=String(v||'').trim().match(/^(\d{1,3}):([0-5]\d)$/);if(!m)return 216;return (+m[1])*60+(+m[2])}
   function formatTime(sec){sec=Math.max(0,Math.round(sec));const m=Math.floor(sec/60),s=sec%60;return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`}
+  function getMusicPlaybackState(t=0){
+    const total=parseDuration($('#trackDuration').value),basePct=+$('#progress').value||0,dur=+$('#duration').value||5,musicStart=1.22*(dur/5);
+    const startSec=total*basePct/100,elapsed=Math.max(0,t-musicStart),current=Math.min(total,startSec+elapsed),pct=total>0?Math.min(100,current/total*100):basePct;
+    return {total,current,pct};
+  }
+  function updateMusicPlayback(t=0){
+    const st=getMusicPlaybackState(t);
+    $('#barFill').style.width=st.pct+'%';
+    $('#durationTimeOut').textContent=formatTime(st.total);
+    $('#currentTimeOut').textContent=formatTime(st.current);
+  }
   function updateQueueRow(n){const t=($(`#queueTitle${n}`)?.value||'').trim(), a=($(`#queueArtist${n}`)?.value||'').trim(), row=$(`#queueItem${n}`); if(!row) return false; const active=!!(t||a); row.classList.toggle('hidden',!active); if(active){$(`#queueTitleOut${n}`).textContent=t||'Untitled';$(`#queueArtistOut${n}`).textContent=a||'Unknown';} return active;}
   function updatePlaylist(){const active=[1,2,3].map(updateQueueRow).filter(Boolean).length;const list=$('#playlistOut');if(list)list.classList.toggle('hidden',active===0);musicWidget.style.minHeight=active===0?'114px':'auto';requestAnimationFrame(()=>{updateCanvasLayout();});}
   function updateSearchPreview(){setSearchTypingState(Infinity,true); $('#typingSpeedV').textContent=$('#typingSpeed').value}
   function updatePost(){const visible=$('#postVisible').checked;postWidget.classList.toggle('hidden',!visible);setPostTypingState(Infinity,true);const speed=+$('#postTypingSpeed')?.value||16;$('#postTypingSpeedV').textContent=String(speed);}
-  function updateText(){$('#ddayLabelOut').textContent=$('#ddayLabel').value||'OUR DAY';$('#songOut').textContent=$('#song').value||'Untitled';$('#artistOut').textContent=$('#artist').value||'Unknown';const p=+$('#progress').value,total=parseDuration($('#trackDuration').value);$('#barFill').style.width=p+'%';$('#progressV').textContent=p+'%';$('#durationTimeOut').textContent=formatTime(total);$('#currentTimeOut').textContent=formatTime(total*p/100);updatePlaylist();updateSearchPreview();updateDday();updatePost()} ['ddayLabel','ddayDate','ddaySubtext','song','artist','trackDuration','progress','searchTextInput','typingSpeed','queueTitle1','queueArtist1','queueTitle2','queueArtist2','queueTitle3','queueArtist3','postCaption','postTypingSpeed'].forEach(id=>$('#'+id).addEventListener('input',updateText));$('#postVisible').addEventListener('change',()=>{updateText();updateCanvasLayout();});$('#commissionText')?.addEventListener('input',updateCommission);
+  function updateText(){
+    $('#ddayLabelOut').textContent=$('#ddayLabel').value||'OUR DAY';
+    $('#songOut').textContent=$('#song').value||'Untitled';
+    $('#artistOut').textContent=$('#artist').value||'Unknown';
+    $('#progressV').textContent=(+$('#progress').value||0)+'%';
+    updateMusicPlayback(0);
+    updatePlaylist();updateSearchPreview();updateDday();updatePost();
+  } ['ddayLabel','ddayDate','ddaySubtext','song','artist','trackDuration','progress','searchTextInput','typingSpeed','queueTitle1','queueArtist1','queueTitle2','queueArtist2','queueTitle3','queueArtist3','postCaption','postTypingSpeed'].forEach(id=>$('#'+id).addEventListener('input',updateText));$('#postVisible').addEventListener('change',()=>{updateText();updateCanvasLayout();});$('#commissionText')?.addEventListener('input',updateCommission);
   function updateGlass(){const v=+$('#glassOpacity').value,a1=Math.min(.60,v/100+.07),a2=Math.max(.04,v/100*.28);glassEls.forEach(el=>{el.style.background=`linear-gradient(145deg,rgba(255,255,255,${a1}),rgba(255,255,255,${a2}))`;el.style.borderColor=`rgba(255,255,255,${Math.min(.62,v/100+.16)})`});$('#glassV').textContent=v+'%'} $('#glassOpacity').addEventListener('input',updateGlass);updateGlass();$('#duration').addEventListener('input',()=>$('#durationV').textContent=(+$('#duration').value).toFixed(1)+'s');$('#animEffect')?.addEventListener('change',()=>{startTime=performance.now();status.textContent='등장 효과를 바꿨어요.'});
   const accordions=[...document.querySelectorAll('details.accordion')];
   $('#expandAll')?.addEventListener('click',()=>accordions.forEach(d=>d.open=true));
@@ -273,6 +291,7 @@
     const dur=+$('#duration').value,factor=dur/5;
     const sO=widgetOffset('search'),mO=widgetOffset('music'),dO=widgetOffset('dday'),pO=widgetOffset('post'),postScale=+$('#postWidgetScale').value||1;
     const searchStart=.42*factor,musicStart=1.22*factor,ddayStart=2.12*factor,postStart=3.05*factor,searchTypeDelay=.32*factor,ddayCountDelay=.38*factor,postTypeDelay=.28*factor;
+    updateMusicPlayback(t);
     if(mode==='export'){
       const showSearch=t>=searchStart,showMusic=t>=musicStart,showDday=t>=ddayStart,showPost=t>=postStart;
       if(searchWidget){searchWidget.style.opacity=showSearch?'1':'0';if(!exportLayoutFrozen)searchWidget.style.transform=`translate(${sO.x}px,${sO.y}px) scale(1)`;showSearch?setSearchTypingState(Infinity,true):setSearchTypingState(0,false)}
@@ -569,6 +588,18 @@
         if(ds.flipping){ctx.save();ctx.globalAlpha=.22*(1-Math.abs(.5-ds.phase)*2);ctx.fillStyle='#fff';ctx.fillRect(r.x+17,r.y+42,Math.min(86,r.w-34),1);ctx.restore();}
         if(s.text.ddayDate) drawText(ctx,s.text.ddayDate,r.x+17,r.y+r.h-13,9,500,'rgba(255,255,255,.68)');
       }
+      function parseClock(v){
+        const m=String(v||'').trim().match(/^(\d{1,3}):([0-5]\d)$/);
+        return m?(+m[1])*60+(+m[2]):216;
+      }
+      function formatClock(sec){
+        sec=Math.max(0,Math.round(sec));const m=Math.floor(sec/60),s=sec%60;
+        return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+      }
+      function musicPlaybackState(s,t){
+        const total=parseClock(s.text.duration),start=total*(s.controls.progress||0)/100,elapsed=Math.max(0,t-s.timeline.musicStart),current=Math.min(total,start+elapsed),pct=total>0?Math.min(100,current/total*100):(s.controls.progress||0);
+        return {total,current,pct};
+      }
       function drawEqualizer(ctx,x,y,t){
         const widths=2.2,gap=2.4,base=9;
         for(let i=0;i<4;i++){
@@ -585,11 +616,12 @@
         drawText(ctx,s.text.artist,tx,r.y+47,10,500,'rgba(255,255,255,.68)');
         const playR=14, playCx=r.x+r.w-28, playCy=r.y+69;
         const eqX=playCx-34, barX=tx, barY=r.y+69, barW=Math.max(28,eqX-10-barX);
-        ctx.fillStyle='rgba(255,255,255,.28)';rr(ctx,barX,barY-1.5,barW,3,2);ctx.fill();ctx.fillStyle='#fff';rr(ctx,barX,barY-1.5,barW*s.controls.progress/100,3,2);ctx.fill();
+        const pb=musicPlaybackState(s,t);
+        ctx.fillStyle='rgba(255,255,255,.28)';rr(ctx,barX,barY-1.5,barW,3,2);ctx.fill();ctx.fillStyle='#fff';rr(ctx,barX,barY-1.5,barW*pb.pct/100,3,2);ctx.fill();
         drawEqualizer(ctx,eqX,barY,t);
         ctx.beginPath();ctx.arc(playCx,playCy,playR,0,Math.PI*2);ctx.fillStyle='rgba(255,255,255,.90)';ctx.fill();
         ctx.fillStyle='#17181c';rr(ctx,playCx-4.5,playCy-5,3,10,1);ctx.fill();rr(ctx,playCx+1.5,playCy-5,3,10,1);ctx.fill();
-        drawText(ctx,s.text.current,barX,r.y+90,8,500,'rgba(255,255,255,.62)');drawText(ctx,s.text.duration,r.x+r.w-15,r.y+90,8,500,'rgba(255,255,255,.62)','right');
+        drawText(ctx,formatClock(pb.current),barX,r.y+90,8,500,'rgba(255,255,255,.62)');drawText(ctx,formatClock(pb.total),r.x+r.w-15,r.y+90,8,500,'rgba(255,255,255,.62)','right');
         let yy=r.y+114;
         for(let i=0;i<s.queue.length;i++){
           const q=s.queue[i];ctx.fillStyle='rgba(255,255,255,.16)';ctx.fillRect(r.x+14,yy-7,r.w-28,1);drawText(ctx,q.title,r.x+14,yy+10,11,620,'#fff');drawText(ctx,q.artist,r.x+14,yy+25,9,500,'rgba(255,255,255,.62)');drawText(ctx,String(i+2).padStart(2,'0'),r.x+r.w-14,yy+10,9,500,'rgba(255,255,255,.45)','right');yy+=40;
@@ -666,18 +698,18 @@
         if(state.postVisible)drawMotion(ctx,state,t,'post',drawPost,final);
         drawCommission(ctx,state);return c;
       }
-      window.PairExportRenderer={version:'20261007-17',captureState,render};
+      window.PairExportRenderer={version:'20261007-18',captureState,render};
   }
 
-  const EXPECTED_RENDERER_VERSION='20261007-17';
+  const EXPECTED_RENDERER_VERSION='20261007-18';
   let rendererLoadPromise=null;
   async function ensureExportRenderer(){
     if(window.PairExportRenderer?.version===EXPECTED_RENDERER_VERSION && window.PairExportRenderer?.captureState && window.PairExportRenderer?.render)return window.PairExportRenderer;
     if(rendererLoadPromise)return rendererLoadPromise;
     rendererLoadPromise=(async()=>{
       const urls=[
-        new URL('export-renderer.js?v=20261007-17',document.baseURI).href,
-        new URL('./export-renderer.js?v=20261007-17',location.href).href,
+        new URL('export-renderer.js?v=20261007-18',document.baseURI).href,
+        new URL('./export-renderer.js?v=20261007-18',location.href).href,
         new URL('expert-renderer.js?v=20261007-15',document.baseURI).href,
         new URL('./expert-renderer.js?v=20261007-15',location.href).href
       ];
