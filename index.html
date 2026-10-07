@@ -85,7 +85,7 @@
         <div class="grid2 dday-editor-grid"><div class="field"><label>라벨</label><input id="ddayLabel" type="text" value="OUR DAY"></div><div class="field"><label>기념일 날짜</label><input id="ddayDate" type="date"></div></div>
         <div class="field"><label>숫자 넘김 속도</label><div class="range-row"><input id="ddayFlipSpeed" type="range" min="0.06" max="0.40" step="0.01" value="0.13"><span class="value" id="ddayFlipSpeedV">0.13s</span></div></div>
         <div class="field"><label>몇 일 전부터 넘기기</label><div class="range-row"><input id="ddayStartDays" type="range" min="1" max="10" step="1" value="5"><span class="value" id="ddayStartDaysV">5일</span></div></div>
-        <div class="field"><label>선택한 날짜를 1일째로 계산해요 · 미래 날짜는 D-로 표시돼요 · 999일 초과 시 999+로 표시돼요</label></div>
+        <div class="field"><label>선택한 날짜를 1일째로 계산해요 · 미래 날짜는 D-로 표시돼요</label></div>
         <div class="subhead">위젯 위치</div>
         <div class="grid2"><div class="field"><label>가로</label><input id="ddayWX" type="range" min="-180" max="180" value="0"></div><div class="field"><label>세로</label><input id="ddayWY" type="range" min="-220" max="220" value="0"></div></div>
       </div></details>
@@ -175,29 +175,17 @@
             diff=Math.round((a-target)/86400000);
 
       // 커플 디데이 방식: 시작한 날을 1일째로 계산해요.
-      // 미래 날짜는 기존처럼 남은 날짜를 D-로 표시해요.
+      // 선택한 날짜를 1일째로 계산하고, 날짜 수는 제한 없이 그대로 표시해요.
       if(diff>=0){
         abs=diff+1;
         prefix='D+';
-
-        if(abs>=999){
-          finalText=abs>999 ? 'D+999+' : 'D+999';
-          animate=false;
-        }else{
-          finalText=`D+${abs}`;
-          animate=true;
-        }
+        finalText=`D+${abs}`;
+        animate=true;
       }else{
         abs=Math.abs(diff);
         prefix='D-';
-
-        if(abs>=999){
-          finalText=abs>999 ? 'D-999+' : 'D-999';
-          animate=false;
-        }else{
-          finalText=`D-${abs}`;
-          animate=true;
-        }
+        finalText=`D-${abs}`;
+        animate=true;
       }
     }
 
