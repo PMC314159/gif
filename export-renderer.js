@@ -1,144 +1,56 @@
 (() => {
   const $ = s => document.querySelector(s);
-
   const num = (id, fallback = 0) => {
     const el = $(id.startsWith('#') ? id : `#${id}`);
     const v = el ? Number(el.value) : NaN;
     return Number.isFinite(v) ? v : fallback;
   };
-
   const txt = id => ($(id)?.textContent || '').trim();
   const val = id => ($(id)?.value || '').trim();
-
-  const visible = el =>
-    !!el &&
-    getComputedStyle(el).display !== 'none' &&
-    !el.classList.contains('hidden');
-
-  const clamp = (n,a=0,b=1) =>
-    Math.min(b, Math.max(a,n));
-
-  const easeOutCubic = x =>
-    1 - Math.pow(1 - clamp(x), 3);
+  const visible = el => !!el && getComputedStyle(el).display !== 'none' && !el.classList.contains('hidden');
+  const clamp = (n,a=0,b=1) => Math.min(b, Math.max(a,n));
+  const easeOutCubic = x => 1 - Math.pow(1 - clamp(x), 3);
 
   function rr(ctx,x,y,w,h,r){
-    r=Math.max(
-      0,
-      Math.min(
-        r,
-        Math.min(w,h)/2
-      )
-    );
-
-    ctx.beginPath();
-    ctx.moveTo(x+r,y);
-    ctx.arcTo(x+w,y,x+w,y+h,r);
-    ctx.arcTo(x+w,y+h,x,y+h,r);
-    ctx.arcTo(x,y+h,x,y,r);
-    ctx.arcTo(x,y,x+w,y,r);
-    ctx.closePath();
+    r=Math.max(0,Math.min(r,Math.min(w,h)/2));
+    ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();
   }
 
   function localRect(el,rootRect){
-    if(!el){
-      return {
-        x:0,
-        y:0,
-        w:0,
-        h:0
-      };
-    }
-
-    const r=
-      el.getBoundingClientRect();
-
-    return {
-      x:r.left-rootRect.left,
-      y:r.top-rootRect.top,
-      w:r.width,
-      h:r.height
-    };
+    if(!el) return {x:0,y:0,w:0,h:0};
+    const r=el.getBoundingClientRect();
+    return {x:r.left-rootRect.left,y:r.top-rootRect.top,w:r.width,h:r.height};
   }
 
   function glass(ctx,r,alpha=.22,radius=24){
     ctx.save();
-
-    rr(
-      ctx,
-      r.x,
-      r.y,
-      r.w,
-      r.h,
-      radius
-    );
-
-    ctx.fillStyle=
-      `rgba(238,242,248,${alpha})`;
-
+    rr(ctx,r.x,r.y,r.w,r.h,radius);
+    ctx.fillStyle=`rgba(238,242,248,${alpha})`;
     ctx.fill();
-
     ctx.lineWidth=1;
-    ctx.strokeStyle=
-      'rgba(255,255,255,.58)';
-
+    ctx.strokeStyle='rgba(255,255,255,.58)';
     ctx.stroke();
     ctx.restore();
   }
 
-  function fitImage(
-    ctx,
-    img,
-    r,
-    fit='cover',
-    zoom=1,
-    ox=0,
-    oy=0,
-    radius=0
-  ){
-    if(
-      !img ||
-      !img.complete ||
-      !img.naturalWidth ||
-      !img.naturalHeight
-    ){
-      return;
-    }
+  function fitImage(ctx,img,r,fit='cover',zoom=1,ox=0,oy=0,radius=0){
+    if(!img || !img.complete || !img.naturalWidth || !img.naturalHeight) return;
 
-    const nw=
-      img.naturalWidth;
-
-    const nh=
-      img.naturalHeight;
+    const nw=img.naturalWidth;
+    const nh=img.naturalHeight;
 
     const base=
       fit==='contain'
-        ? Math.min(
-            r.w/nw,
-            r.h/nh
-          )
-        : Math.max(
-            r.w/nw,
-            r.h/nh
-          );
+        ? Math.min(r.w/nw,r.h/nh)
+        : Math.max(r.w/nw,r.h/nh);
 
-    const dw=
-      nw*base*zoom;
-
-    const dh=
-      nh*base*zoom;
+    const dw=nw*base*zoom;
+    const dh=nh*base*zoom;
 
     ctx.save();
 
     if(radius){
-      rr(
-        ctx,
-        r.x,
-        r.y,
-        r.w,
-        r.h,
-        radius
-      );
-
+      rr(ctx,r.x,r.y,r.w,r.h,radius);
       ctx.clip();
     }
 
@@ -153,13 +65,8 @@
     ctx.restore();
   }
 
-  function font(
-    ctx,
-    size,
-    weight=500
-  ){
-    ctx.font=
-      `${weight} ${size}px Inter, Pretendard, Arial, sans-serif`;
+  function font(ctx,size,weight=500){
+    ctx.font=`${weight} ${size}px Inter, Pretendard, Arial, sans-serif`;
   }
 
   function drawText(
@@ -174,188 +81,93 @@
     baseline='alphabetic'
   ){
     ctx.save();
-
-    font(
-      ctx,
-      size,
-      weight
-    );
-
-    ctx.fillStyle=
-      color;
-
-    ctx.textAlign=
-      align;
-
-    ctx.textBaseline=
-      baseline;
-
-    ctx.fillText(
-      text,
-      x,
-      y
-    );
-
+    font(ctx,size,weight);
+    ctx.fillStyle=color;
+    ctx.textAlign=align;
+    ctx.textBaseline=baseline;
+    ctx.fillText(text,x,y);
     ctx.restore();
   }
 
-  const measureCanvas=
-    document.createElement('canvas');
+  const measureCanvas=document.createElement('canvas');
+  const measureCtx=measureCanvas.getContext('2d');
 
-  const measureCtx=
-    measureCanvas.getContext('2d');
-
-  function measureTextWidth(
-    text,
-    size=14,
-    weight=500
-  ){
-    if(!measureCtx){
-      return (
-        text||''
-      ).length*
-      size*
-      .58;
-    }
+  function measureTextWidth(text,size=14,weight=500){
+    if(!measureCtx) return (text||'').length*size*.58;
 
     measureCtx.font=
       `${weight} ${size}px Inter, Pretendard, Arial, sans-serif`;
 
-    return measureCtx
-      .measureText(text||'')
-      .width;
+    return measureCtx.measureText(text||'').width;
   }
 
-  function searchState(
-    s,
-    t,
-    final=false
-  ){
-    const full=
-      s.text.search||'';
+  function searchState(s,t,final=false){
+    const full=s.text.search||'';
+    const f=s.duration/5;
+    const start=s.timeline.searchStart+.32*f;
+    const available=Math.max(.25,s.duration-start-.18*f);
 
-    const f=
-      s.duration/5;
-
-    const start=
-      s.timeline.searchStart+
-      .32*f;
-
-    const available=
-      Math.max(
-        .25,
-        s.duration-
-        start-
-        .18*f
-      );
-
-    const speed=
-      Math.max(
-        s.controls.typingSpeed||18,
-        full.length/available
-      );
+    const speed=Math.max(
+      s.controls.typingSpeed||18,
+      full.length/available
+    );
 
     const count=
       final
         ? full.length
         : clamp(
             Math.floor(
-              Math.max(
-                0,
-                t-start
-              )*
-              speed
+              Math.max(0,t-start)*speed
             ),
             0,
             full.length
           );
 
-    const text=
-      full.slice(0,count);
+    const text=full.slice(0,count);
 
     return {
       text,
-      width:
-        Math.max(
-          88,
-          Math.min(
-            300,
-            Math.ceil(
-              measureTextWidth(
-                text,
-                14,
-                500
-              )+
-              86
-            )
+      width:Math.max(
+        88,
+        Math.min(
+          300,
+          Math.ceil(
+            measureTextWidth(text,14,500)+86
           )
         )
+      )
     };
   }
 
-  function postState(
-    s,
-    t,
-    final=false
-  ){
-    const full=
-      s.text.postTitle||'';
+  function postState(s,t,final=false){
+    const full=s.text.postTitle||'';
+    const f=s.duration/5;
+    const start=s.timeline.postStart+.28*f;
+    const available=Math.max(.25,s.duration-start-.18*f);
 
-    const f=
-      s.duration/5;
-
-    const start=
-      s.timeline.postStart+
-      .28*f;
-
-    const available=
-      Math.max(
-        .25,
-        s.duration-
-        start-
-        .18*f
-      );
-
-    const speed=
-      Math.max(
-        s.controls.postTypingSpeed||16,
-        full.length/available
-      );
+    const speed=Math.max(
+      s.controls.postTypingSpeed||16,
+      full.length/available
+    );
 
     const count=
       final
         ? full.length
         : clamp(
             Math.floor(
-              Math.max(
-                0,
-                t-start
-              )*
-              speed
+              Math.max(0,t-start)*speed
             ),
             0,
             full.length
           );
 
-    return full.slice(
-      0,
-      count
-    );
+    return full.slice(0,count);
   }
 
-  function ddayState(
-    s,
-    t,
-    final=false
-  ){
-    const meta=
-      s.dday;
+  function ddayState(s,t,final=false){
+    const meta=s.dday;
 
-    if(
-      !meta ||
-      !meta.animate ||
-      final
-    ){
+    if(!meta || !meta.animate || final){
       return {
         text:s.text.ddayCount,
         phase:1,
@@ -363,112 +175,56 @@
       };
     }
 
-    const target=
-      meta.value;
+    const target=meta.value;
+    const startDays=Math.max(1,s.controls.ddayStartDays||5);
+    const startValue=Math.max(0,target-startDays);
+    const stepDur=s.controls.ddayFlipSpeed||.13;
 
-    const startDays=
-      Math.max(
-        1,
-        s.controls.ddayStartDays||5
-      );
+    const elapsed=Math.max(
+      0,
+      t-(s.timeline.ddayStart+.38*(s.duration/5))
+    );
 
-    const startValue=
-      Math.max(
-        0,
-        target-startDays
-      );
+    const maxSteps=Math.min(startDays,target);
 
-    const stepDur=
-      s.controls.ddayFlipSpeed||.13;
+    const steps=Math.min(
+      maxSteps,
+      Math.floor(elapsed/stepDur)
+    );
 
-    const elapsed=
-      Math.max(
-        0,
-        t-
-        (
-          s.timeline.ddayStart+
-          .38*(s.duration/5)
-        )
-      );
+    const value=Math.min(
+      target,
+      startValue+steps
+    );
 
-    const maxSteps=
-      Math.min(
-        startDays,
-        target
-      );
+    const phase=clamp(
+      (elapsed-steps*stepDur)/stepDur
+    );
 
-    const steps=
-      Math.min(
-        maxSteps,
-        Math.floor(
-          elapsed/stepDur
-        )
-      );
-
-    const value=
-      Math.min(
-        target,
-        startValue+steps
-      );
-
-    const phase=
-      clamp(
-        (
-          elapsed-
-          steps*stepDur
-        )/
-        stepDur
-      );
-
-    const prefix=
-      meta.prefix||'D+';
+    const prefix=meta.prefix||'D+';
 
     return {
-      text:
-        `${prefix}${value}`,
+      text:`${prefix}${value}`,
       phase,
-      flipping:
-        phase<1,
+      flipping:phase<1,
       value
     };
   }
 
-  function drawBackground(
-    ctx,
-    s
-  ){
-    ctx.fillStyle=
-      '#68707c';
+  function drawBackground(ctx,s){
+    ctx.fillStyle='#68707c';
+    ctx.fillRect(0,0,s.w,s.h);
 
-    ctx.fillRect(
-      0,
-      0,
-      s.w,
-      s.h
-    );
+    const img=s.images.bg;
 
-    const img=
-      s.images.bg;
-
-    if(
-      img &&
-      img.complete &&
-      img.naturalWidth
-    ){
+    if(img && img.complete && img.naturalWidth){
       ctx.save();
-
-      ctx.filter=
-        'saturate(.85) brightness(.78)';
+      ctx.filter='saturate(.85) brightness(.78)';
 
       fitImage(
         ctx,
         img,
-        {
-          x:0,
-          y:0,
-          w:s.w,
-          h:s.h
-        },
+        {x:0,y:0,w:s.w,h:s.h},
         'contain',
         s.controls.bgZoom,
         s.controls.bgX,
@@ -478,81 +234,29 @@
 
       ctx.restore();
     }else{
-      const g=
-        ctx.createLinearGradient(
-          0,
-          0,
-          s.w,
-          s.h
-        );
+      const g=ctx.createLinearGradient(0,0,s.w,s.h);
 
-      g.addColorStop(
-        0,
-        '#cfd2d9'
-      );
-
-      g.addColorStop(
-        .45,
-        '#929aa6'
-      );
-
-      g.addColorStop(
-        1,
-        '#4d5159'
-      );
+      g.addColorStop(0,'#cfd2d9');
+      g.addColorStop(.45,'#929aa6');
+      g.addColorStop(1,'#4d5159');
 
       ctx.fillStyle=g;
-
-      ctx.fillRect(
-        0,
-        0,
-        s.w,
-        s.h
-      );
+      ctx.fillRect(0,0,s.w,s.h);
     }
 
-    const ov=
-      ctx.createLinearGradient(
-        0,
-        0,
-        0,
-        s.h
-      );
+    const ov=ctx.createLinearGradient(0,0,0,s.h);
 
-    ov.addColorStop(
-      0,
-      'rgba(9,10,14,.18)'
-    );
-
-    ov.addColorStop(
-      .6,
-      'rgba(7,8,11,.26)'
-    );
-
-    ov.addColorStop(
-      1,
-      'rgba(6,7,10,.45)'
-    );
+    ov.addColorStop(0,'rgba(9,10,14,.18)');
+    ov.addColorStop(.6,'rgba(7,8,11,.26)');
+    ov.addColorStop(1,'rgba(6,7,10,.45)');
 
     ctx.fillStyle=ov;
-
-    ctx.fillRect(
-      0,
-      0,
-      s.w,
-      s.h
-    );
+    ctx.fillRect(0,0,s.w,s.h);
   }
 
-  function drawPhone(
-    ctx,
-    s
-  ){
-    const p=
-      s.rects.phone;
-
-    const sc=
-      s.rects.screen;
+  function drawPhone(ctx,s){
+    const p=s.rects.phone;
+    const sc=s.rects.screen;
 
     ctx.save();
 
@@ -565,17 +269,11 @@
       51
     );
 
-    ctx.fillStyle=
-      'rgba(214,220,230,.24)';
-
+    ctx.fillStyle='rgba(214,220,230,.24)';
     ctx.fill();
 
-    ctx.lineWidth=
-      1.2;
-
-    ctx.strokeStyle=
-      'rgba(255,255,255,.52)';
-
+    ctx.lineWidth=1.2;
+    ctx.strokeStyle='rgba(255,255,255,.52)';
     ctx.stroke();
 
     ctx.restore();
@@ -591,9 +289,7 @@
       44
     );
 
-    ctx.fillStyle=
-      '#77808d';
-
+    ctx.fillStyle='#77808d';
     ctx.fill();
 
     ctx.restore();
@@ -645,8 +341,7 @@
 
     ctx.clip();
 
-    ctx.fillStyle=
-      shade;
+    ctx.fillStyle=shade;
 
     ctx.fillRect(
       sc.x,
@@ -658,13 +353,8 @@
     ctx.restore();
 
     const island={
-      x:
-        p.x+
-        p.w/2-
-        41.5,
-      y:
-        p.y+
-        15,
+      x:p.x+p.w/2-41.5,
+      y:p.y+15,
       w:83,
       h:23
     };
@@ -680,29 +370,15 @@
       12
     );
 
-    ctx.fillStyle=
-      '#050608';
-
+    ctx.fillStyle='#050608';
     ctx.fill();
 
     ctx.restore();
   }
 
-  function drawSearch(
-    ctx,
-    s,
-    t,
-    final=false
-  ){
-    const base=
-      s.rects.search;
-
-    const st=
-      searchState(
-        s,
-        t,
-        final
-      );
+  function drawSearch(ctx,s,t,final=false){
+    const base=s.rects.search;
+    const st=searchState(s,t,final);
 
     const r={
       x:base.x,
@@ -732,17 +408,12 @@
       );
     }
 
-    const cx=
-      r.x+r.w-28;
-
-    const cy=
-      r.y+r.h/2;
+    const cx=r.x+r.w-28;
+    const cy=r.y+r.h/2;
 
     ctx.save();
 
-    ctx.strokeStyle=
-      'rgba(255,255,255,.92)';
-
+    ctx.strokeStyle='rgba(255,255,255,.92)';
     ctx.lineWidth=2;
 
     ctx.beginPath();
@@ -774,34 +445,39 @@
     ctx.restore();
   }
 
-  function drawDday(
-    ctx,
-    s,
-    t,
-    final=false
-  ){
-    const base=
-      s.rects.dday;
+  function drawDday(ctx,s,t,final=false){
+    const base=s.rects.dday;
+    const hasSubtext=!!s.dday?.hasSubtext;
+    const labelRect=s.rects.ddayLabel;
+    const countRect=s.rects.ddayCount;
+    const dateRect=s.rects.ddayDate;
 
-    const hasSubtext=
-      !!String(
-        s.text.ddayDate||''
-      ).trim();
+    const bottomPadding=Math.max(
+      0,
+      s.dday?.bottomPadding??15
+    );
+
+    const compactH=
+      countRect&&countRect.h
+        ? Math.ceil(
+            (countRect.y+countRect.h)
+            -base.y
+            +bottomPadding
+          )
+        : 83;
 
     const r={
       ...base,
-      h:
-        hasSubtext
-          ? base.h
-          : 83
+      h:hasSubtext
+        ? base.h
+        : compactH
     };
 
-    const ds=
-      ddayState(
-        s,
-        t,
-        final
-      );
+    const ds=ddayState(
+      s,
+      t,
+      final
+    );
 
     glass(
       ctx,
@@ -810,37 +486,44 @@
       27
     );
 
+    const labelY=
+      labelRect&&labelRect.h
+        ? labelRect.y+labelRect.h/2
+        : r.y+21;
+
     drawText(
       ctx,
       s.text.ddayLabel,
-      r.x+17,
-      r.y+22,
+      labelRect&&labelRect.w
+        ? labelRect.x
+        : r.x+17,
+      labelY,
       10,
       700,
-      'rgba(255,255,255,.72)'
+      'rgba(255,255,255,.72)',
+      'left',
+      'middle'
     );
 
-    const centerY=
-      r.y+53;
+    const countX=
+      countRect&&countRect.w
+        ? countRect.x
+        : r.x+17;
+
+    const countY=
+      countRect&&countRect.h
+        ? countRect.y+countRect.h/2
+        : r.y+53;
 
     ctx.save();
 
     if(ds.flipping){
-      const p=
-        clamp(ds.phase);
+      const p=clamp(ds.phase);
 
       const sy=
         p<.55
-          ? .35+
-            .63*
-            easeOutCubic(
-              p/.55
-            )
-          : .98+
-            .02*
-            easeOutCubic(
-              (p-.55)/.45
-            );
+          ? .35+.63*easeOutCubic(p/.55)
+          : .98+.02*easeOutCubic((p-.55)/.45);
 
       ctx.globalAlpha=
         .45+
@@ -853,8 +536,8 @@
         );
 
       ctx.translate(
-        r.x+17,
-        centerY
+        countX,
+        countY
       );
 
       ctx.scale(
@@ -863,19 +546,21 @@
       );
 
       ctx.translate(
-        -(r.x+17),
-        -centerY
+        -countX,
+        -countY
       );
     }
 
     drawText(
       ctx,
       ds.text,
-      r.x+17,
-      centerY,
+      countX,
+      countY,
       31,
       650,
-      '#fff'
+      '#fff',
+      'left',
+      'middle'
     );
 
     ctx.restore();
@@ -888,18 +573,15 @@
         (
           1-
           Math.abs(
-            .5-
-            ds.phase
-          )*
-          2
+            .5-ds.phase
+          )*2
         );
 
-      ctx.fillStyle=
-        '#fff';
+      ctx.fillStyle='#fff';
 
       ctx.fillRect(
-        r.x+17,
-        r.y+42,
+        countX,
+        countY,
         Math.min(
           86,
           r.w-34
@@ -910,42 +592,41 @@
       ctx.restore();
     }
 
-    if(hasSubtext){
+    if(hasSubtext && s.text.ddayDate){
+      const dateX=
+        dateRect&&dateRect.w
+          ? dateRect.x
+          : r.x+17;
+
+      const dateY=
+        dateRect&&dateRect.h
+          ? dateRect.y+dateRect.h/2
+          : r.y+r.h-13;
+
       drawText(
         ctx,
         s.text.ddayDate,
-        r.x+17,
-        r.y+r.h-13,
+        dateX,
+        dateY,
         9,
         500,
-        'rgba(255,255,255,.68)'
+        'rgba(255,255,255,.68)',
+        'left',
+        'middle'
       );
     }
   }
 
-  function drawEqualizer(
-    ctx,
-    x,
-    y,
-    t
-  ){
-    const widths=2.2,
-          gap=2.4;
+  function drawEqualizer(ctx,x,y,t){
+    const widths=2.2;
+    const gap=2.4;
 
-    for(
-      let i=0;
-      i<4;
-      i++
-    ){
+    for(let i=0;i<4;i++){
       const wave=
         .5+
         .5*
         Math.sin(
-          t*
-          (
-            5.6+
-            i*.7
-          )+
+          t*(5.6+i*.7)+
           i*1.7
         );
 
@@ -953,17 +634,11 @@
         4+
         wave*9;
 
-      ctx.fillStyle=
-        'rgba(255,255,255,.82)';
+      ctx.fillStyle='rgba(255,255,255,.82)';
 
       rr(
         ctx,
-        x+
-        i*
-        (
-          widths+
-          gap
-        ),
+        x+i*(widths+gap),
         y-h/2,
         widths,
         h,
@@ -978,13 +653,10 @@
     const m=
       String(v||'')
         .trim()
-        .match(
-          /^(\d{1,3}):([0-5]\d)$/
-        );
+        .match(/^(\d{1,3}):([0-5]\d)$/);
 
     return m
-      ? (+m[1])*60+
-        (+m[2])
+      ? (+m[1])*60+(+m[2])
       : 216;
   }
 
@@ -1004,14 +676,8 @@
     return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
   }
 
-  function musicPlaybackState(
-    s,
-    t
-  ){
-    const total=
-      parseClock(
-        s.text.duration
-      );
+  function musicPlaybackState(s,t){
+    const total=parseClock(s.text.duration);
 
     const start=
       total*
@@ -1021,28 +687,22 @@
     const elapsed=
       Math.max(
         0,
-        t-
-        s.timeline.musicStart
+        t-s.timeline.musicStart
       );
 
     const current=
       Math.min(
         total,
-        start+
-        elapsed
+        start+elapsed
       );
 
     const pct=
       total>0
         ? Math.min(
             100,
-            current/
-            total*
-            100
+            current/total*100
           )
-        : (
-            s.controls.progress||0
-          );
+        : (s.controls.progress||0);
 
     return {
       total,
@@ -1051,13 +711,8 @@
     };
   }
 
-  function drawMusic(
-    ctx,
-    s,
-    t=0
-  ){
-    const r=
-      s.rects.music;
+  function drawMusic(ctx,s,t=0){
+    const r=s.rects.music;
 
     glass(
       ctx,
@@ -1066,8 +721,7 @@
       28
     );
 
-    const c=
-      s.rects.cover;
+    const c=s.rects.cover;
 
     fitImage(
       ctx,
@@ -1080,10 +734,7 @@
       20
     );
 
-    const tx=
-      c.x+
-      c.w+
-      14;
+    const tx=c.x+c.w+14;
 
     drawText(
       ctx,
@@ -1106,43 +757,24 @@
     );
 
     const playR=14;
+    const playCx=r.x+r.w-28;
+    const playCy=r.y+69;
 
-    const playCx=
-      r.x+
-      r.w-
-      28;
+    const eqX=playCx-34;
+    const barX=tx;
+    const barY=r.y+69;
 
-    const playCy=
-      r.y+
-      69;
+    const barW=Math.max(
+      28,
+      eqX-10-barX
+    );
 
-    const eqX=
-      playCx-
-      34;
+    const pb=musicPlaybackState(
+      s,
+      t
+    );
 
-    const barX=
-      tx;
-
-    const barY=
-      r.y+
-      69;
-
-    const barW=
-      Math.max(
-        28,
-        eqX-
-        10-
-        barX
-      );
-
-    const pb=
-      musicPlaybackState(
-        s,
-        t
-      );
-
-    ctx.fillStyle=
-      'rgba(255,255,255,.28)';
+    ctx.fillStyle='rgba(255,255,255,.28)';
 
     rr(
       ctx,
@@ -1155,16 +787,13 @@
 
     ctx.fill();
 
-    ctx.fillStyle=
-      '#fff';
+    ctx.fillStyle='#fff';
 
     rr(
       ctx,
       barX,
       barY-1.5,
-      barW*
-      pb.pct/
-      100,
+      barW*pb.pct/100,
       3,
       2
     );
@@ -1188,13 +817,10 @@
       Math.PI*2
     );
 
-    ctx.fillStyle=
-      'rgba(255,255,255,.90)';
-
+    ctx.fillStyle='rgba(255,255,255,.90)';
     ctx.fill();
 
-    ctx.fillStyle=
-      '#17181c';
+    ctx.fillStyle='#17181c';
 
     rr(
       ctx,
@@ -1220,9 +846,7 @@
 
     drawText(
       ctx,
-      formatClock(
-        pb.current
-      ),
+      formatClock(pb.current),
       barX,
       r.y+90,
       8,
@@ -1232,12 +856,8 @@
 
     drawText(
       ctx,
-      formatClock(
-        pb.total
-      ),
-      r.x+
-      r.w-
-      15,
+      formatClock(pb.total),
+      r.x+r.w-15,
       r.y+90,
       8,
       500,
@@ -1245,20 +865,12 @@
       'right'
     );
 
-    let yy=
-      r.y+
-      114;
+    let yy=r.y+114;
 
-    for(
-      let i=0;
-      i<s.queue.length;
-      i++
-    ){
-      const q=
-        s.queue[i];
+    for(let i=0;i<s.queue.length;i++){
+      const q=s.queue[i];
 
-      ctx.fillStyle=
-        'rgba(255,255,255,.16)';
+      ctx.fillStyle='rgba(255,255,255,.16)';
 
       ctx.fillRect(
         r.x+14,
@@ -1302,21 +914,11 @@
     }
   }
 
-  function drawPost(
-    ctx,
-    s,
-    t,
-    final=false
-  ){
-    if(!s.postVisible){
-      return;
-    }
+  function drawPost(ctx,s,t,final=false){
+    if(!s.postVisible) return;
 
-    const imgR=
-      s.rects.postImage;
-
-    const titleR=
-      s.rects.postTitle;
+    const imgR=s.rects.postImage;
+    const titleR=s.rects.postTitle;
 
     fitImage(
       ctx,
@@ -1334,26 +936,23 @@
       titleR,
       Math.min(
         .26,
-        s.glassAlpha+
-        .02
+        s.glassAlpha+.02
       ),
       16
     );
 
-    const title=
-      postState(
-        s,
-        t,
-        final
-      );
+    const title=postState(
+      s,
+      t,
+      final
+    );
 
     if(title){
       drawText(
         ctx,
         title,
         titleR.x+12,
-        titleR.y+
-        titleR.h/2,
+        titleR.y+titleR.h/2,
         12,
         620,
         '#fff',
@@ -1363,37 +962,21 @@
     }
   }
 
-  function drawCommission(
-    ctx,
-    s
-  ){
-    const text=
-      (
-        s.text.commission||
-        ''
-      ).trim();
+  function drawCommission(ctx,s){
+    const text=(s.text.commission||'').trim();
 
-    if(!text){
-      return;
-    }
+    if(!text) return;
 
     ctx.save();
 
     ctx.font=
       '600 10px Inter, Pretendard, Arial, sans-serif';
 
-    ctx.textAlign=
-      'left';
+    ctx.textAlign='left';
+    ctx.textBaseline='bottom';
 
-    ctx.textBaseline=
-      'bottom';
-
-    ctx.fillStyle=
-      'rgba(255,255,255,.96)';
-
-    ctx.shadowColor=
-      'rgba(0,0,0,.72)';
-
+    ctx.fillStyle='rgba(255,255,255,.96)';
+    ctx.shadowColor='rgba(0,0,0,.72)';
     ctx.shadowBlur=5;
     ctx.shadowOffsetX=0;
     ctx.shadowOffsetY=1.5;
@@ -1408,70 +991,34 @@
   }
 
   function loadImage(src){
-    return new Promise(
-      resolve=>{
-        if(!src){
-          resolve(null);
-          return;
-        }
-
-        const img=
-          new Image();
-
-        img.onload=
-          ()=>resolve(img);
-
-        img.onerror=
-          ()=>resolve(null);
-
-        img.src=src;
+    return new Promise(resolve=>{
+      if(!src){
+        resolve(null);
+        return;
       }
-    );
+
+      const img=new Image();
+
+      img.onload=()=>resolve(img);
+      img.onerror=()=>resolve(null);
+      img.src=src;
+    });
   }
 
-  async function captureState(
-    opts={}
-  ){
-    const root=
-      $('#capture');
-
-    const rootRect=
-      root.getBoundingClientRect();
-
-    const glassValue=
-      num(
-        'glassOpacity',
-        34
-      );
-
+  async function captureState(opts={}){
+    const root=$('#capture');
+    const rootRect=root.getBoundingClientRect();
+    const glassValue=num('glassOpacity',34);
     const queue=[];
 
-    for(
-      let i=1;
-      i<=3;
-      i++
-    ){
-      const title=
-        val(
-          `queueTitle${i}`
-        );
+    for(let i=1;i<=3;i++){
+      const title=val(`queueTitle${i}`);
+      const artist=val(`queueArtist${i}`);
 
-      const artist=
-        val(
-          `queueArtist${i}`
-        );
-
-      if(
-        title||
-        artist
-      ){
+      if(title||artist){
         queue.push({
-          title:
-            title||
-            'Untitled',
-          artist:
-            artist||
-            'Unknown'
+          title:title||'Untitled',
+          artist:artist||'Unknown'
         });
       }
     }
@@ -1481,134 +1028,107 @@
       main,
       cover,
       post
-    ]=
-      await Promise.all([
-        loadImage(
-          window.__pairBgSrc||
-          ''
-        ),
-        loadImage(
-          $('#mainImage')?.src||
-          ''
-        ),
-        loadImage(
-          $('#coverImage')?.src||
-          ''
-        ),
-        loadImage(
-          $('#postImage')?.src||
-          ''
-        )
-      ]);
+    ]=await Promise.all([
+      loadImage(window.__pairBgSrc||''),
+      loadImage($('#mainImage')?.src||''),
+      loadImage($('#coverImage')?.src||''),
+      loadImage($('#postImage')?.src||'')
+    ]);
 
-    const dur=
-      num(
-        'duration',
-        5
-      );
+    const dur=num('duration',5);
+    const f=dur/5;
 
-    const f=
-      dur/5;
-
-    const ddayEl=
-      $('#ddayWidget');
+    const ddayEl=$('#ddayWidget');
+    const ddaySubtext=val('ddaySubtext');
 
     return {
       w:540,
 
       h:
         opts.height||
-        Math.round(
-          rootRect.height
-        ),
+        Math.round(rootRect.height),
 
-      duration:
-        dur,
+      duration:dur,
 
       effect:
-        val(
-          'animEffect'
-        )||
+        val('animEffect')||
         'pop',
 
       glassAlpha:
         clamp(
           .10+
-          glassValue/
-          100*
-          .34,
+          glassValue/100*.34,
           .12,
           .34
         ),
 
       timeline:{
-        searchStart:
-          .42*f,
-
-        musicStart:
-          1.22*f,
-
-        ddayStart:
-          2.12*f,
-
-        postStart:
-          3.05*f
+        searchStart:.42*f,
+        musicStart:1.22*f,
+        ddayStart:2.12*f,
+        postStart:3.05*f
       },
 
       rects:{
-        phone:
-          localRect(
-            $('#phone'),
-            rootRect
-          ),
+        phone:localRect(
+          $('#phone'),
+          rootRect
+        ),
 
-        screen:
-          localRect(
-            $('.screen'),
-            rootRect
-          ),
+        screen:localRect(
+          $('.screen'),
+          rootRect
+        ),
 
-        search:
-          localRect(
-            $('#searchWidget'),
-            rootRect
-          ),
+        search:localRect(
+          $('#searchWidget'),
+          rootRect
+        ),
 
-        dday:
-          localRect(
-            ddayEl,
-            rootRect
-          ),
+        dday:localRect(
+          ddayEl,
+          rootRect
+        ),
 
-        music:
-          localRect(
-            $('#musicWidget'),
-            rootRect
-          ),
+        ddayLabel:localRect(
+          $('#ddayLabelOut'),
+          rootRect
+        ),
 
-        cover:
-          localRect(
-            $('.cover'),
-            rootRect
-          ),
+        ddayCount:localRect(
+          $('#ddayCount'),
+          rootRect
+        ),
 
-        post:
-          localRect(
-            $('#postWidget'),
-            rootRect
-          ),
+        ddayDate:localRect(
+          $('#ddayDateOut'),
+          rootRect
+        ),
 
-        postImage:
-          localRect(
-            $('.post-image'),
-            rootRect
-          ),
+        music:localRect(
+          $('#musicWidget'),
+          rootRect
+        ),
 
-        postTitle:
-          localRect(
-            $('.post-title'),
-            rootRect
-          )
+        cover:localRect(
+          $('.cover'),
+          rootRect
+        ),
+
+        post:localRect(
+          $('#postWidget'),
+          rootRect
+        ),
+
+        postImage:localRect(
+          $('.post-image'),
+          rootRect
+        ),
+
+        postTitle:localRect(
+          $('.post-title'),
+          rootRect
+        )
       },
 
       images:{
@@ -1620,163 +1140,72 @@
 
       queue,
 
-      postVisible:
-        visible(
-          $('#postWidget')
-        ),
+      postVisible:visible(
+        $('#postWidget')
+      ),
 
       controls:{
-        bgZoom:
-          num(
-            'bgZoom',
-            1
-          ),
+        bgZoom:num('bgZoom',1),
+        bgX:num('bgX'),
+        bgY:num('bgY'),
 
-        bgX:
-          num(
-            'bgX'
-          ),
+        mainZoom:num('zoom',1),
+        mainX:num('posX'),
+        mainY:num('posY'),
 
-        bgY:
-          num(
-            'bgY'
-          ),
+        coverZoom:num('coverZoom',1),
+        coverX:num('coverX'),
+        coverY:num('coverY'),
 
-        mainZoom:
-          num(
-            'zoom',
-            1
-          ),
+        postZoom:num('postZoom',1),
+        postX:num('postX'),
+        postY:num('postY'),
 
-        mainX:
-          num(
-            'posX'
-          ),
+        progress:num('progress',42),
+        typingSpeed:num('typingSpeed',18),
+        postTypingSpeed:num('postTypingSpeed',16),
 
-        mainY:
-          num(
-            'posY'
-          ),
+        ddayFlipSpeed:num(
+          'ddayFlipSpeed',
+          .13
+        ),
 
-        coverZoom:
-          num(
-            'coverZoom',
-            1
-          ),
-
-        coverX:
-          num(
-            'coverX'
-          ),
-
-        coverY:
-          num(
-            'coverY'
-          ),
-
-        postZoom:
-          num(
-            'postZoom',
-            1
-          ),
-
-        postX:
-          num(
-            'postX'
-          ),
-
-        postY:
-          num(
-            'postY'
-          ),
-
-        progress:
-          num(
-            'progress',
-            42
-          ),
-
-        typingSpeed:
-          num(
-            'typingSpeed',
-            18
-          ),
-
-        postTypingSpeed:
-          num(
-            'postTypingSpeed',
-            16
-          ),
-
-        ddayFlipSpeed:
-          num(
-            'ddayFlipSpeed',
-            .13
-          ),
-
-        ddayStartDays:
-          num(
-            'ddayStartDays',
-            5
-          )
+        ddayStartDays:num(
+          'ddayStartDays',
+          5
+        )
       },
 
       text:{
         search:
-          val(
-            'searchTextInput'
-          )||
-          txt(
-            '#searchTextOut'
-          ),
+          val('searchTextInput')||
+          txt('#searchTextOut'),
 
         ddayLabel:
-          txt(
-            '#ddayLabelOut'
-          ),
+          txt('#ddayLabelOut'),
 
         ddayCount:
           ddayEl?.dataset.finalText||
-          txt(
-            '#ddayCount'
-          ),
+          txt('#ddayCount'),
 
         ddayDate:
-          visible(
-            $('#ddayDateOut')
-          )
-            ? txt(
-                '#ddayDateOut'
-              )
-            : '',
+          ddaySubtext,
 
         song:
-          txt(
-            '#songOut'
-          ),
+          txt('#songOut'),
 
         artist:
-          txt(
-            '#artistOut'
-          ),
+          txt('#artistOut'),
 
         current:
-          txt(
-            '#currentTimeOut'
-          ),
+          txt('#currentTimeOut'),
 
         duration:
-          txt(
-            '#durationTimeOut'
-          ),
+          txt('#durationTimeOut'),
 
         postTitle:
-          val(
-            'postCaption'
-          )||
-          txt(
-            '#postCaptionOut'
-          ),
+          val('postCaption')||
+          txt('#postCaptionOut'),
 
         commission:
           (
@@ -1794,71 +1223,49 @@
 
         value:
           Number(
-            ddayEl?.dataset.abs||
-            0
+            ddayEl?.dataset.abs||0
           ),
 
         prefix:
           ddayEl?.dataset.prefix||
-          'D+'
+          'D+',
+
+        hasSubtext:
+          !!ddaySubtext,
+
+        bottomPadding:
+          parseFloat(
+            getComputedStyle(ddayEl).paddingBottom
+          )||15
       }
     };
   }
 
-  function motionProgress(
-    s,
-    t,
-    name
-  ){
-    const f=
-      s.duration/5;
+  function motionProgress(s,t,name){
+    const f=s.duration/5;
 
     const starts={
-      search:
-        .42*f,
-
-      music:
-        1.22*f,
-
-      dday:
-        2.12*f,
-
-      post:
-        3.05*f
+      search:.42*f,
+      music:1.22*f,
+      dday:2.12*f,
+      post:3.05*f
     };
 
     const lens={
-      search:
-        .62*f,
-
-      music:
-        .72*f,
-
-      dday:
-        .66*f,
-
-      post:
-        .74*f
+      search:.62*f,
+      music:.72*f,
+      dday:.66*f,
+      post:.74*f
     };
 
     return clamp(
-      (
-        t-
-        starts[name]
-      )/
-      Math.max(
-        .001,
-        lens[name]
-      )
+      (t-starts[name])/
+      Math.max(.001,lens[name])
     );
   }
 
-  function motionTransform(
-    effect,
-    p
-  ){
-    const q=
-      easeOutCubic(p);
+  function motionTransform(effect,p){
+    const q=easeOutCubic(p);
 
     if(effect==='snap'){
       return {
@@ -1871,9 +1278,7 @@
     if(effect==='fade'){
       return {
         alpha:q,
-        scale:
-          .985+
-          .015*q,
+        scale:.985+.015*q,
         dy:0
       };
     }
@@ -1882,51 +1287,25 @@
       return {
         alpha:q,
         scale:1,
-        dy:
-          30*
-          (
-            1-q
-          )
+        dy:30*(1-q)
       };
     }
 
     const overshoot=
       .15*
       Math.sin(
-        Math.PI*
-        clamp(p)
+        Math.PI*clamp(p)
       )*
-      Math.exp(
-        -1.35*p
-      );
+      Math.exp(-1.35*p);
 
     return {
-      alpha:
-        clamp(
-          p*1.8
-        ),
-
-      scale:
-        .70+
-        .30*q+
-        overshoot,
-
-      dy:
-        14*
-        (
-          1-q
-        )
+      alpha:clamp(p*1.8),
+      scale:.70+.30*q+overshoot,
+      dy:14*(1-q)
     };
   }
 
-  function drawMotion(
-    ctx,
-    s,
-    t,
-    name,
-    fn,
-    final=false
-  ){
+  function drawMotion(ctx,s,t,name,fn,final=false){
     if(final){
       fn(
         ctx,
@@ -1938,44 +1317,31 @@
       return;
     }
 
-    const p=
-      motionProgress(
-        s,
-        t,
-        name
-      );
+    const p=motionProgress(
+      s,
+      t,
+      name
+    );
 
-    if(p<=0){
-      return;
-    }
+    if(p<=0) return;
 
-    const m=
-      motionTransform(
-        s.effect||
-        'pop',
-        p
-      );
+    const m=motionTransform(
+      s.effect||'pop',
+      p
+    );
 
-    const r=
-      s.rects[name];
+    const r=s.rects[name];
 
     ctx.save();
 
-    ctx.globalAlpha*=
-      m.alpha;
+    ctx.globalAlpha*=m.alpha;
 
-    const cx=
-      r.x+
-      r.w/2;
-
-    const cy=
-      r.y+
-      r.h/2;
+    const cx=r.x+r.w/2;
+    const cy=r.y+r.h/2;
 
     ctx.translate(
       cx,
-      cy+
-      m.dy
+      cy+m.dy
     );
 
     ctx.scale(
@@ -2006,40 +1372,25 @@
       scale=1
     }={}
   ){
-    scale=
-      Math.max(
-        1,
-        Number(scale)||
-        1
-      );
+    scale=Math.max(
+      1,
+      Number(scale)||1
+    );
 
-    const c=
-      document.createElement(
-        'canvas'
-      );
+    const c=document.createElement('canvas');
 
-    c.width=
-      Math.round(
-        state.w*
-        scale
-      );
+    c.width=Math.round(
+      state.w*scale
+    );
 
-    c.height=
-      Math.round(
-        state.h*
-        scale
-      );
+    c.height=Math.round(
+      state.h*scale
+    );
 
-    const ctx=
-      c.getContext(
-        '2d'
-      );
+    const ctx=c.getContext('2d');
 
-    ctx.imageSmoothingEnabled=
-      true;
-
-    ctx.imageSmoothingQuality=
-      'high';
+    ctx.imageSmoothingEnabled=true;
+    ctx.imageSmoothingQuality='high';
 
     ctx.scale(
       scale,
@@ -2103,7 +1454,7 @@
   }
 
   window.PairExportRenderer={
-    version:'20261007-19',
+    version:'20261007-22',
     captureState,
     render
   };
