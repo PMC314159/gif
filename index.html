@@ -10,7 +10,7 @@
   <title>PHONE SCREEN MOTION MAKER</title>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gif.js.optimized@1.0.1/dist/gif.js"></script>
-  <script src="./export-renderer.js?v=20261007-24"></script>
+  <script src="./export-renderer.js?v=20261007-25"></script>
   <style>
     *{box-sizing:border-box}
     html,body{margin:0;min-height:100%;background:#0e0f13;color:#f7f7f7;font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Pretendard","Noto Sans KR",Segoe UI,sans-serif}
@@ -24,7 +24,7 @@
     input[type="text"],input[type="date"],textarea,select{width:100%;border:1px solid rgba(255,255,255,.11);background:#15171e;color:#fff;border-radius:12px;padding:10px 11px;outline:none}input[type="file"]{width:100%;font-size:11px;color:rgba(255,255,255,.56)}textarea{resize:vertical;min-height:72px;line-height:1.45}input[type="range"]{display:block;width:100%;height:24px;margin:0;padding:0;accent-color:#fff;align-self:center}
     .range-row{display:grid;grid-template-columns:minmax(0,1fr) 44px;gap:8px;align-items:center;min-height:24px}.range-row input[type="range"]{height:24px;margin:0}.value{font-size:11px;color:rgba(255,255,255,.5);text-align:right;font-variant-numeric:tabular-nums}.btns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:4px}.btns button{min-width:0;padding-left:8px;padding-right:8px}button{border:0;border-radius:13px;padding:11px 12px;cursor:pointer;transition:.18s ease}button:hover{transform:translateY(-1px)}.ghost{background:rgba(255,255,255,.07);color:#fff;border:1px solid rgba(255,255,255,.09)}.primary{background:#f7f7f7;color:#111218;font-weight:750}.xsave{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.16);font-weight:700}.primary:disabled,.xsave:disabled{opacity:.45;cursor:not-allowed;transform:none}.status{min-height:18px;margin-top:10px;font-size:11px;color:rgba(255,255,255,.58);line-height:1.5}.mobile-save-note{display:none;margin-top:8px;padding:9px 10px;border-radius:11px;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.08);font-size:10px;line-height:1.55;color:rgba(255,255,255,.56)}.mobile-save-note.show{display:block}.mobile-save-note.warn{color:rgba(255,225,225,.76);border-color:rgba(255,170,170,.16);background:rgba(255,120,120,.055)}.use-notice{margin:14px 0 2px;padding:12px 13px;border-radius:14px;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.09);font-size:10px;line-height:1.65;color:rgba(255,255,255,.62)}.use-notice strong{display:block;margin-bottom:4px;font-size:10px;letter-spacing:.08em;color:rgba(255,255,255,.82)}
     .stage-wrap{height:calc(100vh - 32px);min-height:0;display:grid;place-items:center;padding:8px 18px;overflow:hidden}.preview-shell{position:relative;width:min(600px,calc((100vh - 36px)*.64),100%);filter:drop-shadow(0 30px 60px rgba(0,0,0,.38))}#capture{position:absolute;inset:0;width:540px;height:960px;transform-origin:top left;border-radius:0;overflow:hidden;background:#d4d4d4;isolation:isolate}
-    .bg-layer{position:absolute;inset:0;transform-origin:center center;background:linear-gradient(135deg,rgba(255,255,255,.16),rgba(255,255,255,.01)),linear-gradient(150deg,#cfd2d9 0%,#9da4b0 40%,#4d5159 100%);background-size:contain;background-repeat:no-repeat;background-position:center;filter:saturate(.85) brightness(.78);transform:translate(0px,0px) scale(1)}.bg-overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(9,10,14,.18),rgba(7,8,11,.26) 60%,rgba(6,7,10,.45))}.noise{position:absolute;inset:0;opacity:.16;mix-blend-mode:soft-light;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.34'/%3E%3C/svg%3E")}
+    .bg-layer{position:absolute;inset:0;transform-origin:center center;background:linear-gradient(135deg,rgba(255,255,255,.16),rgba(255,255,255,.01)),linear-gradient(150deg,#cfd2d9 0%,#9da4b0 40%,#4d5159 100%);background-size:contain;background-repeat:no-repeat;background-position:center;filter:blur(0px) saturate(.85) brightness(.78);transform:translate(0px,0px) scale(1)}.bg-overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(9,10,14,.18),rgba(7,8,11,.26) 60%,rgba(6,7,10,.45))}.noise{position:absolute;inset:0;opacity:.16;mix-blend-mode:soft-light;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.34'/%3E%3C/svg%3E")}
         .phone{position:absolute;z-index:4;left:95px;top:118px;width:350px;height:646px;border-radius:51px;padding:8px;background:rgba(218,222,230,.26);border:1px solid rgba(255,255,255,.42);box-shadow:0 35px 70px rgba(0,0,0,.36),0 0 0 1px rgba(255,255,255,.16) inset}.phone:before{content:"";position:absolute;z-index:3;left:50%;top:15px;transform:translateX(-50%);width:83px;height:23px;border-radius:20px;background:#050608;box-shadow:0 0 0 1px rgba(255,255,255,.05)}.screen{position:relative;width:100%;height:100%;border-radius:44px;overflow:hidden;background:linear-gradient(160deg,#bfc2c9,#626975)}.screen img{position:absolute;left:50%;top:50%;width:100%;height:100%;object-fit:cover;transform:translate(-50%,-50%) scale(1);user-select:none;-webkit-user-drag:none}.screen-shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.08),transparent 42%,rgba(0,0,0,.18));pointer-events:none}
 
     .glass{position:absolute;z-index:8;color:white;background:linear-gradient(145deg,rgba(255,255,255,.24),rgba(255,255,255,.10));border:1px solid rgba(255,255,255,.34);box-shadow:0 18px 45px rgba(0,0,0,.18),0 1px 0 rgba(255,255,255,.28) inset;overflow:hidden}.glass:after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(110deg,rgba(255,255,255,.22),transparent 28%,transparent 70%,rgba(255,255,255,.08));mix-blend-mode:screen}
@@ -64,6 +64,7 @@
       <details class="section accordion" open><summary class="section-title">Background</summary><div class="section-body">
         <div class="field"><label>배경 이미지</label><input id="bgFile" type="file" accept="image/*"></div>
         <div class="field"><label>확대</label><div class="range-row"><input id="bgZoom" type="range" min="0.6" max="1.8" step="0.01" value="1"><span class="value" id="bgZoomV">1.00×</span></div></div>
+        <div class="field"><label>흐리기</label><div class="range-row"><input id="bgBlur" type="range" min="0" max="24" step="0.5" value="0"><span class="value" id="bgBlurV">0.0px</span></div></div>
         <div class="grid2"><div class="field"><label>가로 위치</label><input id="bgX" type="range" min="-70" max="70" value="0"></div><div class="field"><label>세로 위치</label><input id="bgY" type="range" min="-500" max="500" value="0"></div></div>
       </div></details>
 
@@ -149,11 +150,11 @@
   function loadImage(input,cb){const file=input.files&&input.files[0];if(!file)return;const reader=new FileReader();reader.onload=e=>cb(e.target.result);reader.readAsDataURL(file)}
   $('#bgFile').addEventListener('change',e=>loadImage(e.target,src=>{bgUserSrc=src;window.__pairBgSrc=src;bgLayer.style.backgroundImage=`linear-gradient(135deg,rgba(255,255,255,.14),rgba(0,0,0,.02)),url("${src}")`}));$('#mainFile').addEventListener('change',e=>loadImage(e.target,src=>mainImage.src=src));$('#coverFile').addEventListener('change',e=>loadImage(e.target,src=>coverImage.src=src));$('#postFile').addEventListener('change',e=>loadImage(e.target,src=>postImage.src=src));
   function setMainTransform(){const z=+$('#zoom').value,x=+$('#posX').value,y=+$('#posY').value;mainImage.style.transform=`translate(calc(-50% + ${x}px),calc(-50% + ${y}px)) scale(${z})`;$('#zoomV').textContent=z.toFixed(2)+'×'}
-  function setBgTransform(){const z=+$('#bgZoom').value,x=+$('#bgX').value,y=+$('#bgY').value;bgLayer.style.transform=`translate(${x}px,${y}px) scale(${z})`;$('#bgZoomV').textContent=z.toFixed(2)+'×'}
+  function setBgTransform(){const z=+$('#bgZoom').value,x=+$('#bgX').value,y=+$('#bgY').value,b=+$('#bgBlur').value;bgLayer.style.transform=`translate(${x}px,${y}px) scale(${z})`;bgLayer.style.filter=`blur(${b}px) saturate(.85) brightness(.78)`;$('#bgZoomV').textContent=z.toFixed(2)+'×';$('#bgBlurV').textContent=b.toFixed(1)+'px'}
   function setCoverTransform(){const z=+$('#coverZoom').value,x=+$('#coverX').value,y=+$('#coverY').value;coverImage.style.transform=`translate(${x}px,${y}px) scale(${z})`;$('#coverZoomV').textContent=z.toFixed(2)+'×'}
   function setPostImageTransform(){const z=+$('#postZoom').value,x=+$('#postX').value,y=+$('#postY').value;postImage.style.transform=`translate(${x}px,${y}px) scale(${z})`;$('#postZoomV').textContent=z.toFixed(2)+'×'}
   ['zoom','posX','posY'].forEach(id=>$('#'+id).addEventListener('input',setMainTransform));
-  ['bgZoom','bgX','bgY'].forEach(id=>$('#'+id).addEventListener('input',setBgTransform));
+  ['bgZoom','bgBlur','bgX','bgY'].forEach(id=>$('#'+id).addEventListener('input',setBgTransform));
   ['coverZoom','coverX','coverY'].forEach(id=>$('#'+id).addEventListener('input',setCoverTransform));
   ['postZoom','postX','postY'].forEach(id=>$('#'+id).addEventListener('input',setPostImageTransform));
   setMainTransform();setBgTransform();setCoverTransform();setPostImageTransform();
@@ -396,12 +397,12 @@
   async function bakeBackground(){
     if(!bgUserSrc)return null;
     const img=new Image();img.src=bgUserSrc;try{if(img.decode)await img.decode()}catch(e){await new Promise(r=>{img.onload=r;img.onerror=r})}
-    const w=540,h=canvasHeight,nw=img.naturalWidth||w,nh=img.naturalHeight||h,z=+$('#bgZoom').value||1,x=+$('#bgX').value||0,y=+$('#bgY').value||0;
+    const w=540,h=canvasHeight,nw=img.naturalWidth||w,nh=img.naturalHeight||h,z=+$('#bgZoom').value||1,b=+$('#bgBlur').value||0,x=+$('#bgX').value||0,y=+$('#bgY').value||0;
     const layerW=720,layerH=h+180,base=Math.min(layerW/nw,layerH/nh),dw=nw*base*z,dh=nh*base*z;
     const c=document.createElement('canvas');c.width=w;c.height=h;c.className='export-bg-canvas';
     const ctx=c.getContext('2d');ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';
     ctx.fillStyle='#808791';ctx.fillRect(0,0,w,h);
-    ctx.filter='saturate(.85) brightness(.78)';ctx.drawImage(img,w/2+x-dw/2,h/2+y-dh/2,dw,dh);ctx.filter='none';
+    ctx.filter=`blur(${b}px) saturate(.85) brightness(.78)`;ctx.drawImage(img,w/2+x-dw/2,h/2+y-dh/2,dw,dh);ctx.filter='none';
     const oldDisplay=bgLayer.style.display;bgLayer.style.display='none';capture.insertBefore(c,capture.firstChild);
     return ()=>{c.remove();bgLayer.style.display=oldDisplay};
   }
@@ -818,7 +819,7 @@
           timeline:{searchStart:.42*f,musicStart:1.22*f,ddayStart:2.12*f,postStart:3.05*f},
           rects:{phone:localRect($('#phone'),rootRect),screen:localRect($('.screen'),rootRect),search:localRect($('#searchWidget'),rootRect),dday:localRect(ddayEl,rootRect),ddayLabel:localRect($('#ddayLabelOut'),rootRect),ddayCount:localRect($('#ddayCount'),rootRect),music:localRect($('#musicWidget'),rootRect),cover:localRect($('.cover'),rootRect),post:localRect($('#postWidget'),rootRect),postImage:localRect($('.post-image'),rootRect),postTitle:localRect($('.post-title'),rootRect)},
           images:{bg,main,cover,post},queue,postVisible:visible($('#postWidget')),
-          controls:{bgZoom:num('bgZoom',1),bgX:num('bgX'),bgY:num('bgY'),mainZoom:num('zoom',1),mainX:num('posX'),mainY:num('posY'),coverZoom:num('coverZoom',1),coverX:num('coverX'),coverY:num('coverY'),postZoom:num('postZoom',1),postX:num('postX'),postY:num('postY'),progress:num('progress',42),typingSpeed:num('typingSpeed',18),postTypingSpeed:num('postTypingSpeed',16),ddayFlipSpeed:num('ddayFlipSpeed',.13),ddayStartDays:num('ddayStartDays',5)},
+          controls:{bgZoom:num('bgZoom',1),bgBlur:num('bgBlur',0),bgX:num('bgX'),bgY:num('bgY'),mainZoom:num('zoom',1),mainX:num('posX'),mainY:num('posY'),coverZoom:num('coverZoom',1),coverX:num('coverX'),coverY:num('coverY'),postZoom:num('postZoom',1),postX:num('postX'),postY:num('postY'),progress:num('progress',42),typingSpeed:num('typingSpeed',18),postTypingSpeed:num('postTypingSpeed',16),ddayFlipSpeed:num('ddayFlipSpeed',.13),ddayStartDays:num('ddayStartDays',5)},
           text:{search:val('searchTextInput')||txt('#searchTextOut'),ddayLabel:txt('#ddayLabelOut'),ddayCount:ddayEl?.dataset.finalText||txt('#ddayCount'),song:txt('#songOut'),artist:txt('#artistOut'),current:txt('#currentTimeOut'),duration:txt('#durationTimeOut'),postTitle:val('postCaption')||txt('#postCaptionOut'),commission:(($('#commissionText')?.value||$('#commissionCredit')?.textContent||'').trim())},
           dday:{animate:ddayEl?.dataset.animate==='1',value:Number(ddayEl?.dataset.abs||0),prefix:ddayEl?.dataset.prefix||'D+',bottomPadding:parseFloat(getComputedStyle(ddayEl).paddingBottom)||15}
         };
@@ -854,10 +855,10 @@
         if(state.postVisible)drawMotion(ctx,state,t,'post',drawPost,final);
         drawCommission(ctx,state);return c;
       }
-      window.PairExportRenderer={version:'20261007-24',captureState,render};
+      window.PairExportRenderer={version:'20261007-25',captureState,render};
   }
 
-  const EXPECTED_RENDERER_VERSION='20261007-24';
+  const EXPECTED_RENDERER_VERSION='20261007-25';
   let rendererLoadPromise=null;
   async function ensureExportRenderer(){
     if(
