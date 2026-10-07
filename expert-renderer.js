@@ -1,77 +1,180 @@
 (() => {
   const $ = s => document.querySelector(s);
+
   const num = (id, fallback = 0) => {
     const el = $(id.startsWith('#') ? id : `#${id}`);
     const v = el ? Number(el.value) : NaN;
     return Number.isFinite(v) ? v : fallback;
   };
+
   const txt = id => ($(id)?.textContent || '').trim();
   const val = id => ($(id)?.value || '').trim();
-  const visible = el => !!el && getComputedStyle(el).display !== 'none' && !el.classList.contains('hidden');
-  const clamp = (n,a=0,b=1) => Math.min(b, Math.max(a,n));
 
-  function rr(ctx,x,y,w,h,r){
-    r=Math.max(0,Math.min(r,Math.min(w,h)/2));
+  const visible = el =>
+    !!el &&
+    getComputedStyle(el).display !== 'none' &&
+    !el.classList.contains('hidden');
+
+  const clamp = (n, a = 0, b = 1) =>
+    Math.min(b, Math.max(a, n));
+
+  function rr(ctx, x, y, w, h, r) {
+    r = Math.max(
+      0,
+      Math.min(r, Math.min(w, h) / 2)
+    );
+
     ctx.beginPath();
-    ctx.moveTo(x+r,y);
-    ctx.arcTo(x+w,y,x+w,y+h,r);
-    ctx.arcTo(x+w,y+h,x,y+h,r);
-    ctx.arcTo(x,y+h,x,y,r);
-    ctx.arcTo(x,y,x+w,y,r);
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
     ctx.closePath();
   }
 
-  function localRect(el,rootRect){
-    if(!el) return {x:0,y:0,w:0,h:0};
-    const r=el.getBoundingClientRect();
+  function localRect(el, rootRect) {
+    if (!el) {
+      return {
+        x: 0,
+        y: 0,
+        w: 0,
+        h: 0
+      };
+    }
+
+    const r =
+      el.getBoundingClientRect();
+
     return {
-      x:r.left-rootRect.left,
-      y:r.top-rootRect.top,
-      w:r.width,
-      h:r.height
+      x:
+        r.left -
+        rootRect.left,
+
+      y:
+        r.top -
+        rootRect.top,
+
+      w:
+        r.width,
+
+      h:
+        r.height
     };
   }
 
-  function rgba(hex,a){
-    if(hex.startsWith('rgba')||hex.startsWith('rgb')) return hex;
+  function rgba(hex, a) {
+    if (
+      hex.startsWith('rgba') ||
+      hex.startsWith('rgb')
+    ) {
+      return hex;
+    }
+
     return hex;
   }
 
-  function glass(ctx,r,alpha=.22,radius=24){
+  function glass(
+    ctx,
+    r,
+    alpha = .22,
+    radius = 24
+  ) {
     ctx.save();
-    rr(ctx,r.x,r.y,r.w,r.h,radius);
-    ctx.fillStyle=`rgba(238,242,248,${alpha})`;
+
+    rr(
+      ctx,
+      r.x,
+      r.y,
+      r.w,
+      r.h,
+      radius
+    );
+
+    ctx.fillStyle =
+      `rgba(238,242,248,${alpha})`;
+
     ctx.fill();
-    ctx.lineWidth=1;
-    ctx.strokeStyle='rgba(255,255,255,.58)';
+
+    ctx.lineWidth = 1;
+
+    ctx.strokeStyle =
+      'rgba(255,255,255,.58)';
+
     ctx.stroke();
+
     ctx.restore();
   }
 
-  function fitImage(ctx,img,r,fit='cover',zoom=1,ox=0,oy=0,radius=0){
-    if(!img || !img.complete || !img.naturalWidth || !img.naturalHeight) return;
+  function fitImage(
+    ctx,
+    img,
+    r,
+    fit = 'cover',
+    zoom = 1,
+    ox = 0,
+    oy = 0,
+    radius = 0
+  ) {
+    if (
+      !img ||
+      !img.complete ||
+      !img.naturalWidth ||
+      !img.naturalHeight
+    ) {
+      return;
+    }
 
-    const nw=img.naturalWidth;
-    const nh=img.naturalHeight;
+    const nw =
+      img.naturalWidth;
 
-    const base=fit==='contain'
-      ? Math.min(r.w/nw,r.h/nh)
-      : Math.max(r.w/nw,r.h/nh);
+    const nh =
+      img.naturalHeight;
 
-    const dw=nw*base*zoom;
-    const dh=nh*base*zoom;
+    const base =
+      fit === 'contain'
+        ? Math.min(
+            r.w / nw,
+            r.h / nh
+          )
+        : Math.max(
+            r.w / nw,
+            r.h / nh
+          );
+
+    const dw =
+      nw * base * zoom;
+
+    const dh =
+      nh * base * zoom;
 
     ctx.save();
 
-    if(radius){
-      rr(ctx,r.x,r.y,r.w,r.h,radius);
+    if (radius) {
+      rr(
+        ctx,
+        r.x,
+        r.y,
+        r.w,
+        r.h,
+        radius
+      );
+
       ctx.clip();
     }
 
     ctx.drawImage(
       img,
-      r.x+r.w/2+ox-dw/2,
-      r.y+r.h/2+oy-dh/2,
+      r.x +
+        r.w / 2 +
+        ox -
+        dw / 2,
+
+      r.y +
+        r.h / 2 +
+        oy -
+        dh / 2,
+
       dw,
       dh
     );
@@ -79,8 +182,13 @@
     ctx.restore();
   }
 
-  function font(ctx,size,weight=500){
-    ctx.font=`${weight} ${size}px Inter, Pretendard, Arial, sans-serif`;
+  function font(
+    ctx,
+    size,
+    weight = 500
+  ) {
+    ctx.font =
+      `${weight} ${size}px Inter, Pretendard, Arial, sans-serif`;
   }
 
   function drawText(
@@ -90,70 +198,294 @@
     y,
     size,
     weight,
-    color='white',
-    align='left',
-    baseline='alphabetic'
-  ){
+    color = 'white',
+    align = 'left',
+    baseline = 'alphabetic'
+  ) {
     ctx.save();
-    font(ctx,size,weight);
-    ctx.fillStyle=color;
-    ctx.textAlign=align;
-    ctx.textBaseline=baseline;
-    ctx.fillText(text,x,y);
+
+    font(
+      ctx,
+      size,
+      weight
+    );
+
+    ctx.fillStyle =
+      color;
+
+    ctx.textAlign =
+      align;
+
+    ctx.textBaseline =
+      baseline;
+
+    ctx.fillText(
+      text,
+      x,
+      y
+    );
+
     ctx.restore();
   }
 
-  function drawBackground(ctx,s){
-    ctx.fillStyle='#68707c';
-    ctx.fillRect(0,0,s.w,s.h);
+  const searchMeasureCanvas =
+    document.createElement(
+      'canvas'
+    );
 
-    const img=s.images.bg;
+  const searchMeasureCtx =
+    searchMeasureCanvas.getContext(
+      '2d'
+    );
 
-    if(img && img.complete && img.naturalWidth){
+  function measureSearchWidth(
+    text = '',
+    maxW = 300
+  ) {
+    if (searchMeasureCtx) {
+      searchMeasureCtx.font =
+        '500 14px Inter, Pretendard, Arial, sans-serif';
+
+      const tw =
+        searchMeasureCtx.measureText(
+          text || ''
+        ).width;
+
+      return Math.max(
+        88,
+        Math.min(
+          maxW,
+          Math.ceil(
+            tw + 86
+          )
+        )
+      );
+    }
+
+    return Math.max(
+      88,
+      Math.min(
+        maxW,
+        86 +
+          (text || '').length *
+          8
+      )
+    );
+  }
+
+  function getSearchState(
+    s,
+    t,
+    final = false
+  ) {
+    const full =
+      s.text.search || '';
+
+    const f =
+      s.duration / 5;
+
+    const start =
+      .52 * f;
+
+    const speed =
+      s.controls.typingSpeed ||
+      18;
+
+    const visible =
+      final
+        ? full.length
+        : Math.max(
+            0,
+            Math.min(
+              full.length,
+              Math.floor(
+                Math.max(
+                  0,
+                  t - start
+                ) *
+                  speed
+              )
+            )
+          );
+
+    const text =
+      full.slice(
+        0,
+        visible
+      );
+
+    const maxW =
+      s.rects.search.w ||
+      300;
+
+    return {
+      text,
+      width:
+        measureSearchWidth(
+          text,
+          maxW
+        )
+    };
+  }
+
+  function drawBackground(
+    ctx,
+    s
+  ) {
+    ctx.fillStyle =
+      '#68707c';
+
+    ctx.fillRect(
+      0,
+      0,
+      s.w,
+      s.h
+    );
+
+    const img =
+      s.images.bg;
+
+    if (
+      img &&
+      img.complete &&
+      img.naturalWidth
+    ) {
       fitImage(
         ctx,
         img,
-        {x:0,y:0,w:s.w,h:s.h},
+        {
+          x: 0,
+          y: 0,
+          w: s.w,
+          h: s.h
+        },
         'contain',
         s.controls.bgZoom,
         s.controls.bgX,
         s.controls.bgY,
         0
       );
-    }else{
-      const g=ctx.createLinearGradient(0,0,s.w,s.h);
-      g.addColorStop(0,'#cfd2d9');
-      g.addColorStop(.45,'#929aa6');
-      g.addColorStop(1,'#4d5159');
-      ctx.fillStyle=g;
-      ctx.fillRect(0,0,s.w,s.h);
+    } else {
+      const g =
+        ctx.createLinearGradient(
+          0,
+          0,
+          s.w,
+          s.h
+        );
+
+      g.addColorStop(
+        0,
+        '#cfd2d9'
+      );
+
+      g.addColorStop(
+        .45,
+        '#929aa6'
+      );
+
+      g.addColorStop(
+        1,
+        '#4d5159'
+      );
+
+      ctx.fillStyle =
+        g;
+
+      ctx.fillRect(
+        0,
+        0,
+        s.w,
+        s.h
+      );
     }
 
-    const ov=ctx.createLinearGradient(0,0,0,s.h);
-    ov.addColorStop(0,'rgba(9,10,14,.10)');
-    ov.addColorStop(.6,'rgba(7,8,11,.20)');
-    ov.addColorStop(1,'rgba(6,7,10,.35)');
-    ctx.fillStyle=ov;
-    ctx.fillRect(0,0,s.w,s.h);
+    const ov =
+      ctx.createLinearGradient(
+        0,
+        0,
+        0,
+        s.h
+      );
+
+    ov.addColorStop(
+      0,
+      'rgba(9,10,14,.10)'
+    );
+
+    ov.addColorStop(
+      .6,
+      'rgba(7,8,11,.20)'
+    );
+
+    ov.addColorStop(
+      1,
+      'rgba(6,7,10,.35)'
+    );
+
+    ctx.fillStyle =
+      ov;
+
+    ctx.fillRect(
+      0,
+      0,
+      s.w,
+      s.h
+    );
   }
 
-  function drawPhone(ctx,s){
-    const p=s.rects.phone;
-    const sc=s.rects.screen;
+  function drawPhone(
+    ctx,
+    s
+  ) {
+    const p =
+      s.rects.phone;
+
+    const sc =
+      s.rects.screen;
 
     ctx.save();
-    rr(ctx,p.x,p.y,p.w,p.h,51);
-    ctx.fillStyle='rgba(214,220,230,.24)';
+
+    rr(
+      ctx,
+      p.x,
+      p.y,
+      p.w,
+      p.h,
+      51
+    );
+
+    ctx.fillStyle =
+      'rgba(214,220,230,.24)';
+
     ctx.fill();
-    ctx.lineWidth=1.2;
-    ctx.strokeStyle='rgba(255,255,255,.52)';
+
+    ctx.lineWidth =
+      1.2;
+
+    ctx.strokeStyle =
+      'rgba(255,255,255,.52)';
+
     ctx.stroke();
+
     ctx.restore();
 
     ctx.save();
-    rr(ctx,sc.x,sc.y,sc.w,sc.h,44);
-    ctx.fillStyle='#77808d';
+
+    rr(
+      ctx,
+      sc.x,
+      sc.y,
+      sc.w,
+      sc.h,
+      44
+    );
+
+    ctx.fillStyle =
+      '#77808d';
+
     ctx.fill();
+
     ctx.restore();
 
     fitImage(
@@ -167,42 +499,132 @@
       44
     );
 
-    const shade=ctx.createLinearGradient(0,sc.y,0,sc.y+sc.h);
-    shade.addColorStop(0,'rgba(0,0,0,.05)');
-    shade.addColorStop(.45,'rgba(0,0,0,0)');
-    shade.addColorStop(1,'rgba(0,0,0,.15)');
+    const shade =
+      ctx.createLinearGradient(
+        0,
+        sc.y,
+        0,
+        sc.y + sc.h
+      );
+
+    shade.addColorStop(
+      0,
+      'rgba(0,0,0,.05)'
+    );
+
+    shade.addColorStop(
+      .45,
+      'rgba(0,0,0,0)'
+    );
+
+    shade.addColorStop(
+      1,
+      'rgba(0,0,0,.15)'
+    );
 
     ctx.save();
-    rr(ctx,sc.x,sc.y,sc.w,sc.h,44);
+
+    rr(
+      ctx,
+      sc.x,
+      sc.y,
+      sc.w,
+      sc.h,
+      44
+    );
+
     ctx.clip();
-    ctx.fillStyle=shade;
-    ctx.fillRect(sc.x,sc.y,sc.w,sc.h);
+
+    ctx.fillStyle =
+      shade;
+
+    ctx.fillRect(
+      sc.x,
+      sc.y,
+      sc.w,
+      sc.h
+    );
+
     ctx.restore();
 
-    const island={
-      x:p.x+p.w/2-41.5,
-      y:p.y+15,
-      w:83,
-      h:23
+    const island = {
+      x:
+        p.x +
+        p.w / 2 -
+        41.5,
+
+      y:
+        p.y +
+        15,
+
+      w:
+        83,
+
+      h:
+        23
     };
 
     ctx.save();
-    rr(ctx,island.x,island.y,island.w,island.h,12);
-    ctx.fillStyle='#050608';
+
+    rr(
+      ctx,
+      island.x,
+      island.y,
+      island.w,
+      island.h,
+      12
+    );
+
+    ctx.fillStyle =
+      '#050608';
+
     ctx.fill();
+
     ctx.restore();
   }
 
-  function drawSearch(ctx,s){
-    const r=s.rects.search;
+  function drawSearch(
+    ctx,
+    s,
+    t = 0,
+    final = false
+  ) {
+    const base =
+      s.rects.search;
 
-    glass(ctx,r,s.glassAlpha,29);
+    const st =
+      getSearchState(
+        s,
+        t,
+        final
+      );
+
+    const r = {
+      x:
+        base.x,
+
+      y:
+        base.y,
+
+      w:
+        st.width,
+
+      h:
+        base.h
+    };
+
+    glass(
+      ctx,
+      r,
+      s.glassAlpha,
+      29
+    );
 
     drawText(
       ctx,
-      s.text.search,
-      r.x+18,
-      r.y+r.h/2,
+      st.text,
+      r.x + 18,
+      r.y + r.h / 2,
       14,
       500,
       'rgba(255,255,255,.88)',
@@ -210,35 +632,71 @@
       'middle'
     );
 
-    const cx=r.x+r.w-28;
-    const cy=r.y+r.h/2;
+    const cx =
+      r.x +
+      r.w -
+      28;
+
+    const cy =
+      r.y +
+      r.h / 2;
 
     ctx.save();
-    ctx.strokeStyle='rgba(255,255,255,.92)';
-    ctx.lineWidth=2;
+
+    ctx.strokeStyle =
+      'rgba(255,255,255,.92)';
+
+    ctx.lineWidth =
+      2;
 
     ctx.beginPath();
-    ctx.arc(cx-2,cy-1,8,0,Math.PI*2);
+
+    ctx.arc(
+      cx - 2,
+      cy - 1,
+      8,
+      0,
+      Math.PI * 2
+    );
+
     ctx.stroke();
 
     ctx.beginPath();
-    ctx.moveTo(cx+4,cy+5);
-    ctx.lineTo(cx+10,cy+11);
+
+    ctx.moveTo(
+      cx + 4,
+      cy + 5
+    );
+
+    ctx.lineTo(
+      cx + 10,
+      cy + 11
+    );
+
     ctx.stroke();
 
     ctx.restore();
   }
 
-  function drawDday(ctx,s){
-    const r=s.rects.dday;
+  function drawDday(
+    ctx,
+    s
+  ) {
+    const r =
+      s.rects.dday;
 
-    glass(ctx,r,s.glassAlpha,27);
+    glass(
+      ctx,
+      r,
+      s.glassAlpha,
+      27
+    );
 
     drawText(
       ctx,
       s.text.ddayLabel,
-      r.x+17,
-      r.y+22,
+      r.x + 17,
+      r.y + 22,
       10,
       700,
       'rgba(255,255,255,.72)'
@@ -247,19 +705,23 @@
     drawText(
       ctx,
       s.text.ddayCount,
-      r.x+17,
-      r.y+53,
+      r.x + 17,
+      r.y + 53,
       31,
       650,
       '#fff'
     );
 
-    if(s.text.ddayDate){
+    if (
+      s.text.ddayDate
+    ) {
       drawText(
         ctx,
         s.text.ddayDate,
-        r.x+17,
-        r.y+r.h-13,
+        r.x + 17,
+        r.y +
+          r.h -
+          13,
         9,
         500,
         'rgba(255,255,255,.68)'
@@ -267,12 +729,22 @@
     }
   }
 
-  function drawMusic(ctx,s){
-    const r=s.rects.music;
+  function drawMusic(
+    ctx,
+    s
+  ) {
+    const r =
+      s.rects.music;
 
-    glass(ctx,r,s.glassAlpha,28);
+    glass(
+      ctx,
+      r,
+      s.glassAlpha,
+      28
+    );
 
-    const c=s.rects.cover;
+    const c =
+      s.rects.cover;
 
     fitImage(
       ctx,
@@ -285,13 +757,16 @@
       20
     );
 
-    const tx=c.x+c.w+14;
+    const tx =
+      c.x +
+      c.w +
+      14;
 
     drawText(
       ctx,
       s.text.song,
       tx,
-      r.y+29,
+      r.y + 29,
       13,
       700,
       '#fff'
@@ -301,56 +776,113 @@
       ctx,
       s.text.artist,
       tx,
-      r.y+48,
+      r.y + 48,
       10,
       500,
       'rgba(255,255,255,.68)'
     );
 
-    const playR=14;
-    const playCx=r.x+r.w-28;
-    const playCy=r.y+72;
+    const playR =
+      14;
 
-    const barX=tx;
-    const barY=r.y+72;
-    const barW=Math.max(
-      35,
-      playCx-26-barX
-    );
+    const playCx =
+      r.x +
+      r.w -
+      28;
 
-    ctx.fillStyle='rgba(255,255,255,.28)';
-    rr(ctx,barX,barY-1.5,barW,3,2);
-    ctx.fill();
+    const playCy =
+      r.y +
+      72;
 
-    ctx.fillStyle='#fff';
+    const barX =
+      tx;
+
+    const barY =
+      r.y +
+      72;
+
+    const barW =
+      Math.max(
+        35,
+        playCx -
+          26 -
+          barX
+      );
+
+    ctx.fillStyle =
+      'rgba(255,255,255,.28)';
+
     rr(
       ctx,
       barX,
-      barY-1.5,
-      barW*s.controls.progress/100,
+      barY - 1.5,
+      barW,
       3,
       2
     );
+
+    ctx.fill();
+
+    ctx.fillStyle =
+      '#fff';
+
+    rr(
+      ctx,
+      barX,
+      barY - 1.5,
+      barW *
+        s.controls.progress /
+        100,
+      3,
+      2
+    );
+
     ctx.fill();
 
     ctx.beginPath();
-    ctx.arc(playCx,playCy,playR,0,Math.PI*2);
-    ctx.fillStyle='rgba(255,255,255,.90)';
+
+    ctx.arc(
+      playCx,
+      playCy,
+      playR,
+      0,
+      Math.PI * 2
+    );
+
+    ctx.fillStyle =
+      'rgba(255,255,255,.90)';
+
     ctx.fill();
 
-    ctx.fillStyle='#17181c';
+    ctx.fillStyle =
+      '#17181c';
+
     ctx.beginPath();
-    ctx.moveTo(playCx-3,playCy-5);
-    ctx.lineTo(playCx+5,playCy);
-    ctx.lineTo(playCx-3,playCy+5);
+
+    ctx.moveTo(
+      playCx - 3,
+      playCy - 5
+    );
+
+    ctx.lineTo(
+      playCx + 5,
+      playCy
+    );
+
+    ctx.lineTo(
+      playCx - 3,
+      playCy + 5
+    );
+
     ctx.closePath();
+
     ctx.fill();
 
     drawText(
       ctx,
       s.text.current,
       barX,
-      r.y+92,
+      r.y + 92,
       8,
       500,
       'rgba(255,255,255,.62)'
@@ -359,32 +891,43 @@
     drawText(
       ctx,
       s.text.duration,
-      r.x+r.w-15,
-      r.y+92,
+      r.x +
+        r.w -
+        15,
+      r.y + 92,
       8,
       500,
       'rgba(255,255,255,.62)',
       'right'
     );
 
-    let yy=r.y+116;
+    let yy =
+      r.y + 116;
 
-    for(let i=0;i<s.queue.length;i++){
-      const q=s.queue[i];
+    for (
+      let i = 0;
+      i <
+      s.queue.length;
+      i++
+    ) {
+      const q =
+        s.queue[i];
 
-      ctx.fillStyle='rgba(255,255,255,.16)';
+      ctx.fillStyle =
+        'rgba(255,255,255,.16)';
+
       ctx.fillRect(
-        r.x+14,
-        yy-7,
-        r.w-28,
+        r.x + 14,
+        yy - 7,
+        r.w - 28,
         1
       );
 
       drawText(
         ctx,
         q.title,
-        r.x+14,
-        yy+10,
+        r.x + 14,
+        yy + 10,
         11,
         620,
         '#fff'
@@ -393,8 +936,8 @@
       drawText(
         ctx,
         q.artist,
-        r.x+14,
-        yy+25,
+        r.x + 14,
+        yy + 25,
         9,
         500,
         'rgba(255,255,255,.62)'
@@ -402,24 +945,45 @@
 
       drawText(
         ctx,
-        String(i+2).padStart(2,'0'),
-        r.x+r.w-14,
-        yy+10,
+        String(
+          i + 2
+        ).padStart(
+          2,
+          '0'
+        ),
+        r.x +
+          r.w -
+          14,
+        yy + 10,
         9,
         500,
         'rgba(255,255,255,.45)',
         'right'
       );
 
-      yy+=40;
+      yy +=
+        40;
     }
   }
 
-  function drawPost(ctx,s){
-    if(!s.postVisible) return;
+  function drawPost(
+    ctx,
+    s
+  ) {
+    if (
+      !s.postVisible
+    ) {
+      return;
+    }
 
-    const imgR=s.rects.postImage;
-    const titleR=s.rects.postTitle;
+    const r =
+      s.rects.post;
+
+    const imgR =
+      s.rects.postImage;
+
+    const titleR =
+      s.rects.postTitle;
 
     fitImage(
       ctx,
@@ -435,15 +999,20 @@
     glass(
       ctx,
       titleR,
-      Math.min(.26,s.glassAlpha+.02),
+      Math.min(
+        .26,
+        s.glassAlpha +
+          .02
+      ),
       16
     );
 
     drawText(
       ctx,
       s.text.postTitle,
-      titleR.x+12,
-      titleR.y+titleR.h/2,
+      titleR.x + 12,
+      titleR.y +
+        titleR.h / 2,
       12,
       620,
       '#fff',
@@ -452,87 +1021,219 @@
     );
   }
 
-  function drawCommission(ctx,s){
-    if(!s.text.commission) return;
+  function drawCommission(
+    ctx,
+    s
+  ) {
+    if (
+      !s.text.commission
+    ) {
+      return;
+    }
 
     drawText(
       ctx,
       s.text.commission,
       14,
-      s.h-12,
+      s.h - 12,
       9,
       500,
       'rgba(255,255,255,.65)'
     );
   }
 
-  function loadImage(src){
-    return new Promise(resolve=>{
-      if(!src){
-        resolve(null);
-        return;
+  function loadImage(
+    src
+  ) {
+    return new Promise(
+      resolve => {
+        if (!src) {
+          resolve(null);
+          return;
+        }
+
+        const img =
+          new Image();
+
+        img.onload =
+          () =>
+            resolve(img);
+
+        img.onerror =
+          () =>
+            resolve(null);
+
+        img.src =
+          src;
       }
-
-      const img=new Image();
-
-      img.onload=()=>resolve(img);
-      img.onerror=()=>resolve(null);
-
-      img.src=src;
-    });
+    );
   }
 
-  async function captureState(opts={}){
-    const root=$('#capture');
-    const rootRect=root.getBoundingClientRect();
+  async function captureState(
+    opts = {}
+  ) {
+    const root =
+      $('#capture');
 
-    const glassValue=num('glassOpacity',34);
+    const rootRect =
+      root.getBoundingClientRect();
 
-    const queue=[];
+    const glassValue =
+      num(
+        'glassOpacity',
+        34
+      );
 
-    for(let i=1;i<=3;i++){
-      const title=val(`queueTitle${i}`);
-      const artist=val(`queueArtist${i}`);
+    const queue = [];
 
-      if(title||artist){
+    for (
+      let i = 1;
+      i <= 3;
+      i++
+    ) {
+      const title =
+        val(
+          `queueTitle${i}`
+        );
+
+      const artist =
+        val(
+          `queueArtist${i}`
+        );
+
+      if (
+        title ||
+        artist
+      ) {
         queue.push({
-          title:title||'Untitled',
-          artist:artist||'Unknown'
+          title:
+            title ||
+            'Untitled',
+
+          artist:
+            artist ||
+            'Unknown'
         });
       }
     }
 
-    const [bg,main,cover,post]=await Promise.all([
-      loadImage(window.__pairBgSrc||''),
-      loadImage($('#mainImage')?.src||''),
-      loadImage($('#coverImage')?.src||''),
-      loadImage($('#postImage')?.src||'')
-    ]);
+    const [
+      bg,
+      main,
+      cover,
+      post
+    ] =
+      await Promise.all([
+        loadImage(
+          window.__pairBgSrc ||
+          ''
+        ),
+
+        loadImage(
+          $('#mainImage')?.src ||
+          ''
+        ),
+
+        loadImage(
+          $('#coverImage')?.src ||
+          ''
+        ),
+
+        loadImage(
+          $('#postImage')?.src ||
+          ''
+        )
+      ]);
 
     return {
-      w:540,
-      h:opts.height||Math.round(rootRect.height),
-      duration:num('duration',5),
+      w:
+        540,
 
-      glassAlpha:clamp(
-        .10+glassValue/100*.34,
-        .12,
-        .34
-      ),
+      h:
+        opts.height ||
+        Math.round(
+          rootRect.height
+        ),
 
-      rects:{
-        phone:localRect($('#phone'),rootRect),
-        screen:localRect($('.screen'),rootRect),
-        search:localRect($('#searchWidget'),rootRect),
-        dday:localRect($('#ddayWidget'),rootRect),
-        music:localRect($('#musicWidget'),rootRect),
-        cover:localRect($('.cover'),rootRect),
-        post:localRect($('#postWidget'),rootRect),
-        postImage:localRect($('.post-image'),rootRect),
-        postTitle:localRect($('.post-title'),rootRect)
+      duration:
+        num(
+          'duration',
+          5
+        ),
+
+      effect:
+        val(
+          'animEffect'
+        ) ||
+        'pop',
+
+      glassAlpha:
+        clamp(
+          .10 +
+            glassValue /
+              100 *
+              .34,
+          .12,
+          .34
+        ),
+
+      rects: {
+        phone:
+          localRect(
+            $('#phone'),
+            rootRect
+          ),
+
+        screen:
+          localRect(
+            $('.screen'),
+            rootRect
+          ),
+
+        search:
+          localRect(
+            $('#searchWidget'),
+            rootRect
+          ),
+
+        dday:
+          localRect(
+            $('#ddayWidget'),
+            rootRect
+          ),
+
+        music:
+          localRect(
+            $('#musicWidget'),
+            rootRect
+          ),
+
+        cover:
+          localRect(
+            $('.cover'),
+            rootRect
+          ),
+
+        post:
+          localRect(
+            $('#postWidget'),
+            rootRect
+          ),
+
+        postImage:
+          localRect(
+            $('.post-image'),
+            rootRect
+          ),
+
+        postTitle:
+          localRect(
+            $('.post-title'),
+            rootRect
+          )
       },
 
-      images:{
+      images: {
         bg,
         main,
         cover,
@@ -541,95 +1242,427 @@
 
       queue,
 
-      postVisible:visible($('#postWidget')),
+      postVisible:
+        visible(
+          $('#postWidget')
+        ),
 
-      controls:{
-        bgZoom:num('bgZoom',1),
-        bgX:num('bgX'),
-        bgY:num('bgY'),
+      controls: {
+        bgZoom:
+          num(
+            'bgZoom',
+            1
+          ),
 
-        mainZoom:num('zoom',1),
-        mainX:num('posX'),
-        mainY:num('posY'),
+        bgX:
+          num(
+            'bgX'
+          ),
 
-        coverZoom:num('coverZoom',1),
-        coverX:num('coverX'),
-        coverY:num('coverY'),
+        bgY:
+          num(
+            'bgY'
+          ),
 
-        postZoom:num('postZoom',1),
-        postX:num('postX'),
-        postY:num('postY'),
+        mainZoom:
+          num(
+            'zoom',
+            1
+          ),
 
-        progress:num('progress',42)
+        mainX:
+          num(
+            'posX'
+          ),
+
+        mainY:
+          num(
+            'posY'
+          ),
+
+        coverZoom:
+          num(
+            'coverZoom',
+            1
+          ),
+
+        coverX:
+          num(
+            'coverX'
+          ),
+
+        coverY:
+          num(
+            'coverY'
+          ),
+
+        postZoom:
+          num(
+            'postZoom',
+            1
+          ),
+
+        postX:
+          num(
+            'postX'
+          ),
+
+        postY:
+          num(
+            'postY'
+          ),
+
+        progress:
+          num(
+            'progress',
+            42
+          ),
+
+        typingSpeed:
+          num(
+            'typingSpeed',
+            18
+          )
       },
 
-      text:{
-        search:val('searchTextInput'),
-        ddayLabel:txt('#ddayLabelOut'),
-        ddayCount:txt('#ddayCount'),
-        ddayDate:visible($('#ddayDateOut'))
-          ? txt('#ddayDateOut')
-          : '',
-        song:txt('#songOut'),
-        artist:txt('#artistOut'),
-        current:txt('#currentTimeOut'),
-        duration:txt('#durationTimeOut'),
-        postTitle:txt('#postCaptionOut'),
-        commission:val('commissionText')
+      text: {
+        search:
+          val(
+            'searchTextInput'
+          ),
+
+        ddayLabel:
+          txt(
+            '#ddayLabelOut'
+          ),
+
+        ddayCount:
+          txt(
+            '#ddayCount'
+          ),
+
+        ddayDate:
+          visible(
+            $('#ddayDateOut')
+          )
+            ? txt(
+                '#ddayDateOut'
+              )
+            : '',
+
+        song:
+          txt(
+            '#songOut'
+          ),
+
+        artist:
+          txt(
+            '#artistOut'
+          ),
+
+        current:
+          txt(
+            '#currentTimeOut'
+          ),
+
+        duration:
+          txt(
+            '#durationTimeOut'
+          ),
+
+        postTitle:
+          txt(
+            '#postCaptionOut'
+          ),
+
+        commission:
+          val(
+            'commissionText'
+          )
       }
     };
   }
 
-  function showAt(s,t,name){
-    const f=s.duration/5;
+  function motionProgress(
+    s,
+    t,
+    name
+  ) {
+    const f =
+      s.duration / 5;
 
-    const times={
-      search:.72*f,
-      music:1.68*f,
-      dday:2.58*f,
-      post:3.42*f
+    const starts = {
+      search:
+        .52 * f,
+
+      music:
+        1.42 * f,
+
+      dday:
+        2.30 * f,
+
+      post:
+        3.18 * f
     };
 
-    return t>=times[name];
+    const lens = {
+      search:
+        .24 * f,
+
+      music:
+        .26 * f,
+
+      dday:
+        .24 * f,
+
+      post:
+        .28 * f
+    };
+
+    return clamp(
+      (
+        t -
+        starts[name]
+      ) /
+        Math.max(
+          .001,
+          lens[name]
+        )
+    );
   }
 
-  function render(state,t,{final=false}={}){
-    const c=document.createElement('canvas');
+  function drawMotion(
+    ctx,
+    s,
+    t,
+    name,
+    fn,
+    final = false
+  ) {
+    if (final) {
+      fn(
+        ctx,
+        s
+      );
 
-    c.width=state.w;
-    c.height=state.h;
-
-    const ctx=c.getContext('2d');
-
-    ctx.imageSmoothingEnabled=true;
-    ctx.imageSmoothingQuality='high';
-
-    drawBackground(ctx,state);
-    drawPhone(ctx,state);
-
-    if(final||showAt(state,t,'search')){
-      drawSearch(ctx,state);
+      return;
     }
 
-    if(final||showAt(state,t,'music')){
-      drawMusic(ctx,state);
+    const p =
+      motionProgress(
+        s,
+        t,
+        name
+      );
+
+    if (
+      p <= 0
+    ) {
+      return;
     }
 
-    if(final||showAt(state,t,'dday')){
-      drawDday(ctx,state);
+    const effect =
+      s.effect ||
+      'pop';
+
+    const q =
+      1 -
+      Math.pow(
+        1 - p,
+        3
+      );
+
+    let alpha =
+      q;
+
+    let scale =
+      1;
+
+    let dx =
+      0;
+
+    let dy =
+      0;
+
+    if (
+      effect === 'snap'
+    ) {
+      alpha =
+        1;
+    } else if (
+      effect === 'slide'
+    ) {
+      dy =
+        18 *
+        (1 - q);
+    } else if (
+      effect === 'pop'
+    ) {
+      const c1 =
+        1.70158;
+
+      const c3 =
+        c1 + 1;
+
+      const b =
+        1 +
+        c3 *
+          Math.pow(
+            p - 1,
+            3
+          ) +
+        c1 *
+          Math.pow(
+            p - 1,
+            2
+          );
+
+      scale =
+        .88 +
+        .12 *
+          b;
+
+      dy =
+        8 *
+        (1 - q);
     }
 
-    if(final||showAt(state,t,'post')){
-      drawPost(ctx,state);
+    const r =
+      s.rects[name];
+
+    ctx.save();
+
+    ctx.globalAlpha *=
+      alpha;
+
+    const cx =
+      r.x +
+      r.w / 2;
+
+    const cy =
+      r.y +
+      r.h / 2;
+
+    ctx.translate(
+      cx + dx,
+      cy + dy
+    );
+
+    ctx.scale(
+      scale,
+      scale
+    );
+
+    ctx.translate(
+      -cx,
+      -cy
+    );
+
+    fn(
+      ctx,
+      s
+    );
+
+    ctx.restore();
+  }
+
+  function render(
+    state,
+    t,
+    {
+      final = false
+    } = {}
+  ) {
+    const c =
+      document.createElement(
+        'canvas'
+      );
+
+    c.width =
+      state.w;
+
+    c.height =
+      state.h;
+
+    const ctx =
+      c.getContext(
+        '2d'
+      );
+
+    ctx.imageSmoothingEnabled =
+      true;
+
+    ctx.imageSmoothingQuality =
+      'high';
+
+    drawBackground(
+      ctx,
+      state
+    );
+
+    drawPhone(
+      ctx,
+      state
+    );
+
+    drawMotion(
+      ctx,
+      state,
+      t,
+      'search',
+      (ctx2, s2) =>
+        drawSearch(
+          ctx2,
+          s2,
+          t,
+          final
+        ),
+      final
+    );
+
+    drawMotion(
+      ctx,
+      state,
+      t,
+      'music',
+      drawMusic,
+      final
+    );
+
+    drawMotion(
+      ctx,
+      state,
+      t,
+      'dday',
+      drawDday,
+      final
+    );
+
+    if (
+      state.postVisible
+    ) {
+      drawMotion(
+        ctx,
+        state,
+        t,
+        'post',
+        drawPost,
+        final
+      );
     }
 
-    drawCommission(ctx,state);
+    drawCommission(
+      ctx,
+      state
+    );
 
     return c;
   }
 
-  window.PairExportRenderer={
-    version:'20261007-4',
+  window.PairExportRenderer = {
+    version:
+      '20261007-7',
+
     captureState,
     render
   };
