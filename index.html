@@ -61,13 +61,13 @@
       <details class="section accordion" open><summary class="section-title">Background</summary><div class="section-body">
         <div class="field"><label>배경 이미지</label><input id="bgFile" type="file" accept="image/*"></div>
         <div class="field"><label>확대</label><div class="range-row"><input id="bgZoom" type="range" min="0.6" max="1.8" step="0.01" value="1"><span class="value" id="bgZoomV">1.00×</span></div></div>
-        <div class="grid2"><div class="field"><label>가로 위치</label><input id="bgX" type="range" min="-70" max="70" value="0"></div><div class="field"><label>세로 위치</label><input id="bgY" type="range" min="-420" max="420" value="0"></div></div>
+        <div class="grid2"><div class="field"><label>가로 위치</label><input id="bgX" type="range" min="-70" max="70" value="0"></div><div class="field"><label>세로 위치</label><input id="bgY" type="range" min="-500" max="500" value="0"></div></div>
       </div></details>
 
       <details class="section accordion" open><summary class="section-title">Phone Illustration</summary><div class="section-body">
         <div class="field"><label>휴대폰 안 메인 일러스트</label><input id="mainFile" type="file" accept="image/*"></div>
         <div class="field"><label>확대</label><div class="range-row"><input id="zoom" type="range" min="0.7" max="2.2" step="0.01" value="1"><span class="value" id="zoomV">1.00×</span></div></div>
-        <div class="grid2"><div class="field"><label>가로 위치</label><input id="posX" type="range" min="-90" max="90" value="0"></div><div class="field"><label>세로 위치</label><input id="posY" type="range" min="-90" max="90" value="0"></div></div>
+        <div class="grid2"><div class="field"><label>가로 위치</label><input id="posX" type="range" min="-90" max="90" value="0"></div><div class="field"><label>세로 위치</label><input id="posY" type="range" min="-120" max="120" value="0"></div></div>
       </div></details>
 
       <details class="section accordion" open><summary class="section-title">Search Widget</summary><div class="section-body">
@@ -120,7 +120,7 @@
       </div></details>
       <details class="section accordion"><summary class="section-title">Glass & Motion</summary><div class="section-body"><div class="field"><label>위젯 투명도</label><div class="range-row"><input id="glassOpacity" type="range" min="10" max="70" value="34"><span class="value" id="glassV">34%</span></div></div><div class="field"><label>등장 효과</label><select id="animEffect"><option value="pop" selected>팝업 · 살짝 튀어나오기</option><option value="fade">페이드 · 부드럽게 나타나기</option><option value="slide">슬라이드 · 아래에서 위로</option><option value="snap">즉시 · 딱 나타나기</option></select></div><div class="field"><label>전체 애니메이션 길이</label><div class="range-row"><input id="duration" type="range" min="3.5" max="8" step="0.5" value="5"><span class="value" id="durationV">5.0s</span></div></div><div class="field"><label>FPS</label><select id="fps"><option value="8">8 fps · 가볍게</option><option value="10">10 fps · 보통</option><option value="12">12 fps · 부드럽게</option><option value="15" selected>15 fps · 추천</option></select></div><div class="field"><label>GIF 저장 크기</label><select id="gifScale"><option value="1">기본 · 1.00×</option><option value="1.15">조금 크게 · 1.15×</option><option value="1.25" selected>크게 · 1.25×</option><option value="1.35">아주 크게 · 1.35×</option></select></div></div></details>
       <div class="use-notice"><strong>사용 제한</strong>『가비지타임』 성준수 드림과 『괴담에 떨어져도 출근을 해야 하는구나』 이자헌 드림에는 사용 불가능합니다.<br>『귀멸의 칼날』과 『나의 히어로 아카데미아』 장르에는 사용 불가능합니다.</div>
-      <section class="section"><div class="btns"><button class="ghost" id="replay">↻ 다시 재생</button><button class="ghost" id="savePng">이미지 저장</button><button class="primary" id="saveMp4X">X용 MP4 저장 · 추천</button><button class="ghost" id="saveGif">GIF 저장 · 보조</button></div><div class="status" id="status">X 업로드에는 MP4 저장을 추천합니다. GIF 저장은 GIF가 꼭 필요할 때 사용해 주세요.</div><div class="mobile-save-note" id="mobileSaveNote"></div></section>
+      <section class="section"><div class="btns"><button class="ghost" id="replay">↻ 다시 재생</button><button class="ghost" id="savePng">이미지 저장</button><button class="primary" id="saveMp4X">MP4 저장 · 추천</button><button class="ghost" id="saveGif">GIF 저장 · 보조</button></div><div class="status" id="status">영상 저장에는 MP4를 추천합니다. GIF 저장은 GIF가 꼭 필요할 때 사용해 주세요.</div><div class="mobile-save-note" id="mobileSaveNote"></div></section>
     </aside>
     <section class="stage-wrap"><div class="preview-shell" id="shell"><div id="capture"><div class="bg-layer" id="bgLayer"></div><div class="bg-overlay"></div><div class="noise"></div><div class="scene-content" id="sceneContent"><div class="phone" id="phone"><div class="screen"><img id="mainImage" alt=""><div class="screen-shade"></div></div></div><div class="glass search-widget anim-item" id="searchWidget"><div class="search-text" id="searchTextOut">With suggestions<span class="typing-caret"></span></div><div class="search-icon-wrap"><div class="search-icon"></div></div></div><div class="glass dday anim-item" id="ddayWidget"><div class="label" id="ddayLabelOut">OUR DAY</div><div class="count" id="ddayCount">D+000</div><div class="date" id="ddayDateOut">—</div></div><div class="glass music anim-item" id="musicWidget"><div class="cover"><img id="coverImage" alt=""></div><div class="track"><div class="song" id="songOut">Midnight Hour</div><div class="artist" id="artistOut">Pair Theme</div><div class="timeline"><div class="bar"><i id="barFill"></i></div><div class="eq" aria-hidden="true"><span></span><span></span><span></span><span></span></div><div class="play" aria-label="일시정지"></div></div><div class="time-row"><span id="currentTimeOut">01:31</span><span id="durationTimeOut">03:36</span></div></div><div class="playlist hidden" id="playlistOut"><div class="queue-item hidden" id="queueItem1"><div class="queue-meta"><div class="queue-title" id="queueTitleOut1"></div><div class="queue-artist" id="queueArtistOut1"></div></div><div class="queue-index">02</div></div><div class="queue-item hidden" id="queueItem2"><div class="queue-meta"><div class="queue-title" id="queueTitleOut2"></div><div class="queue-artist" id="queueArtistOut2"></div></div><div class="queue-index">03</div></div><div class="queue-item hidden" id="queueItem3"><div class="queue-meta"><div class="queue-title" id="queueTitleOut3"></div><div class="queue-artist" id="queueArtistOut3"></div></div><div class="queue-index">04</div></div></div></div><div class="post-card anim-item" id="postWidget"><div class="post-inner"><div class="post-image"><img id="postImage" alt=""></div><div class="post-title" id="postCaptionOut">midnight post</div></div></div></div><div class="commission-credit hidden" id="commissionCredit"></div></div></div></section>
   </main>
@@ -392,7 +392,7 @@
         : '모바일 MP4 저장은 브라우저에 따라 실패할 수 있어요. 실패하면 PC Chrome/Safari에서 저장해 주세요.';
       btn.title='모바일에서는 브라우저에 따라 저장 방식이 다를 수 있습니다.';
     }else{
-      note.textContent='현재 모바일 브라우저는 X용 MP4 직접 저장을 지원하지 않습니다. PC Chrome/Safari에서 저장해 주세요.';
+      note.textContent='현재 모바일 브라우저는 MP4 직접 저장을 지원하지 않습니다. PC Chrome/Safari에서 저장해 주세요.';
       btn.title='이 브라우저에서는 MP4 직접 저장을 지원하지 않습니다.';
     }
   }
@@ -428,7 +428,7 @@
       const playbackTime=i/fps,t=Math.min(playbackTime,endTime);
       const frame=window.PairExportRenderer.render(state,t,{scale});
       ctx.clearRect(0,0,out.width,out.height);ctx.drawImage(frame,0,0,out.width,out.height);
-      status.textContent=`X용 MP4 만드는 중 · ${i+1} / ${frameCount}`;
+      status.textContent=`MP4 만드는 중 · ${i+1} / ${frameCount}`;
       const wait=started+(i+1)*frameMs-performance.now();
       if(wait>0)await sleep(wait);
     }
@@ -741,15 +741,15 @@
     try{
       prep=await prepareCanvasExport();
       const state=prep.state,endTime=getAnimationEndTime(),totalTime=endTime+FINAL_HOLD;
-      status.textContent='X용 MP4 준비 중…';
+      status.textContent='MP4 준비 중…';
       const result=await encodeXMp4(state,{endTime,totalTime,fps:30,scale:2,bitrate:8000000});
-      const saveMode=saveMp4Blob(result.blob,'phone-screen-motion-maker-x.mp4');
+      const saveMode=saveMp4Blob(result.blob,'phone-screen-motion-maker.mp4');
       const mb=(result.blob.size/1024/1024).toFixed(1);
       status.textContent=saveMode==='opened'
         ? `MP4 ${mb}MB 완성! 새 탭에서 영상이 열리면 공유 버튼 → 비디오 저장을 선택해 주세요.`
-        : `완료! X용 MP4 ${mb}MB · ${result.width}×${result.height} · ${result.fps}fps`;
+        : `완료! MP4 ${mb}MB · ${result.width}×${result.height} · ${result.fps}fps`;
     }catch(err){
-      console.error(err);status.textContent='X용 MP4 저장 실패: '+(err?.message||err);
+      console.error(err);status.textContent='MP4 저장 실패: '+(err?.message||err);
     }finally{
       if(prep)prep.restore();exportMode=false;startTime=performance.now();btn.disabled=false;if(normalBtn)normalBtn.disabled=false;liveRaf=requestAnimationFrame(liveLoop);
     }
