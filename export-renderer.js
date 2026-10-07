@@ -13,13 +13,24 @@
 
   function rr(ctx,x,y,w,h,r){
     r=Math.max(0,Math.min(r,Math.min(w,h)/2));
-    ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();
+    ctx.beginPath();
+    ctx.moveTo(x+r,y);
+    ctx.arcTo(x+w,y,x+w,y+h,r);
+    ctx.arcTo(x+w,y+h,x,y+h,r);
+    ctx.arcTo(x,y+h,x,y,r);
+    ctx.arcTo(x,y,x+w,y,r);
+    ctx.closePath();
   }
 
   function localRect(el,rootRect){
     if(!el) return {x:0,y:0,w:0,h:0};
     const r=el.getBoundingClientRect();
-    return {x:r.left-rootRect.left,y:r.top-rootRect.top,w:r.width,h:r.height};
+    return {
+      x:r.left-rootRect.left,
+      y:r.top-rootRect.top,
+      w:r.width,
+      h:r.height
+    };
   }
 
   function glass(ctx,r,alpha=.22,radius=24){
@@ -176,48 +187,32 @@
     }
 
     const target=meta.value;
-    const startDays=Math.max(
-      1,
-      s.controls.ddayStartDays||5
+    const startDays=Math.max(1,s.controls.ddayStartDays||5);
+    const startValue=Math.max(0,target-startDays);
+    const stepDur=s.controls.ddayFlipSpeed||.13;
+
+    const elapsed=Math.max(
+      0,
+      t-(s.timeline.ddayStart+.38*(s.duration/5))
     );
 
-    const startValue=
-      Math.max(0,target-startDays);
+    const maxSteps=Math.min(startDays,target);
 
-    const stepDur=
-      s.controls.ddayFlipSpeed||.13;
+    const steps=Math.min(
+      maxSteps,
+      Math.floor(elapsed/stepDur)
+    );
 
-    const elapsed=
-      Math.max(
-        0,
-        t-(
-          s.timeline.ddayStart+
-          .38*(s.duration/5)
-        )
-      );
+    const value=Math.min(
+      target,
+      startValue+steps
+    );
 
-    const maxSteps=
-      Math.min(startDays,target);
+    const phase=clamp(
+      (elapsed-steps*stepDur)/stepDur
+    );
 
-    const steps=
-      Math.min(
-        maxSteps,
-        Math.floor(elapsed/stepDur)
-      );
-
-    const value=
-      Math.min(
-        target,
-        startValue+steps
-      );
-
-    const phase=
-      clamp(
-        (elapsed-steps*stepDur)/stepDur
-      );
-
-    const prefix=
-      meta.prefix||'D+';
+    const prefix=meta.prefix||'D+';
 
     return {
       text:`${prefix}${value}`,
@@ -235,9 +230,7 @@
 
     if(img && img.complete && img.naturalWidth){
       ctx.save();
-
-      ctx.filter=
-        'saturate(.85) brightness(.78)';
+      ctx.filter='saturate(.85) brightness(.78)';
 
       fitImage(
         ctx,
@@ -251,11 +244,8 @@
       );
 
       ctx.restore();
-    } else {
-      const g=
-        ctx.createLinearGradient(
-          0,0,s.w,s.h
-        );
+    }else{
+      const g=ctx.createLinearGradient(0,0,s.w,s.h);
 
       g.addColorStop(0,'#cfd2d9');
       g.addColorStop(.45,'#929aa6');
@@ -265,25 +255,11 @@
       ctx.fillRect(0,0,s.w,s.h);
     }
 
-    const ov=
-      ctx.createLinearGradient(
-        0,0,0,s.h
-      );
+    const ov=ctx.createLinearGradient(0,0,0,s.h);
 
-    ov.addColorStop(
-      0,
-      'rgba(9,10,14,.18)'
-    );
-
-    ov.addColorStop(
-      .6,
-      'rgba(7,8,11,.26)'
-    );
-
-    ov.addColorStop(
-      1,
-      'rgba(6,7,10,.45)'
-    );
+    ov.addColorStop(0,'rgba(9,10,14,.18)');
+    ov.addColorStop(.6,'rgba(7,8,11,.26)');
+    ov.addColorStop(1,'rgba(6,7,10,.45)');
 
     ctx.fillStyle=ov;
     ctx.fillRect(0,0,s.w,s.h);
@@ -297,20 +273,18 @@
 
     rr(
       ctx,
-      p.x,p.y,p.w,p.h,
+      p.x,
+      p.y,
+      p.w,
+      p.h,
       51
     );
 
-    ctx.fillStyle=
-      'rgba(214,220,230,.24)';
-
+    ctx.fillStyle='rgba(214,220,230,.24)';
     ctx.fill();
 
     ctx.lineWidth=1.2;
-
-    ctx.strokeStyle=
-      'rgba(255,255,255,.52)';
-
+    ctx.strokeStyle='rgba(255,255,255,.52)';
     ctx.stroke();
 
     ctx.restore();
@@ -319,7 +293,10 @@
 
     rr(
       ctx,
-      sc.x,sc.y,sc.w,sc.h,
+      sc.x,
+      sc.y,
+      sc.w,
+      sc.h,
       44
     );
 
@@ -341,7 +318,10 @@
 
     const shade=
       ctx.createLinearGradient(
-        0,sc.y,0,sc.y+sc.h
+        0,
+        sc.y,
+        0,
+        sc.y+sc.h
       );
 
     shade.addColorStop(
@@ -363,14 +343,15 @@
 
     rr(
       ctx,
-      sc.x,sc.y,sc.w,sc.h,
+      sc.x,
+      sc.y,
+      sc.w,
+      sc.h,
       44
     );
 
     ctx.clip();
-
     ctx.fillStyle=shade;
-
     ctx.fillRect(
       sc.x,
       sc.y,
@@ -441,9 +422,7 @@
 
     ctx.save();
 
-    ctx.strokeStyle=
-      'rgba(255,255,255,.92)';
-
+    ctx.strokeStyle='rgba(255,255,255,.92)';
     ctx.lineWidth=2;
 
     ctx.beginPath();
@@ -472,12 +451,7 @@
 
   function drawDday(ctx,s,t,final=false){
     const r=s.rects.dday;
-    const ds=
-      ddayState(
-        s,
-        t,
-        final
-      );
+    const ds=ddayState(s,t,final);
 
     glass(
       ctx,
@@ -496,14 +470,12 @@
       'rgba(255,255,255,.72)'
     );
 
-    const centerY=
-      r.y+53;
+    const centerY=r.y+53;
 
     ctx.save();
 
     if(ds.flipping){
-      const p=
-        clamp(ds.phase);
+      const p=clamp(ds.phase);
 
       const sy=
         p<.55
@@ -597,11 +569,13 @@
         .5+
         .5*
         Math.sin(
-          t*(5.6+i*.7)+i*1.7
+          t*(5.6+i*.7)+
+          i*1.7
         );
 
       const h=
-        4+wave*9;
+        4+
+        wave*9;
 
       ctx.fillStyle=
         'rgba(255,255,255,.82)';
@@ -617,6 +591,71 @@
 
       ctx.fill();
     }
+  }
+
+  function parseClock(v){
+    const m=
+      String(v||'')
+        .trim()
+        .match(/^(\d{1,3}):([0-5]\d)$/);
+
+    return m
+      ? (+m[1])*60+(+m[2])
+      : 216;
+  }
+
+  function formatClock(sec){
+    sec=
+      Math.max(
+        0,
+        Math.round(sec)
+      );
+
+    const m=
+      Math.floor(sec/60);
+
+    const s=
+      sec%60;
+
+    return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  }
+
+  function musicPlaybackState(s,t){
+    const total=
+      parseClock(
+        s.text.duration
+      );
+
+    const start=
+      total*
+      (s.controls.progress||0)/
+      100;
+
+    const elapsed=
+      Math.max(
+        0,
+        t-s.timeline.musicStart
+      );
+
+    const current=
+      Math.min(
+        total,
+        start+elapsed
+      );
+
+    const pct=
+      total>0
+        ? Math.min(
+            100,
+            current/total*100
+          )
+        : (s.controls.progress||0);
+
+    return {
+      total,
+      current,
+      pct
+    };
   }
 
   function drawMusic(ctx,s,t=0){
@@ -642,8 +681,7 @@
       20
     );
 
-    const tx=
-      c.x+c.w+14;
+    const tx=c.x+c.w+14;
 
     drawText(
       ctx,
@@ -672,11 +710,16 @@
     const eqX=playCx-34;
     const barX=tx;
     const barY=r.y+69;
-
     const barW=
       Math.max(
         28,
         eqX-10-barX
+      );
+
+    const pb=
+      musicPlaybackState(
+        s,
+        t
       );
 
     ctx.fillStyle=
@@ -699,7 +742,7 @@
       ctx,
       barX,
       barY-1.5,
-      barW*s.controls.progress/100,
+      barW*pb.pct/100,
       3,
       2
     );
@@ -754,7 +797,7 @@
 
     drawText(
       ctx,
-      s.text.current,
+      formatClock(pb.current),
       barX,
       r.y+90,
       8,
@@ -764,7 +807,7 @@
 
     drawText(
       ctx,
-      s.text.duration,
+      formatClock(pb.total),
       r.x+r.w-15,
       r.y+90,
       8,
@@ -773,8 +816,7 @@
       'right'
     );
 
-    let yy=
-      r.y+114;
+    let yy=r.y+114;
 
     for(
       let i=0;
@@ -832,11 +874,8 @@
   function drawPost(ctx,s,t,final=false){
     if(!s.postVisible) return;
 
-    const imgR=
-      s.rects.postImage;
-
-    const titleR=
-      s.rects.postTitle;
+    const imgR=s.rects.postImage;
+    const titleR=s.rects.postTitle;
 
     fitImage(
       ctx,
@@ -1203,8 +1242,12 @@
 
       text:{
         search:
-          val('searchTextInput')||
-          txt('#searchTextOut'),
+          val(
+            'searchTextInput'
+          )||
+          txt(
+            '#searchTextOut'
+          ),
 
         ddayLabel:
           txt(
@@ -1384,6 +1427,7 @@
         t,
         true
       );
+
       return;
     }
 
@@ -1549,7 +1593,7 @@
   }
 
   window.PairExportRenderer={
-    version:'20261007-17',
+    version:'20261007-18',
     captureState,
     render
   };
