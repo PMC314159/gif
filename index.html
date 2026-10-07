@@ -10,6 +10,7 @@
   <title>PHONE SCREEN MOTION MAKER</title>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gif.js.optimized@1.0.1/dist/gif.js"></script>
+  <script src="./export-renderer.js?v=20261007-22"></script>
   <style>
     *{box-sizing:border-box}
     html,body{margin:0;min-height:100%;background:#0e0f13;color:#f7f7f7;font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Pretendard","Noto Sans KR",Segoe UI,sans-serif}
@@ -641,23 +642,100 @@
       function drawDday(ctx,s,t,final=false){
         const base=s.rects.dday;
         const hasSubtext=!!s.dday?.hasSubtext;
+        const labelRect=s.rects.ddayLabel;
         const countRect=s.rects.ddayCount;
+        const dateRect=s.rects.ddayDate;
+        const bottomPadding=Math.max(0,s.dday?.bottomPadding??15);
+
         const compactH=countRect&&countRect.h
-          ? Math.ceil((countRect.y+countRect.h)-base.y+15)
+          ? Math.ceil((countRect.y+countRect.h)-base.y+bottomPadding)
           : 83;
-        const r={...base,h:hasSubtext?base.h:Math.min(base.h,compactH)};
-        const ds=ddayState(s,t,final);glass(ctx,r,s.glassAlpha,27);
-        drawText(ctx,s.text.ddayLabel,r.x+17,r.y+22,10,700,'rgba(255,255,255,.72)');
-        const centerY=r.y+53;
+
+        const r={...base,h:hasSubtext?base.h:compactH};
+        const ds=ddayState(s,t,final);
+
+        glass(ctx,r,s.glassAlpha,27);
+
+        const labelY=labelRect&&labelRect.h
+          ? labelRect.y+labelRect.h/2
+          : r.y+21;
+
+        drawText(
+          ctx,
+          s.text.ddayLabel,
+          labelRect&&labelRect.w?labelRect.x:r.x+17,
+          labelY,
+          10,
+          700,
+          'rgba(255,255,255,.72)',
+          'left',
+          'middle'
+        );
+
+        const countX=countRect&&countRect.w?countRect.x:r.x+17;
+        const countY=countRect&&countRect.h
+          ? countRect.y+countRect.h/2
+          : r.y+53;
+
         ctx.save();
+
         if(ds.flipping){
-          const p=clamp(ds.phase),sy=p<.55?.35+.63*easeOutCubic(p/.55):.98+.02*easeOutCubic((p-.55)/.45);
+          const p=clamp(ds.phase);
+          const sy=p<.55
+            ? .35+.63*easeOutCubic(p/.55)
+            : .98+.02*easeOutCubic((p-.55)/.45);
+
           ctx.globalAlpha=.45+.55*easeOutCubic(Math.min(1,p/.55));
-          ctx.translate(r.x+17,centerY);ctx.scale(1,sy);ctx.translate(-(r.x+17),-centerY);
+          ctx.translate(countX,countY);
+          ctx.scale(1,sy);
+          ctx.translate(-countX,-countY);
         }
-        drawText(ctx,ds.text,r.x+17,centerY,31,650,'#fff');ctx.restore();
-        if(ds.flipping){ctx.save();ctx.globalAlpha=.22*(1-Math.abs(.5-ds.phase)*2);ctx.fillStyle='#fff';ctx.fillRect(r.x+17,r.y+42,Math.min(86,r.w-34),1);ctx.restore();}
-        if(hasSubtext) drawText(ctx,s.text.ddayDate,r.x+17,r.y+r.h-13,9,500,'rgba(255,255,255,.68)');
+
+        drawText(
+          ctx,
+          ds.text,
+          countX,
+          countY,
+          31,
+          650,
+          '#fff',
+          'left',
+          'middle'
+        );
+
+        ctx.restore();
+
+        if(ds.flipping){
+          ctx.save();
+          ctx.globalAlpha=.22*(1-Math.abs(.5-ds.phase)*2);
+          ctx.fillStyle='#fff';
+          ctx.fillRect(
+            countX,
+            countY,
+            Math.min(86,r.w-34),
+            1
+          );
+          ctx.restore();
+        }
+
+        if(hasSubtext && s.text.ddayDate){
+          const dateX=dateRect&&dateRect.w?dateRect.x:r.x+17;
+          const dateY=dateRect&&dateRect.h
+            ? dateRect.y+dateRect.h/2
+            : r.y+r.h-13;
+
+          drawText(
+            ctx,
+            s.text.ddayDate,
+            dateX,
+            dateY,
+            9,
+            500,
+            'rgba(255,255,255,.68)',
+            'left',
+            'middle'
+          );
+        }
       }
       function parseClock(v){
         const m=String(v||'').trim().match(/^(\d{1,3}):([0-5]\d)$/);
@@ -732,11 +810,11 @@
         return {
           w:540,h:opts.height||Math.round(rootRect.height),duration:dur,effect:val('animEffect')||'pop',glassAlpha:clamp(.10+glassValue/100*.34,.12,.34),
           timeline:{searchStart:.42*f,musicStart:1.22*f,ddayStart:2.12*f,postStart:3.05*f},
-          rects:{phone:localRect($('#phone'),rootRect),screen:localRect($('.screen'),rootRect),search:localRect($('#searchWidget'),rootRect),dday:localRect(ddayEl,rootRect),ddayCount:localRect($('#ddayCount'),rootRect),music:localRect($('#musicWidget'),rootRect),cover:localRect($('.cover'),rootRect),post:localRect($('#postWidget'),rootRect),postImage:localRect($('.post-image'),rootRect),postTitle:localRect($('.post-title'),rootRect)},
+          rects:{phone:localRect($('#phone'),rootRect),screen:localRect($('.screen'),rootRect),search:localRect($('#searchWidget'),rootRect),dday:localRect(ddayEl,rootRect),ddayLabel:localRect($('#ddayLabelOut'),rootRect),ddayCount:localRect($('#ddayCount'),rootRect),ddayDate:localRect($('#ddayDateOut'),rootRect),music:localRect($('#musicWidget'),rootRect),cover:localRect($('.cover'),rootRect),post:localRect($('#postWidget'),rootRect),postImage:localRect($('.post-image'),rootRect),postTitle:localRect($('.post-title'),rootRect)},
           images:{bg,main,cover,post},queue,postVisible:visible($('#postWidget')),
           controls:{bgZoom:num('bgZoom',1),bgX:num('bgX'),bgY:num('bgY'),mainZoom:num('zoom',1),mainX:num('posX'),mainY:num('posY'),coverZoom:num('coverZoom',1),coverX:num('coverX'),coverY:num('coverY'),postZoom:num('postZoom',1),postX:num('postX'),postY:num('postY'),progress:num('progress',42),typingSpeed:num('typingSpeed',18),postTypingSpeed:num('postTypingSpeed',16),ddayFlipSpeed:num('ddayFlipSpeed',.13),ddayStartDays:num('ddayStartDays',5)},
           text:{search:val('searchTextInput')||txt('#searchTextOut'),ddayLabel:txt('#ddayLabelOut'),ddayCount:ddayEl?.dataset.finalText||txt('#ddayCount'),ddayDate:ddaySubtext,song:txt('#songOut'),artist:txt('#artistOut'),current:txt('#currentTimeOut'),duration:txt('#durationTimeOut'),postTitle:val('postCaption')||txt('#postCaptionOut'),commission:(($('#commissionText')?.value||$('#commissionCredit')?.textContent||'').trim())},
-          dday:{animate:ddayEl?.dataset.animate==='1',value:Number(ddayEl?.dataset.abs||0),prefix:ddayEl?.dataset.prefix||'D+',hasSubtext:!!ddaySubtext}
+          dday:{animate:ddayEl?.dataset.animate==='1',value:Number(ddayEl?.dataset.abs||0),prefix:ddayEl?.dataset.prefix||'D+',hasSubtext:!!ddaySubtext,bottomPadding:parseFloat(getComputedStyle(ddayEl).paddingBottom)||15}
         };
       }
     
@@ -770,18 +848,50 @@
         if(state.postVisible)drawMotion(ctx,state,t,'post',drawPost,final);
         drawCommission(ctx,state);return c;
       }
-      window.PairExportRenderer={version:'20261007-21',captureState,render};
+      window.PairExportRenderer={version:'20261007-22',captureState,render};
   }
 
-  const EXPECTED_RENDERER_VERSION='20261007-21';
+  const EXPECTED_RENDERER_VERSION='20261007-22';
   let rendererLoadPromise=null;
   async function ensureExportRenderer(){
-    // 저장 시에는 index.html 안의 최신 렌더러만 사용해요.
-    // 예전 export-renderer.js가 남아 있어도 저장 결과에 영향을 주지 않아요.
-    installEmbeddedExportRenderer();
-    if(window.PairExportRenderer?.captureState && window.PairExportRenderer?.render){
+    if(
+      window.PairExportRenderer?.version===EXPECTED_RENDERER_VERSION &&
+      window.PairExportRenderer?.captureState &&
+      window.PairExportRenderer?.render
+    ){
       return window.PairExportRenderer;
     }
+
+    // 외부 파일이 늦게 로드되었거나 캐시가 꼬였을 때 한 번 새로 불러와요.
+    try{
+      const res=await fetch(`./export-renderer.js?v=${EXPECTED_RENDERER_VERSION}&t=${Date.now()}`,{cache:'no-store'});
+      if(res.ok){
+        const source=await res.text();
+        (0,eval)(source);
+      }
+    }catch(err){
+      console.warn('외부 export-renderer.js 로드 실패:',err);
+    }
+
+    if(
+      window.PairExportRenderer?.version===EXPECTED_RENDERER_VERSION &&
+      window.PairExportRenderer?.captureState &&
+      window.PairExportRenderer?.render
+    ){
+      return window.PairExportRenderer;
+    }
+
+    // 외부 파일이 정말 없을 때만 동일 버전의 내장 렌더러를 사용해요.
+    installEmbeddedExportRenderer();
+
+    if(
+      window.PairExportRenderer?.version===EXPECTED_RENDERER_VERSION &&
+      window.PairExportRenderer?.captureState &&
+      window.PairExportRenderer?.render
+    ){
+      return window.PairExportRenderer;
+    }
+
     throw new Error('저장 렌더러 초기화에 실패했어요.');
   }
   async function prepareCanvasExport(){
