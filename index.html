@@ -7,7 +7,7 @@
   <title>PAIR GLASS GIF</title>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gif.js.optimized@1.0.1/dist/gif.js"></script>
-  <script src="./export-renderer.js?v=20261007-3"></script>
+  <script src="./export-renderer.js?v=20261007-4"></script>
   <style>
     *{box-sizing:border-box}
     html,body{margin:0;min-height:100%;background:#0e0f13;color:#f7f7f7;font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Pretendard","Noto Sans KR",Segoe UI,sans-serif}
@@ -25,7 +25,7 @@
         .phone{position:absolute;z-index:4;left:95px;top:118px;width:350px;height:646px;border-radius:51px;padding:8px;background:rgba(218,222,230,.26);border:1px solid rgba(255,255,255,.42);box-shadow:0 35px 70px rgba(0,0,0,.36),0 0 0 1px rgba(255,255,255,.16) inset}.phone:before{content:"";position:absolute;z-index:3;left:50%;top:15px;transform:translateX(-50%);width:83px;height:23px;border-radius:20px;background:#050608;box-shadow:0 0 0 1px rgba(255,255,255,.05)}.screen{position:relative;width:100%;height:100%;border-radius:44px;overflow:hidden;background:linear-gradient(160deg,#bfc2c9,#626975)}.screen img{position:absolute;left:50%;top:50%;width:100%;height:100%;object-fit:cover;transform:translate(-50%,-50%) scale(1);user-select:none;-webkit-user-drag:none}.screen-shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.08),transparent 42%,rgba(0,0,0,.18));pointer-events:none}
 
     .glass{position:absolute;z-index:8;color:white;background:linear-gradient(145deg,rgba(255,255,255,.24),rgba(255,255,255,.10));border:1px solid rgba(255,255,255,.34);box-shadow:0 18px 45px rgba(0,0,0,.18),0 1px 0 rgba(255,255,255,.28) inset;overflow:hidden}.glass:after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(110deg,rgba(255,255,255,.22),transparent 28%,transparent 70%,rgba(255,255,255,.08));mix-blend-mode:screen}
-    .search-widget{left:30px;top:84px;width:300px;height:58px;border-radius:999px;padding:8px 10px 8px 18px;display:grid;grid-template-columns:1fr 40px;gap:9px;align-items:center}.search-text{position:relative;z-index:1;font-size:14px;color:rgba(255,255,255,.78);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:-.01em;text-align:left}.search-icon-wrap{position:relative;z-index:1;justify-self:end;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(180deg,rgba(255,255,255,.24),rgba(255,255,255,.08));box-shadow:0 1px 0 rgba(255,255,255,.42) inset,0 8px 20px rgba(0,0,0,.10)}.search-icon{position:relative;width:16px;height:16px;border:2px solid rgba(255,255,255,.82);border-radius:50%}.search-icon:after{content:"";position:absolute;width:7px;height:2px;background:rgba(255,255,255,.82);border-radius:3px;right:-5px;bottom:-1px;transform:rotate(45deg)}.typing-caret{display:inline-block;width:1px;height:1em;vertical-align:-.12em;background:rgba(255,255,255,.56);margin-left:2px;opacity:.82}
+    .search-widget{left:20px;top:84px;width:300px;height:58px;border-radius:999px;padding:8px 10px 8px 18px;display:grid;grid-template-columns:1fr 40px;gap:9px;align-items:center}.search-text{position:relative;z-index:1;font-size:14px;color:rgba(255,255,255,.78);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:-.01em;text-align:left}.search-icon-wrap{position:relative;z-index:1;justify-self:end;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(180deg,rgba(255,255,255,.24),rgba(255,255,255,.08));box-shadow:0 1px 0 rgba(255,255,255,.42) inset,0 8px 20px rgba(0,0,0,.10)}.search-icon{position:relative;width:16px;height:16px;border:2px solid rgba(255,255,255,.82);border-radius:50%}.search-icon:after{content:"";position:absolute;width:7px;height:2px;background:rgba(255,255,255,.82);border-radius:3px;right:-5px;bottom:-1px;transform:rotate(45deg)}.typing-caret{display:inline-block;width:1px;height:1em;vertical-align:-.12em;background:rgba(255,255,255,.56);margin-left:2px;opacity:.82}
     .music{right:14px;top:208px;width:280px;min-height:114px;height:auto;border-radius:28px;padding:14px;display:grid;grid-template-columns:86px 1fr;gap:14px;align-items:start}.cover{position:relative;z-index:1;width:86px;height:86px;border-radius:20px;overflow:hidden;background:linear-gradient(145deg,#c9cad0,#686d78);box-shadow:0 10px 25px rgba(0,0,0,.16)}.cover img{width:100%;height:100%;object-fit:cover;display:block;transform-origin:center center;will-change:transform}.track{position:relative;z-index:1;min-width:0}.song{font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:5px}.artist{font-size:10px;color:rgba(255,255,255,.64);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.timeline{margin-top:11px;display:grid;grid-template-columns:1fr 28px;gap:9px;align-items:center}.bar{height:3px;border-radius:999px;background:rgba(255,255,255,.25);overflow:hidden}.bar i{display:block;height:100%;width:42%;border-radius:inherit;background:white}.play{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.85);color:#17181c;font-size:10px;padding-left:2px}.time-row{display:flex;justify-content:space-between;gap:8px;margin-top:6px;font-size:8px;letter-spacing:.03em;color:rgba(255,255,255,.58);font-variant-numeric:tabular-nums}.playlist{grid-column:1/-1;margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,.16);display:grid;gap:8px}.playlist.hidden{display:none}.queue-item{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;min-width:0}.queue-meta{min-width:0}.queue-title{font-size:11px;font-weight:620;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.queue-artist{font-size:9px;color:rgba(255,255,255,.58);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.queue-index{font-size:9px;color:rgba(255,255,255,.4);padding-top:1px;flex:0 0 auto}.queue-item.hidden{display:none}
     .dday{left:20px;top:398px;width:174px;border-radius:27px;padding:16px 17px 15px;transform-origin:50% 50%}.dday .label{position:relative;z-index:1;font-size:10px;letter-spacing:.17em;color:rgba(255,255,255,.70);text-transform:uppercase;margin-bottom:9px}.dday .count{position:relative;z-index:1;font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Pretendard","Noto Sans KR",sans-serif;font-size:31px;font-weight:650;line-height:1;letter-spacing:-.045em}.dday .date{position:relative;z-index:1;font-size:9px;color:rgba(255,255,255,.60);margin-top:8px;letter-spacing:.10em;line-height:1.45;white-space:pre-line}.dday .date.hidden{display:none}
     .post-card{position:absolute;z-index:10;right:22px;top:570px;width:266px;display:block;transform-origin:right bottom;overflow:visible;background:none;border:0;box-shadow:none;padding:0}
@@ -157,13 +157,14 @@
     const searchTop=(searchWidget?.offsetTop||52)+searchY;
     const phoneTop=118, phoneBottom=118+646;
     const topEdge=Math.min(searchTop,phoneTop);
-    const topPadding=32;
+    const edgePadding=20;
+    const topPadding=edgePadding;
     sceneShift=topPadding-topEdge;
     const postVisible=postWidget && !postWidget.classList.contains('hidden');
     const basePostTop=postWidget?.offsetTop||570, basePostHeight=postWidget?.offsetHeight||0;
     const postBottom=postVisible ? (basePostTop+postY+(basePostHeight*postScale)) : 0;
     const bottomEdge=Math.max(phoneBottom,postBottom);
-    const bottomPadding=26;
+    const bottomPadding=edgePadding;
     canvasHeight=Math.max(820,Math.min(1280,Math.ceil(bottomEdge+sceneShift+bottomPadding)));
     sceneShift=Math.max(-120,Math.min(120,sceneShift));
     if(sceneContent)sceneContent.style.transform=`translateY(${sceneShift}px)`;
@@ -277,8 +278,35 @@
     a.download=name;
     document.body.appendChild(a);a.click();a.remove();
   }
+  let rendererLoadPromise=null;
+  async function ensureExportRenderer(){
+    if(window.PairExportRenderer?.captureState && window.PairExportRenderer?.render)return window.PairExportRenderer;
+    if(rendererLoadPromise)return rendererLoadPromise;
+    rendererLoadPromise=(async()=>{
+      const urls=[
+        new URL('./export-renderer.js?v=20261007-4',document.baseURI).href,
+        new URL('/export-renderer.js?v=20261007-4',location.origin).href
+      ];
+      let lastError=null;
+      for(const url of [...new Set(urls)]){
+        try{
+          const res=await fetch(url,{cache:'no-store'});
+          if(!res.ok)throw new Error(`${res.status} ${res.statusText}`);
+          const source=await res.text();
+          if(!source.includes('PairExportRenderer'))throw new Error('JS 파일 내용이 예상과 다릅니다.');
+          // 이미 head의 script 태그가 실패했더라도, 받은 JS를 직접 실행해 다시 로드합니다.
+          (0,eval)(`${source}
+//# sourceURL=${url}`);
+          if(window.PairExportRenderer?.captureState && window.PairExportRenderer?.render)return window.PairExportRenderer;
+          throw new Error('JS 실행 후 PairExportRenderer가 생성되지 않았습니다.');
+        }catch(err){lastError=err;console.warn('export renderer load failed:',url,err);}
+      }
+      throw new Error(`export-renderer.js 로딩 실패: ${lastError?.message||'unknown error'}`);
+    })();
+    try{return await rendererLoadPromise;}catch(err){rendererLoadPromise=null;throw err;}
+  }
   async function prepareCanvasExport(){
-    if(!window.PairExportRenderer)throw new Error('export-renderer.js를 불러오지 못했습니다. index.html과 같은 폴더에 있는지 확인하고 새로고침해 주세요.');
+    const renderer=await ensureExportRenderer();
     const oldTransform=capture.style.transform, oldWidth=shell.style.width, oldHeight=shell.style.height;
     capture.style.transform='none';shell.style.width='540px';shell.style.height=`${canvasHeight}px`;capture.style.height=`${canvasHeight}px`;
     setFinalScene();await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
