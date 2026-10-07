@@ -223,7 +223,7 @@ function drawMusic(ctx,s,t=0){
   ctx.fillStyle='rgba(255,255,255,.28)';rr(ctx,barX,barY-1.5,barW,3,2);ctx.fill();ctx.fillStyle='#fff';rr(ctx,barX,barY-1.5,barW*pb.pct/100,3,2);ctx.fill();
   drawEqualizer(ctx,eqX,barY,t);
   ctx.beginPath();ctx.arc(playCx,playCy,playR,0,Math.PI*2);ctx.fillStyle='rgba(255,255,255,.90)';ctx.fill();
-  ctx.fillStyle='#17181c';rr(ctx,playCx-4.5,playCy-5,3,10,1);ctx.fill();rr(ctx,playCx+1.5,playCy-5,3,10,1);ctx.fill();
+  ctx.fillStyle='#17181c';ctx.fillRect(playCx-5,playCy-5,3,10);ctx.fillRect(playCx+2,playCy-5,3,10);
   drawText(ctx,formatClock(pb.current),barX,r.y+90,8,500,'rgba(255,255,255,.62)');drawText(ctx,formatClock(pb.total),r.x+r.w-15,r.y+90,8,500,'rgba(255,255,255,.62)','right');
   let yy=r.y+114;
   for(let i=0;i<s.queue.length;i++){
@@ -260,88 +260,63 @@ async function captureState(opts={}){
   const [bg,main,cover,post]=await Promise.all([loadImage(window.__pairBgSrc||''),loadImage($('#mainImage')?.src||''),loadImage($('#coverImage')?.src||''),loadImage($('#postImage')?.src||'')]);
   const dur=num('duration',5),f=dur/5;
   const ddayEl=$('#ddayWidget');
-
   return {
-    w:540,
-    h:opts.height||Math.round(rootRect.height),
-    duration:dur,
-    effect:val('animEffect')||'pop',
-    glassAlpha:clamp(.10+glassValue/100*.34,.12,.34),
-
-    timeline:{
-      searchStart:.42*f,
-      musicStart:1.22*f,
-      ddayStart:2.12*f,
-      postStart:3.05*f
-    },
-
-    rects:{
-      phone:localRect($('#phone'),rootRect),
-      screen:localRect($('.screen'),rootRect),
-      search:localRect($('#searchWidget'),rootRect),
-      dday:localRect(ddayEl,rootRect),
-      ddayLabel:localRect($('#ddayLabelOut'),rootRect),
-      ddayCount:localRect($('#ddayCount'),rootRect),
-      ddayDate:localRect($('#ddayDateOut'),rootRect),
-      music:localRect($('#musicWidget'),rootRect),
-      cover:localRect($('.cover'),rootRect),
-      post:localRect($('#postWidget'),rootRect),
-      postImage:localRect($('.post-image'),rootRect),
-      postTitle:localRect($('.post-title'),rootRect)
-    },
-
-    images:{
-      bg,
-      main,
-      cover,
-      post
-    },
-
-    queue,
-
-    postVisible:visible($('#postWidget')),
-
-    controls:{
-      bgZoom:num('bgZoom',1),
-      bgBlur:num('bgBlur',0),
-      bgX:num('bgX'),
-      bgY:num('bgY'),
-
-      mainZoom:num('zoom',1),
-      mainX:num('posX'),
-      mainY:num('posY'),
-
-      coverZoom:num('coverZoom',1),
-      coverX:num('coverX'),
-      coverY:num('coverY'),
-
-      postZoom:num('postZoom',1),
-      postX:num('postX'),
-      postY:num('postY'),
-
-      progress:num('progress',42),
-      typingSpeed:num('typingSpeed',18),
-      postTypingSpeed:num('postTypingSpeed',16),
-
-      ddayFlipSpeed:num('ddayFlipSpeed',.13),
-      ddayStartDays:num('ddayStartDays',5)
-    },
-
-    text:{
-      search:val('searchTextInput')||txt('#searchTextOut'),
-      ddayLabel:txt('#ddayLabelOut'),
-      ddayCount:ddayEl?.dataset.finalText||txt('#ddayCount'),
-      ddayDate:visible($('#ddayDateOut'))?txt('#ddayDateOut'):'',
-      song:txt('#songOut'),
-      artist:txt('#artistOut'),
-      current:txt('#currentTimeOut'),
-      duration:txt('#durationTimeOut'),
-      postTitle:val('postCaption')||txt('#postCaptionOut'),
-      commission:(($('#commissionText')?.value||$('#commissionCredit')?.textContent||'').trim())
-    },
-
-    dday:{
-      animate:ddayEl?.dataset.animate==='1',
-      value:Number(ddayEl?.dataset.abs||0),
-      prefix:ddayEl?.dataset.prefix||'D+',
-      bottomPadding:parseFloat(getComputedStyle(ddayEl).paddingBottom)||15
+    w:540,h:opts.height||Math.round(rootRect.height),duration:dur,effect:val('animEffect')||'pop',glassAlpha:clamp(.10+glassValue/100*.34,.12,.34),
+    timeline:{searchStart:.42*f,musicStart:1.22*f,ddayStart:2.12*f,postStart:3.05*f},
+    rects:{phone:localRect($('#phone'),rootRect),screen:localRect($('.screen'),rootRect),search:localRect($('#searchWidget'),rootRect),dday:localRect(ddayEl,rootRect),ddayLabel:localRect($('#ddayLabelOut'),rootRect),ddayCount:localRect($('#ddayCount'),rootRect),ddayDate:localRect($('#ddayDateOut'),rootRect),music:localRect($('#musicWidget'),rootRect),cover:localRect($('.cover'),rootRect),post:localRect($('#postWidget'),rootRect),postImage:localRect($('.post-image'),rootRect),postTitle:localRect($('.post-title'),rootRect)},
+    images:{bg,main,cover,post},queue,postVisible:visible($('#postWidget')),
+    controls:{bgZoom:num('bgZoom',1),bgBlur:num('bgBlur',0),bgX:num('bgX'),bgY:num('bgY'),mainZoom:num('zoom',1),mainX:num('posX'),mainY:num('posY'),coverZoom:num('coverZoom',1),coverX:num('coverX'),coverY:num('coverY'),postZoom:num('postZoom',1),postX:num('postX'),postY:num('postY'),progress:num('progress',42),typingSpeed:num('typingSpeed',18),postTypingSpeed:num('postTypingSpeed',16),ddayFlipSpeed:num('ddayFlipSpeed',.13),ddayStartDays:num('ddayStartDays',5)},
+    text:{search:val('searchTextInput')||txt('#searchTextOut'),ddayLabel:txt('#ddayLabelOut'),ddayCount:ddayEl?.dataset.finalText||txt('#ddayCount'),ddayDate:visible($('#ddayDateOut'))?txt('#ddayDateOut'):'',song:txt('#songOut'),artist:txt('#artistOut'),current:txt('#currentTimeOut'),duration:txt('#durationTimeOut'),postTitle:val('postCaption')||txt('#postCaptionOut'),commission:(($('#commissionText')?.value||$('#commissionCredit')?.textContent||'').trim())},
+    dday:{animate:ddayEl?.dataset.animate==='1',value:Number(ddayEl?.dataset.abs||0),prefix:ddayEl?.dataset.prefix||'D+',bottomPadding:parseFloat(getComputedStyle(ddayEl).paddingBottom)||15}
+  };
+}
+    
+function motionProgress(s,t,name){
+  const f=s.duration/5;
+  const starts={search:.42*f,music:1.22*f,dday:2.12*f,post:3.05*f};
+  const lens={search:.62*f,music:.72*f,dday:.66*f,post:.74*f};
+  return clamp((t-starts[name])/Math.max(.001,lens[name]));
+}
+function motionTransform(effect,p){
+  const q=easeOutCubic(p);
+  if(effect==='snap') return {alpha:1,scale:1,dy:0};
+  if(effect==='fade') return {alpha:q,scale:.985+.015*q,dy:0};
+  if(effect==='slide') return {alpha:q,scale:1,dy:30*(1-q)};
+  const overshoot=.15*Math.sin(Math.PI*clamp(p))*Math.exp(-1.35*p);
+  return {alpha:clamp(p*1.8),scale:.70+.30*q+overshoot,dy:14*(1-q)};
+}
+function drawMotion(ctx,s,t,name,fn,final=false){
+  if(final){fn(ctx,s,t,true);return;}
+  const p=motionProgress(s,t,name);if(p<=0)return;
+  const m=motionTransform(s.effect||'pop',p),r=s.rects[name],motionScale=name==='music'?1:m.scale;
+  ctx.save();ctx.globalAlpha*=m.alpha;const cx=r.x+r.w/2,cy=r.y+r.h/2;ctx.translate(cx,cy+m.dy);ctx.scale(motionScale,motionScale);ctx.translate(-cx,-cy);fn(ctx,s,t,false);ctx.restore();
+}
+const renderCache=new WeakMap();
+function getRenderBuffers(state,scale){
+  let scales=renderCache.get(state);
+  if(!scales){scales=new Map();renderCache.set(state,scales);}
+  const key=String(scale);
+  let cached=scales.get(key);
+  if(!cached){
+    const width=Math.round(state.w*scale),height=Math.round(state.h*scale);
+    const base=document.createElement('canvas');base.width=width;base.height=height;
+    const baseCtx=base.getContext('2d');baseCtx.imageSmoothingEnabled=true;baseCtx.imageSmoothingQuality='high';baseCtx.setTransform(scale,0,0,scale,0,0);
+    drawBackground(baseCtx,state);drawPhone(baseCtx,state);
+    const canvas=document.createElement('canvas');canvas.width=width;canvas.height=height;
+    const ctx=canvas.getContext('2d');ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';
+    cached={canvas,ctx,base,width,height};scales.set(key,cached);
+  }
+  return cached;
+}
+function render(state,t,{final=false,scale=1}={}){
+  scale=Math.max(1,Number(scale)||1);
+  const {canvas,ctx,base,width,height}=getRenderBuffers(state,scale);
+  ctx.setTransform(1,0,0,1,0,0);ctx.globalAlpha=1;ctx.clearRect(0,0,width,height);ctx.drawImage(base,0,0);ctx.setTransform(scale,0,0,scale,0,0);
+  drawMotion(ctx,state,t,'search',drawSearch,final);
+  drawMotion(ctx,state,t,'music',drawMusic,final);
+  drawMotion(ctx,state,t,'dday',drawDday,final);
+  if(state.postVisible)drawMotion(ctx,state,t,'post',drawPost,final);
+  drawCommission(ctx,state);return canvas;
+}
+window.PairExportRenderer={version:'20261007-30',captureState,render};
+})();
