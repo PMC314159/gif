@@ -27,7 +27,7 @@
     .search-widget{left:30px;top:102px;width:300px;height:58px;border-radius:999px;padding:8px 10px 8px 18px;display:grid;grid-template-columns:1fr 40px;gap:9px;align-items:center}.search-text{position:relative;z-index:1;font-size:14px;color:rgba(255,255,255,.78);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:-.01em;text-align:left}.search-icon-wrap{position:relative;z-index:1;justify-self:end;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(180deg,rgba(255,255,255,.24),rgba(255,255,255,.08));box-shadow:0 1px 0 rgba(255,255,255,.42) inset,0 8px 20px rgba(0,0,0,.10)}.search-icon{position:relative;width:16px;height:16px;border:2px solid rgba(255,255,255,.82);border-radius:50%}.search-icon:after{content:"";position:absolute;width:7px;height:2px;background:rgba(255,255,255,.82);border-radius:3px;right:-5px;bottom:-1px;transform:rotate(45deg)}.typing-caret{display:inline-block;width:1px;height:1em;vertical-align:-.12em;background:rgba(255,255,255,.56);margin-left:2px;opacity:.82}
     .music{right:14px;top:176px;width:280px;min-height:114px;height:auto;border-radius:28px;padding:14px;display:grid;grid-template-columns:86px 1fr;gap:14px;align-items:start}.cover{position:relative;z-index:1;width:86px;height:86px;border-radius:20px;overflow:hidden;background:linear-gradient(145deg,#c9cad0,#686d78);box-shadow:0 10px 25px rgba(0,0,0,.16)}.cover img{width:100%;height:100%;object-fit:cover;display:block;transform-origin:center center;will-change:transform}.track{position:relative;z-index:1;min-width:0}.song{font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:5px}.artist{font-size:10px;color:rgba(255,255,255,.64);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.timeline{margin-top:11px;display:grid;grid-template-columns:1fr 28px;gap:9px;align-items:center}.bar{height:3px;border-radius:999px;background:rgba(255,255,255,.25);overflow:hidden}.bar i{display:block;height:100%;width:42%;border-radius:inherit;background:white}.play{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.85);color:#17181c;font-size:10px;padding-left:2px}.time-row{display:flex;justify-content:space-between;gap:8px;margin-top:6px;font-size:8px;letter-spacing:.03em;color:rgba(255,255,255,.58);font-variant-numeric:tabular-nums}.playlist{grid-column:1/-1;margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,.16);display:grid;gap:8px}.playlist.hidden{display:none}.queue-item{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;min-width:0}.queue-meta{min-width:0}.queue-title{font-size:11px;font-weight:620;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.queue-artist{font-size:9px;color:rgba(255,255,255,.58);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.queue-index{font-size:9px;color:rgba(255,255,255,.4);padding-top:1px;flex:0 0 auto}.queue-item.hidden{display:none}
     .dday{left:20px;top:398px;width:174px;border-radius:27px;padding:16px 17px 15px;transform-origin:50% 50%}.dday .label{position:relative;z-index:1;font-size:10px;letter-spacing:.17em;color:rgba(255,255,255,.70);text-transform:uppercase;margin-bottom:9px}.dday .count{position:relative;z-index:1;font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Pretendard","Noto Sans KR",sans-serif;font-size:31px;font-weight:650;line-height:1;letter-spacing:-.045em}.dday .date{position:relative;z-index:1;font-size:9px;color:rgba(255,255,255,.60);margin-top:8px;letter-spacing:.10em;line-height:1.45;white-space:pre-line}.dday .date.hidden{display:none}
-    .post-card{position:absolute;z-index:10;right:22px;bottom:126px;width:266px;display:block;transform-origin:right bottom;overflow:visible;background:none;border:0;box-shadow:none;padding:0}
+    .post-card{position:absolute;z-index:10;right:22px;bottom:152px;width:266px;display:block;transform-origin:right bottom;overflow:visible;background:none;border:0;box-shadow:none;padding:0}
     .post-inner{position:relative;z-index:1;display:grid;gap:7px;padding:0}
     .post-image{position:relative;width:100%;height:176px;border-radius:22px;overflow:hidden;background:rgba(255,255,255,.08);box-shadow:none;border:0}
     .post-image img{width:100%;height:100%;object-fit:contain;display:block;transform-origin:center center;will-change:transform}
@@ -38,11 +38,12 @@
     #capture.exporting{border-radius:0!important}
     #capture.exporting .anim-item{filter:none!important;will-change:auto!important}
     #capture.exporting .glass:after{display:none!important}
-    #capture.exporting .glass{box-shadow:0 12px 34px rgba(0,0,0,.14),0 1px 0 rgba(255,255,255,.22) inset!important}
-    #capture.exporting .post-title{box-shadow:0 9px 24px rgba(0,0,0,.12),0 1px 0 rgba(255,255,255,.20) inset!important}
-    #capture.exporting .cover{box-shadow:0 8px 20px rgba(0,0,0,.12)!important}
+    #capture.exporting .glass{background:rgba(208,214,224,.28)!important;border:0!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.42),0 8px 22px rgba(0,0,0,.10)!important}
+    #capture.exporting .post-title{background:rgba(208,214,224,.28)!important;border:0!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.42),0 7px 18px rgba(0,0,0,.09)!important}
+    #capture.exporting .search-icon-wrap{background:rgba(225,229,236,.20)!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.28)!important}
+    #capture.exporting .cover{box-shadow:none!important}
     #capture.exporting .post-image{box-shadow:none!important;border:0!important}
-    #capture.exporting .noise{mix-blend-mode:normal!important;opacity:.07!important}
+    #capture.exporting .noise{display:none!important}
     .export-baked-image{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;display:block!important;transform:none!important;object-fit:fill!important;user-select:none!important;pointer-events:none!important}
     .export-bg-canvas{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
 
@@ -121,7 +122,7 @@
 <script>
 (() => {
   const $ = s => document.querySelector(s), capture=$('#capture'), shell=$('#shell'), status=$('#status'), mainImage=$('#mainImage'), coverImage=$('#coverImage'), postImage=$('#postImage'), bgLayer=$('#bgLayer'), sceneContent=$('#sceneContent'), commissionCredit=$('#commissionCredit'), searchWidget=$('#searchWidget'), ddayWidget=$('#ddayWidget'), musicWidget=$('#musicWidget'), postWidget=$('#postWidget');
-  const glassEls=[searchWidget,ddayWidget,musicWidget].filter(Boolean); let startTime=performance.now(), liveRaf=null, exportMode=false, bgUserSrc='', canvasHeight=960, sceneShift=0;
+  const glassEls=[searchWidget,ddayWidget,musicWidget].filter(Boolean); let startTime=performance.now(), liveRaf=null, exportMode=false, bgUserSrc='', canvasHeight=960, sceneShift=0, exportLayoutFrozen=false;
   function fitCapture(){const rect=shell.getBoundingClientRect(),scale=rect.width/540;capture.style.transform=`scale(${scale})`;shell.style.height=`${canvasHeight*scale}px`} window.addEventListener('resize',fitCapture);
   function loadImage(input,cb){const file=input.files&&input.files[0];if(!file)return;const reader=new FileReader();reader.onload=e=>cb(e.target.result);reader.readAsDataURL(file)}
   $('#bgFile').addEventListener('change',e=>loadImage(e.target,src=>{bgUserSrc=src;bgLayer.style.backgroundImage=`linear-gradient(135deg,rgba(255,255,255,.14),rgba(0,0,0,.02)),url("${src}")`}));$('#mainFile').addEventListener('change',e=>loadImage(e.target,src=>mainImage.src=src));$('#coverFile').addEventListener('change',e=>loadImage(e.target,src=>coverImage.src=src));$('#postFile').addEventListener('change',e=>loadImage(e.target,src=>postImage.src=src));
@@ -155,30 +156,53 @@
     const searchTop=(searchWidget?.offsetTop||90)+searchY;
     const phoneTop=118, phoneBottom=118+646;
     const topEdge=Math.min(searchTop,phoneTop);
-    const topPadding=34;
+    const topPadding=56;
     sceneShift=topPadding-topEdge;
     const postVisible=postWidget && !postWidget.classList.contains('hidden');
     const basePostTop=postWidget?.offsetTop||0, basePostHeight=postWidget?.offsetHeight||0;
     const postBottom=postVisible ? (basePostTop+postY+(basePostHeight*postScale)) : 0;
     const bottomEdge=Math.max(phoneBottom,postBottom);
-    const bottomPadding=6;
-    canvasHeight=Math.max(860,Math.min(1280,Math.ceil(bottomEdge+sceneShift+bottomPadding)));
+    const bottomPadding=0;
+    canvasHeight=Math.max(760,Math.min(1280,Math.ceil(bottomEdge+sceneShift+bottomPadding)));
     if(sceneContent)sceneContent.style.transform=`translateY(${sceneShift}px)`;
     capture.style.height=`${canvasHeight}px`;
     fitCapture();
   }
   function updateWidgetUI(){const s=+$('#postWidgetScale').value||1;$('#postWidgetScaleV').textContent=s.toFixed(2)+'×';updateCanvasLayout()}
   ['searchWX','searchWY','musicWX','musicWY','ddayWX','ddayWY','postWX','postWY','postWidgetScale'].forEach(id=>$('#'+id).addEventListener('input',updateWidgetUI));updateWidgetUI();updateCommission();
+  function freezeWidgetLayoutForExport(){
+    const states=[];
+    const items=[
+      [searchWidget,'search',1],
+      [musicWidget,'music',1],
+      [ddayWidget,'dday',1],
+      [postWidget,'post',+$('#postWidgetScale').value||1]
+    ];
+    for(const [el,prefix,scale] of items){
+      if(!el)continue;
+      const o=widgetOffset(prefix);
+      states.push({el,style:el.getAttribute('style')});
+      const left=el.offsetLeft+o.x, top=el.offsetTop+o.y;
+      el.style.left=`${left}px`;el.style.top=`${top}px`;el.style.right='auto';el.style.bottom='auto';
+      el.style.transform=scale===1?'none':`scale(${scale})`;
+      el.style.transformOrigin='top left';
+    }
+    exportLayoutFrozen=true;
+    return ()=>{
+      exportLayoutFrozen=false;
+      for(const s of states){if(s.style===null)s.el.removeAttribute('style');else s.el.setAttribute('style',s.style)}
+    };
+  }
   function getTypedMarkup(t){const full=$('#searchTextInput').value||''; const speed=+$('#typingSpeed').value||18; const visible=Math.max(0,Math.min(full.length,Math.floor(t*speed))); const text=(full.slice(0,visible)||' '); return `${text}<span class="typing-caret"></span>`;}
   function setVisualTime(t,mode='live'){
     const dur=+$('#duration').value,factor=dur/5;
     const sO=widgetOffset('search'),mO=widgetOffset('music'),dO=widgetOffset('dday'),pO=widgetOffset('post'),postScale=+$('#postWidgetScale').value||1;
     if(mode==='export'){
       const showSearch=t>=.72*factor, showMusic=t>=1.68*factor, showDday=t>=2.58*factor, showPost=t>=3.42*factor;
-      if(searchWidget){searchWidget.style.opacity=showSearch?'1':'0';searchWidget.style.transform=`translate(${sO.x}px,${sO.y}px) scale(1)`;const out=$('#searchTextOut');if(out)out.innerHTML=(showSearch?`${($('#searchTextInput').value||'')}<span class="typing-caret"></span>`:' ');}
-      musicWidget.style.opacity=showMusic?'1':'0';musicWidget.style.transform=`translate(${mO.x}px,${mO.y}px) scale(1)`;
-      ddayWidget.style.opacity=showDday?'1':'0';ddayWidget.style.transform=`translate(${dO.x}px,${dO.y}px) scale(1)`;
-      if(!postWidget.classList.contains('hidden')){postWidget.style.opacity=showPost?'1':'0';postWidget.style.transform=`translate(${pO.x}px,${pO.y}px) scale(${postScale})`;}
+      if(searchWidget){searchWidget.style.opacity=showSearch?'1':'0';if(!exportLayoutFrozen)searchWidget.style.transform=`translate(${sO.x}px,${sO.y}px) scale(1)`;const out=$('#searchTextOut');if(out)out.innerHTML=(showSearch?`${($('#searchTextInput').value||'')}<span class="typing-caret"></span>`:' ');}
+      musicWidget.style.opacity=showMusic?'1':'0';if(!exportLayoutFrozen)musicWidget.style.transform=`translate(${mO.x}px,${mO.y}px) scale(1)`;
+      ddayWidget.style.opacity=showDday?'1':'0';if(!exportLayoutFrozen)ddayWidget.style.transform=`translate(${dO.x}px,${dO.y}px) scale(1)`;
+      if(!postWidget.classList.contains('hidden')){postWidget.style.opacity=showPost?'1':'0';if(!exportLayoutFrozen)postWidget.style.transform=`translate(${pO.x}px,${pO.y}px) scale(${postScale})`;}
       return;
     }
     const pSearch=reveal(t,.52*factor,.24*factor),pMusic=reveal(t,1.42*factor,.26*factor),pDday=reveal(t,2.30*factor,.24*factor),pPost=reveal(t,3.18*factor,.28*factor);
@@ -252,11 +276,13 @@
     document.body.appendChild(a);a.click();a.remove();
   }
   $('#savePng').addEventListener('click',async()=>{
-    const btn=$('#savePng');btn.disabled=true;exportMode=true;if(liveRaf)cancelAnimationFrame(liveRaf);let nativeState=null,restoreAssets=null;
+    const btn=$('#savePng');btn.disabled=true;exportMode=true;if(liveRaf)cancelAnimationFrame(liveRaf);let nativeState=null,restoreAssets=null,restoreLayout=null;
     try{
       if(!window.html2canvas)throw new Error('이미지 저장 라이브러리를 불러오지 못했습니다. 인터넷 연결을 확인해 주세요.');
       status.textContent='최종 장면 이미지 준비 중…';
       nativeState=beginNativeCapture();
+      setFinalScene();
+      restoreLayout=freezeWidgetLayoutForExport();
       restoreAssets=await prepareExportAssets();
       setFinalScene();
       await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
@@ -266,20 +292,23 @@
     }catch(err){console.error(err);status.textContent='이미지 저장 실패: '+(err?.message||err)}
     finally{
       if(restoreAssets)restoreAssets();
+      if(restoreLayout)restoreLayout();
       if(nativeState)endNativeCapture(nativeState);
       exportMode=false;startTime=performance.now();btn.disabled=false;liveRaf=requestAnimationFrame(liveLoop);
     }
   });
   $('#saveGif').addEventListener('click',async()=>{
-    const btn=$('#saveGif');btn.disabled=true;exportMode=true;if(liveRaf)cancelAnimationFrame(liveRaf);let nativeState=null,workerScript=null,restoreAssets=null;
+    const btn=$('#saveGif');btn.disabled=true;exportMode=true;if(liveRaf)cancelAnimationFrame(liveRaf);let nativeState=null,workerScript=null,restoreAssets=null,restoreLayout=null;
     try{
       if(!window.GIF||!window.html2canvas)throw new Error('GIF 저장 라이브러리를 불러오지 못했습니다. 인터넷 연결을 확인해 주세요.');
       const dur=+$('#duration').value,fps=+$('#fps').value,frameCount=Math.ceil(dur*fps),delay=Math.round(1000/fps);
       status.textContent=`GIF 프레임 준비 중 · 0 / ${frameCount}`;
       nativeState=beginNativeCapture();
+      setFinalScene();
+      restoreLayout=freezeWidgetLayoutForExport();
       restoreAssets=await prepareExportAssets();
       workerScript=await getWorkerBlobURL();
-      const gif=new GIF({workers:2,quality:10,width:540,height:canvasHeight,workerScript});
+      const gif=new GIF({workers:2,quality:5,width:540,height:canvasHeight,workerScript});
       for(let i=0;i<frameCount;i++){
         setVisualTime(i/fps,'export');
         await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
@@ -288,6 +317,7 @@
         status.textContent=`GIF 프레임 준비 중 · ${i+1} / ${frameCount}`;
       }
       if(restoreAssets){restoreAssets();restoreAssets=null;}
+      if(restoreLayout){restoreLayout();restoreLayout=null;}
       endNativeCapture(nativeState);nativeState=null;
       status.textContent='GIF 압축 중…';
       gif.on('progress',p=>status.textContent=`GIF 압축 중 · ${Math.round(p*100)}%`);
@@ -301,6 +331,7 @@
     }catch(err){
       console.error(err);status.textContent='저장 실패: '+(err?.message||err);
       if(restoreAssets){restoreAssets();restoreAssets=null;}
+      if(restoreLayout){restoreLayout();restoreLayout=null;}
       if(nativeState)endNativeCapture(nativeState);
       if(workerScript)URL.revokeObjectURL(workerScript);
       exportMode=false;startTime=performance.now();btn.disabled=false;liveRaf=requestAnimationFrame(liveLoop);
