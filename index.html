@@ -10,7 +10,7 @@
   <title>PHONE SCREEN MOTION MAKER</title>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gif.js.optimized@1.0.1/dist/gif.js"></script>
-  <script src="./export-renderer.js?v=20261007-25"></script>
+  <script src="./export-renderer.js?v=20261007-27"></script>
   <style>
     *{box-sizing:border-box}
     html,body{margin:0;min-height:100%;background:#0e0f13;color:#f7f7f7;font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Pretendard","Noto Sans KR",Segoe UI,sans-serif}
@@ -29,7 +29,7 @@
 
     .glass{position:absolute;z-index:8;color:white;background:linear-gradient(145deg,rgba(255,255,255,.24),rgba(255,255,255,.10));border:1px solid rgba(255,255,255,.34);box-shadow:0 18px 45px rgba(0,0,0,.18),0 1px 0 rgba(255,255,255,.28) inset;overflow:hidden}.glass:after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(110deg,rgba(255,255,255,.22),transparent 28%,transparent 70%,rgba(255,255,255,.08));mix-blend-mode:screen}
     .search-widget{left:8px;top:470px;width:88px;height:58px;border-radius:999px;padding:8px 10px 8px 18px;display:grid;grid-template-columns:1fr 40px;gap:9px;align-items:center;overflow:hidden}.search-text{position:relative;z-index:1;font-size:14px;color:rgba(255,255,255,.78);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:-.01em;text-align:left}.search-icon-wrap{position:relative;z-index:1;justify-self:end;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(180deg,rgba(255,255,255,.24),rgba(255,255,255,.08));box-shadow:0 1px 0 rgba(255,255,255,.42) inset,0 8px 20px rgba(0,0,0,.10)}.search-icon{position:relative;width:16px;height:16px;border:2px solid rgba(255,255,255,.82);border-radius:50%}.search-icon:after{content:"";position:absolute;width:7px;height:2px;background:rgba(255,255,255,.82);border-radius:3px;right:-5px;bottom:-1px;transform:rotate(45deg)}.typing-caret{display:inline-block;width:1px;height:1em;vertical-align:-.12em;background:rgba(255,255,255,.56);margin-left:2px;opacity:.82}
-    .music{right:12px;top:668px;width:280px;min-height:114px;height:auto;border-radius:28px;padding:14px;display:grid;grid-template-columns:86px 1fr;gap:14px;align-items:start}.cover{position:relative;z-index:1;width:86px;height:86px;border-radius:20px;overflow:hidden;background:linear-gradient(145deg,#c9cad0,#686d78);box-shadow:0 10px 25px rgba(0,0,0,.16)}.cover img{width:100%;height:100%;object-fit:cover;display:block;transform-origin:center center;will-change:transform}.track{position:relative;z-index:1;min-width:0}.song{font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:5px}.artist{font-size:10px;color:rgba(255,255,255,.64);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.timeline{margin-top:6px;display:grid;grid-template-columns:1fr 18px 28px;gap:7px;align-items:center}.bar{height:3px;border-radius:999px;background:rgba(255,255,255,.25);overflow:hidden}.bar i{display:block;height:100%;width:42%;border-radius:inherit;background:white}.eq{height:18px;display:flex;align-items:center;justify-content:center;gap:2px}.eq span{display:block;width:2px;height:6px;border-radius:2px;background:rgba(255,255,255,.86);transform-origin:center;animation:eqPulse .72s ease-in-out infinite}.eq span:nth-child(2){animation-duration:.56s;animation-delay:-.23s}.eq span:nth-child(3){animation-duration:.84s;animation-delay:-.41s}.eq span:nth-child(4){animation-duration:.64s;animation-delay:-.12s}@keyframes eqPulse{0%,100%{height:5px}35%{height:14px}70%{height:8px}}.play{position:relative;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.85);color:#17181c}.play:before,.play:after{content:"";position:absolute;top:9px;width:3px;height:10px;border-radius:1px;background:#17181c}.play:before{left:9px}.play:after{right:9px}.time-row{display:flex;justify-content:space-between;gap:8px;margin-top:5px;font-size:8px;letter-spacing:.03em;color:rgba(255,255,255,.58);font-variant-numeric:tabular-nums}.playlist{grid-column:1/-1;margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,.16);display:grid;gap:8px}.playlist.hidden{display:none}.queue-item{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;min-width:0}.queue-meta{min-width:0}.queue-title{font-size:11px;font-weight:620;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.queue-artist{font-size:9px;color:rgba(255,255,255,.58);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.queue-index{font-size:9px;color:rgba(255,255,255,.4);padding-top:1px;flex:0 0 auto}.queue-item.hidden{display:none}
+    .music{right:12px;top:668px;width:280px;min-height:114px;height:auto;border-radius:28px;transition:width .18s ease;padding:14px;display:grid;grid-template-columns:86px 1fr;gap:14px;align-items:start}.cover{position:relative;z-index:1;width:86px;height:86px;border-radius:20px;overflow:hidden;background:linear-gradient(145deg,#c9cad0,#686d78);box-shadow:0 10px 25px rgba(0,0,0,.16)}.cover img{width:100%;height:100%;object-fit:cover;display:block;transform-origin:center center;will-change:transform}.track{position:relative;z-index:1;min-width:0}.song{font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:5px}.artist{font-size:10px;color:rgba(255,255,255,.64);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.timeline{margin-top:6px;display:grid;grid-template-columns:1fr 18px 28px;gap:7px;align-items:center}.bar{height:3px;border-radius:999px;background:rgba(255,255,255,.25);overflow:hidden}.bar i{display:block;height:100%;width:42%;border-radius:inherit;background:white}.eq{height:18px;display:flex;align-items:center;justify-content:center;gap:2px}.eq span{display:block;width:2px;height:6px;border-radius:2px;background:rgba(255,255,255,.86);transform-origin:center;animation:eqPulse .72s ease-in-out infinite}.eq span:nth-child(2){animation-duration:.56s;animation-delay:-.23s}.eq span:nth-child(3){animation-duration:.84s;animation-delay:-.41s}.eq span:nth-child(4){animation-duration:.64s;animation-delay:-.12s}@keyframes eqPulse{0%,100%{height:5px}35%{height:14px}70%{height:8px}}.play{position:relative;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.85);color:#17181c}.play:before,.play:after{content:"";position:absolute;top:9px;width:3px;height:10px;border-radius:1px;background:#17181c}.play:before{left:9px}.play:after{right:9px}.time-row{display:flex;justify-content:space-between;gap:8px;margin-top:5px;font-size:8px;letter-spacing:.03em;color:rgba(255,255,255,.58);font-variant-numeric:tabular-nums}.playlist{grid-column:1/-1;margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,.16);display:grid;gap:8px}.playlist.hidden{display:none}.queue-item{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;min-width:0}.queue-meta{min-width:0}.queue-title{font-size:11px;font-weight:620;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.queue-artist{font-size:9px;color:rgba(255,255,255,.58);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.queue-index{font-size:9px;color:rgba(255,255,255,.4);padding-top:1px;flex:0 0 auto}.queue-item.hidden{display:none}
     .dday{left:auto;right:18px;top:285px;width:174px;border-radius:27px;padding:16px 17px 15px;transform-origin:50% 50%}.dday .label{position:relative;z-index:1;font-size:10px;letter-spacing:.17em;color:rgba(255,255,255,.70);text-transform:uppercase;margin-bottom:9px}.dday .count{position:relative;z-index:1;font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Pretendard","Noto Sans KR",sans-serif;font-size:31px;font-weight:650;line-height:1;letter-spacing:-.045em;transform-origin:center center;will-change:transform,opacity}.dday .count.flip-tick{animation:ddayFlip var(--dday-flip-speed,.13s) ease-out}@keyframes ddayFlip{0%{transform:perspective(120px) rotateX(-70deg);opacity:.45}55%{transform:perspective(120px) rotateX(12deg);opacity:1}100%{transform:perspective(120px) rotateX(0);opacity:1}}
     .post-card{position:absolute;z-index:10;left:32px;right:auto;top:24px;width:266px;display:block;transform-origin:right bottom;overflow:visible;background:none;border:0;box-shadow:none;padding:0}
     .post-inner{position:relative;z-index:1;display:grid;gap:7px;padding:0}
@@ -220,6 +220,26 @@
     $('#currentTimeOut').textContent=formatTime(st.current);
   }
   function updateQueueRow(n){const t=($(`#queueTitle${n}`)?.value||'').trim(), a=($(`#queueArtist${n}`)?.value||'').trim(), row=$(`#queueItem${n}`); if(!row) return false; const active=!!(t||a); row.classList.toggle('hidden',!active); if(active){$(`#queueTitleOut${n}`).textContent=t||'Untitled';$(`#queueArtistOut${n}`).textContent=a||'Unknown';} return active;}
+  const musicTitleMeasureCanvas=document.createElement('canvas');
+  const musicTitleMeasureCtx=musicTitleMeasureCanvas.getContext('2d');
+  function updateMusicWidgetWidth(){
+    const songEl=$('#songOut');
+    if(!musicWidget||!songEl||!musicTitleMeasureCtx)return;
+
+    const cs=getComputedStyle(songEl);
+    musicTitleMeasureCtx.font=`${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
+
+    const title=songEl.textContent||'Untitled';
+    const titleWidth=Math.ceil(musicTitleMeasureCtx.measureText(title).width);
+
+    // 기본 플레이어의 track 영역은 약 152px이에요.
+    // 제목이 더 길어지면 그 길이만큼 플레이어 전체를 함께 늘려요.
+    const fixedWidth=128; // 좌우 padding + 앨범커버 + grid gap
+    const trackWidth=Math.max(152,titleWidth+4);
+    const targetWidth=Math.max(280,Math.min(500,fixedWidth+trackWidth));
+
+    musicWidget.style.width=`${targetWidth}px`;
+  }
   function updatePlaylist(){const active=[1,2,3].map(updateQueueRow).filter(Boolean).length;const list=$('#playlistOut');if(list)list.classList.toggle('hidden',active===0);musicWidget.style.minHeight=active===0?'114px':'auto';requestAnimationFrame(()=>{applyAllWidgetPositions();updateCanvasLayout();});}
   function updateSearchPreview(){setSearchTypingState(Infinity,true); $('#typingSpeedV').textContent=$('#typingSpeed').value}
   function updatePost(){const visible=$('#postVisible').checked;postWidget.classList.toggle('hidden',!visible);setPostTypingState(Infinity,true);const speed=+$('#postTypingSpeed')?.value||16;$('#postTypingSpeedV').textContent=String(speed);}
@@ -228,6 +248,7 @@
     $('#songOut').textContent=$('#song').value||'Untitled';
     $('#artistOut').textContent=$('#artist').value||'Unknown';
     $('#progressV').textContent=(+$('#progress').value||0)+'%';
+    updateMusicWidgetWidth();
     updateMusicPlayback(0);
     updatePlaylist();updateSearchPreview();updateDday();updatePost();
   } ['ddayLabel','ddayDate','song','artist','trackDuration','progress','searchTextInput','typingSpeed','queueTitle1','queueArtist1','queueTitle2','queueArtist2','queueTitle3','queueArtist3','postCaption','postTypingSpeed'].forEach(id=>$('#'+id).addEventListener('input',updateText));$('#postVisible').addEventListener('change',()=>{updateText();updateCanvasLayout();});$('#commissionText')?.addEventListener('input',updateCommission);
@@ -242,7 +263,16 @@
   function placeWidget(prefix,el){
     if(!el)return;
     const base=WIDGET_BASE[prefix],o=widgetOffset(prefix);
-    el.style.left=`${base.left+o.x}px`;
+
+    if(prefix==='music'){
+      // 음악 플레이어는 오른쪽 여백을 유지한 채 제목 길이만큼 왼쪽으로 확장해요.
+      // bar는 1fr이라 같이 길어지고, EQ/일시정지 버튼은 넓어진 track의 오른쪽 끝을 따라가요.
+      const width=el.offsetWidth||280;
+      el.style.left=`${540-12-width+o.x}px`;
+    }else{
+      el.style.left=`${base.left+o.x}px`;
+    }
+
     el.style.top=`${base.top+o.y}px`;
     el.style.right='auto';
     el.style.bottom='auto';
@@ -539,7 +569,7 @@
       const playbackTime=i/fps;
       drawFrame(playbackTime);
       if(typeof videoTrack?.requestFrame==='function')videoTrack.requestFrame();
-      status.textContent=`MP4 만드는 중 · ${i+1} / ${frameCount}`;
+      if(i%6===0 || i===frameCount-1){status.textContent=`MP4 만드는 중 · ${i+1} / ${frameCount}`;}
       const wait=started+(i+1)*frameMs-performance.now();
       if(wait>0)await sleep(wait);
     }
@@ -845,20 +875,37 @@
         const m=motionTransform(s.effect||'pop',p),r=s.rects[name];
         ctx.save();ctx.globalAlpha*=m.alpha;const cx=r.x+r.w/2,cy=r.y+r.h/2;ctx.translate(cx,cy+m.dy);ctx.scale(m.scale,m.scale);ctx.translate(-cx,-cy);fn(ctx,s,t,false);ctx.restore();
       }
+      const renderCache=new WeakMap();
+      function getRenderBuffers(state,scale){
+        let scales=renderCache.get(state);
+        if(!scales){scales=new Map();renderCache.set(state,scales);}
+        const key=String(scale);
+        let cached=scales.get(key);
+        if(!cached){
+          const width=Math.round(state.w*scale),height=Math.round(state.h*scale);
+          const base=document.createElement('canvas');base.width=width;base.height=height;
+          const baseCtx=base.getContext('2d');baseCtx.imageSmoothingEnabled=true;baseCtx.imageSmoothingQuality='high';baseCtx.setTransform(scale,0,0,scale,0,0);
+          drawBackground(baseCtx,state);drawPhone(baseCtx,state);
+          const canvas=document.createElement('canvas');canvas.width=width;canvas.height=height;
+          const ctx=canvas.getContext('2d');ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';
+          cached={canvas,ctx,base,width,height};scales.set(key,cached);
+        }
+        return cached;
+      }
       function render(state,t,{final=false,scale=1}={}){
         scale=Math.max(1,Number(scale)||1);
-        const c=document.createElement('canvas');c.width=Math.round(state.w*scale);c.height=Math.round(state.h*scale);const ctx=c.getContext('2d');ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';ctx.scale(scale,scale);
-        drawBackground(ctx,state);drawPhone(ctx,state);
+        const {canvas,ctx,base,width,height}=getRenderBuffers(state,scale);
+        ctx.setTransform(1,0,0,1,0,0);ctx.globalAlpha=1;ctx.clearRect(0,0,width,height);ctx.drawImage(base,0,0);ctx.setTransform(scale,0,0,scale,0,0);
         drawMotion(ctx,state,t,'search',drawSearch,final);
         drawMotion(ctx,state,t,'music',drawMusic,final);
         drawMotion(ctx,state,t,'dday',drawDday,final);
         if(state.postVisible)drawMotion(ctx,state,t,'post',drawPost,final);
-        drawCommission(ctx,state);return c;
+        drawCommission(ctx,state);return canvas;
       }
-      window.PairExportRenderer={version:'20261007-25',captureState,render};
+      window.PairExportRenderer={version:'20261007-27',captureState,render};
   }
 
-  const EXPECTED_RENDERER_VERSION='20261007-25';
+  const EXPECTED_RENDERER_VERSION='20261007-27';
   let rendererLoadPromise=null;
   async function ensureExportRenderer(){
     if(
@@ -932,6 +979,14 @@
       gif.render();
     }catch(err){console.error(err);status.textContent='GIF 저장에 실패했어요: '+(err?.message||err);if(workerScript)URL.revokeObjectURL(workerScript);if(prep)prep.restore();exportMode=false;startTime=performance.now();btn.disabled=false;liveRaf=requestAnimationFrame(liveLoop)}
   });
+  if(document.fonts?.ready){
+    document.fonts.ready.then(()=>{
+      updateMusicWidgetWidth();
+      applyAllWidgetPositions();
+      updateCanvasLayout();
+    }).catch(()=>{});
+  }
+
   updateMobileSaveNotice();
   window.addEventListener('resize',updateMobileSaveNotice);
 
