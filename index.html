@@ -10,7 +10,7 @@
   <title>PHONE SCREEN MOTION MAKER</title>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gif.js.optimized@1.0.1/dist/gif.js"></script>
-  <script src="./export-renderer.js?v=20261007-31"></script>
+  <script src="./export-renderer.js?v=20261007-32"></script>
   <style>
     *{box-sizing:border-box}
     html,body{margin:0;min-height:100%;background:#0e0f13;color:#f7f7f7;font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Pretendard","Noto Sans KR",Segoe UI,sans-serif}
@@ -533,15 +533,19 @@
     out.width=Math.max(2,Math.round(state.w*scale));
     out.height=Math.max(2,Math.round(state.h*scale));
 
-    const ctx=out.getContext('2d');
+    const ctx=out.getContext('2d',{alpha:false,desynchronized:true})||out.getContext('2d');
     ctx.imageSmoothingEnabled=true;
     ctx.imageSmoothingQuality='high';
+
+    // 최종 MP4 크기는 2×로 유지하되,
+    // 움직이는 프레임은 조금 가볍게 렌더링해 30fps 누락을 줄여요.
+    const renderScale=Math.min(scale,1.5);
 
     const drawFrame=t=>{
       const frame=window.PairExportRenderer.render(
         state,
         Math.min(t,endTime),
-        {scale}
+        {scale:renderScale}
       );
 
       ctx.setTransform(1,0,0,1,0,0);
@@ -617,7 +621,7 @@
       activeTrack.requestFrame();
     }
 
-    await sleep(Math.max(18,frameMs));
+    await sleep(frameMs);
 
     let nextDeadline=performance.now();
 
@@ -630,7 +634,7 @@
         activeTrack.requestFrame();
       }
 
-      if(i%10===0 || i===frameCount-1){
+      if(i%30===0 || i===frameCount-1){
         status.textContent=`MP4 만드는 중 · ${i+1} / ${frameCount}`;
       }
 
@@ -641,10 +645,9 @@
       if(wait>0){
         await sleep(wait);
       }else{
-        // 렌더링이 잠깐 늦더라도 이벤트 루프에 한 번 양보해서
-        // 여러 프레임이 한꺼번에 붙는 현상을 막아요.
+        // 한 프레임이 늦어도 타임라인 자체를 뒤로 밀지 않아요.
+        // 다음 프레임의 영상 시간은 계속 정확히 1/30초 간격을 유지해요.
         await sleep(0);
-        nextDeadline=performance.now();
       }
     }
 
@@ -998,10 +1001,10 @@
         if(state.postVisible)drawMotion(ctx,state,t,'post',drawPost,final);
         drawCommission(ctx,state);return canvas;
       }
-      window.PairExportRenderer={version:'20261007-31',captureState,render};
+      window.PairExportRenderer={version:'20261007-32',captureState,render};
   }
 
-  const EXPECTED_RENDERER_VERSION='20261007-31';
+  const EXPECTED_RENDERER_VERSION='20261007-32';
   let rendererLoadPromise=null;
   async function ensureExportRenderer(){
     if(
