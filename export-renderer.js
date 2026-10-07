@@ -35,15 +35,33 @@
 
   function fitImage(ctx,img,r,fit='cover',zoom=1,ox=0,oy=0,radius=0){
     if(!img || !img.complete || !img.naturalWidth || !img.naturalHeight) return;
-    const nw=img.naturalWidth, nh=img.naturalHeight;
-    const base=fit==='contain'?Math.min(r.w/nw,r.h/nh):Math.max(r.w/nw,r.h/nh);
-    const dw=nw*base*zoom, dh=nh*base*zoom;
+
+    const nw=img.naturalWidth;
+    const nh=img.naturalHeight;
+
+    const base=
+      fit==='contain'
+        ? Math.min(r.w/nw,r.h/nh)
+        : Math.max(r.w/nw,r.h/nh);
+
+    const dw=nw*base*zoom;
+    const dh=nh*base*zoom;
+
     ctx.save();
+
     if(radius){
       rr(ctx,r.x,r.y,r.w,r.h,radius);
       ctx.clip();
     }
-    ctx.drawImage(img,r.x+r.w/2+ox-dw/2,r.y+r.h/2+oy-dh/2,dw,dh);
+
+    ctx.drawImage(
+      img,
+      r.x+r.w/2+ox-dw/2,
+      r.y+r.h/2+oy-dh/2,
+      dw,
+      dh
+    );
+
     ctx.restore();
   }
 
@@ -51,7 +69,17 @@
     ctx.font=`${weight} ${size}px Inter, Pretendard, Arial, sans-serif`;
   }
 
-  function drawText(ctx,text,x,y,size,weight,color='white',align='left',baseline='alphabetic'){
+  function drawText(
+    ctx,
+    text,
+    x,
+    y,
+    size,
+    weight,
+    color='white',
+    align='left',
+    baseline='alphabetic'
+  ){
     ctx.save();
     font(ctx,size,weight);
     ctx.fillStyle=color;
@@ -66,7 +94,10 @@
 
   function measureTextWidth(text,size=14,weight=500){
     if(!measureCtx) return (text||'').length*size*.58;
-    measureCtx.font=`${weight} ${size}px Inter, Pretendard, Arial, sans-serif`;
+
+    measureCtx.font=
+      `${weight} ${size}px Inter, Pretendard, Arial, sans-serif`;
+
     return measureCtx.measureText(text||'').width;
   }
 
@@ -75,8 +106,23 @@
     const f=s.duration/5;
     const start=s.timeline.searchStart+.32*f;
     const available=Math.max(.25,s.duration-start-.18*f);
-    const speed=Math.max(s.controls.typingSpeed||18,full.length/available);
-    const count=final?full.length:clamp(Math.floor(Math.max(0,t-start)*speed),0,full.length);
+
+    const speed=Math.max(
+      s.controls.typingSpeed||18,
+      full.length/available
+    );
+
+    const count=
+      final
+        ? full.length
+        : clamp(
+            Math.floor(
+              Math.max(0,t-start)*speed
+            ),
+            0,
+            full.length
+          );
+
     const text=full.slice(0,count);
 
     return {
@@ -85,7 +131,9 @@
         88,
         Math.min(
           300,
-          Math.ceil(measureTextWidth(text,14,500)+86)
+          Math.ceil(
+            measureTextWidth(text,14,500)+86
+          )
         )
       )
     };
@@ -96,8 +144,23 @@
     const f=s.duration/5;
     const start=s.timeline.postStart+.28*f;
     const available=Math.max(.25,s.duration-start-.18*f);
-    const speed=Math.max(s.controls.postTypingSpeed||16,full.length/available);
-    const count=final?full.length:clamp(Math.floor(Math.max(0,t-start)*speed),0,full.length);
+
+    const speed=Math.max(
+      s.controls.postTypingSpeed||16,
+      full.length/available
+    );
+
+    const count=
+      final
+        ? full.length
+        : clamp(
+            Math.floor(
+              Math.max(0,t-start)*speed
+            ),
+            0,
+            full.length
+          );
+
     return full.slice(0,count);
   }
 
@@ -113,31 +176,48 @@
     }
 
     const target=meta.value;
-    const startDays=Math.max(1,s.controls.ddayStartDays||5);
-    const startValue=Math.max(0,target-startDays);
-    const stepDur=s.controls.ddayFlipSpeed||.13;
-
-    const elapsed=Math.max(
-      0,
-      t-(s.timeline.ddayStart+.38*(s.duration/5))
+    const startDays=Math.max(
+      1,
+      s.controls.ddayStartDays||5
     );
 
-    const maxSteps=Math.min(startDays,target);
-    const steps=Math.min(
-      maxSteps,
-      Math.floor(elapsed/stepDur)
-    );
+    const startValue=
+      Math.max(0,target-startDays);
 
-    const value=Math.min(
-      target,
-      startValue+steps
-    );
+    const stepDur=
+      s.controls.ddayFlipSpeed||.13;
 
-    const phase=clamp(
-      (elapsed-steps*stepDur)/stepDur
-    );
+    const elapsed=
+      Math.max(
+        0,
+        t-(
+          s.timeline.ddayStart+
+          .38*(s.duration/5)
+        )
+      );
 
-    const prefix=meta.prefix||'D+';
+    const maxSteps=
+      Math.min(startDays,target);
+
+    const steps=
+      Math.min(
+        maxSteps,
+        Math.floor(elapsed/stepDur)
+      );
+
+    const value=
+      Math.min(
+        target,
+        startValue+steps
+      );
+
+    const phase=
+      clamp(
+        (elapsed-steps*stepDur)/stepDur
+      );
+
+    const prefix=
+      meta.prefix||'D+';
 
     return {
       text:`${prefix}${value}`,
@@ -155,7 +235,9 @@
 
     if(img && img.complete && img.naturalWidth){
       ctx.save();
-      ctx.filter='saturate(.85) brightness(.78)';
+
+      ctx.filter=
+        'saturate(.85) brightness(.78)';
 
       fitImage(
         ctx,
@@ -170,7 +252,11 @@
 
       ctx.restore();
     } else {
-      const g=ctx.createLinearGradient(0,0,s.w,s.h);
+      const g=
+        ctx.createLinearGradient(
+          0,0,s.w,s.h
+        );
+
       g.addColorStop(0,'#cfd2d9');
       g.addColorStop(.45,'#929aa6');
       g.addColorStop(1,'#4d5159');
@@ -179,10 +265,25 @@
       ctx.fillRect(0,0,s.w,s.h);
     }
 
-    const ov=ctx.createLinearGradient(0,0,0,s.h);
-    ov.addColorStop(0,'rgba(9,10,14,.18)');
-    ov.addColorStop(.6,'rgba(7,8,11,.26)');
-    ov.addColorStop(1,'rgba(6,7,10,.45)');
+    const ov=
+      ctx.createLinearGradient(
+        0,0,0,s.h
+      );
+
+    ov.addColorStop(
+      0,
+      'rgba(9,10,14,.18)'
+    );
+
+    ov.addColorStop(
+      .6,
+      'rgba(7,8,11,.26)'
+    );
+
+    ov.addColorStop(
+      1,
+      'rgba(6,7,10,.45)'
+    );
 
     ctx.fillStyle=ov;
     ctx.fillRect(0,0,s.w,s.h);
@@ -193,18 +294,38 @@
     const sc=s.rects.screen;
 
     ctx.save();
-    rr(ctx,p.x,p.y,p.w,p.h,51);
-    ctx.fillStyle='rgba(214,220,230,.24)';
+
+    rr(
+      ctx,
+      p.x,p.y,p.w,p.h,
+      51
+    );
+
+    ctx.fillStyle=
+      'rgba(214,220,230,.24)';
+
     ctx.fill();
+
     ctx.lineWidth=1.2;
-    ctx.strokeStyle='rgba(255,255,255,.52)';
+
+    ctx.strokeStyle=
+      'rgba(255,255,255,.52)';
+
     ctx.stroke();
+
     ctx.restore();
 
     ctx.save();
-    rr(ctx,sc.x,sc.y,sc.w,sc.h,44);
+
+    rr(
+      ctx,
+      sc.x,sc.y,sc.w,sc.h,
+      44
+    );
+
     ctx.fillStyle='#77808d';
     ctx.fill();
+
     ctx.restore();
 
     fitImage(
@@ -218,16 +339,45 @@
       44
     );
 
-    const shade=ctx.createLinearGradient(0,sc.y,0,sc.y+sc.h);
-    shade.addColorStop(0,'rgba(0,0,0,.05)');
-    shade.addColorStop(.45,'rgba(0,0,0,0)');
-    shade.addColorStop(1,'rgba(0,0,0,.15)');
+    const shade=
+      ctx.createLinearGradient(
+        0,sc.y,0,sc.y+sc.h
+      );
+
+    shade.addColorStop(
+      0,
+      'rgba(0,0,0,.05)'
+    );
+
+    shade.addColorStop(
+      .45,
+      'rgba(0,0,0,0)'
+    );
+
+    shade.addColorStop(
+      1,
+      'rgba(0,0,0,.15)'
+    );
 
     ctx.save();
-    rr(ctx,sc.x,sc.y,sc.w,sc.h,44);
+
+    rr(
+      ctx,
+      sc.x,sc.y,sc.w,sc.h,
+      44
+    );
+
     ctx.clip();
+
     ctx.fillStyle=shade;
-    ctx.fillRect(sc.x,sc.y,sc.w,sc.h);
+
+    ctx.fillRect(
+      sc.x,
+      sc.y,
+      sc.w,
+      sc.h
+    );
+
     ctx.restore();
 
     const island={
@@ -238,9 +388,19 @@
     };
 
     ctx.save();
-    rr(ctx,island.x,island.y,island.w,island.h,12);
+
+    rr(
+      ctx,
+      island.x,
+      island.y,
+      island.w,
+      island.h,
+      12
+    );
+
     ctx.fillStyle='#050608';
     ctx.fill();
+
     ctx.restore();
   }
 
@@ -255,7 +415,12 @@
       h:base.h
     };
 
-    glass(ctx,r,s.glassAlpha,29);
+    glass(
+      ctx,
+      r,
+      s.glassAlpha,
+      29
+    );
 
     if(st.text){
       drawText(
@@ -275,16 +440,31 @@
     const cy=r.y+r.h/2;
 
     ctx.save();
-    ctx.strokeStyle='rgba(255,255,255,.92)';
+
+    ctx.strokeStyle=
+      'rgba(255,255,255,.92)';
+
     ctx.lineWidth=2;
 
     ctx.beginPath();
-    ctx.arc(cx-2,cy-1,8,0,Math.PI*2);
+    ctx.arc(
+      cx-2,
+      cy-1,
+      8,
+      0,
+      Math.PI*2
+    );
     ctx.stroke();
 
     ctx.beginPath();
-    ctx.moveTo(cx+4,cy+5);
-    ctx.lineTo(cx+10,cy+11);
+    ctx.moveTo(
+      cx+4,
+      cy+5
+    );
+    ctx.lineTo(
+      cx+10,
+      cy+11
+    );
     ctx.stroke();
 
     ctx.restore();
@@ -292,9 +472,19 @@
 
   function drawDday(ctx,s,t,final=false){
     const r=s.rects.dday;
-    const ds=ddayState(s,t,final);
+    const ds=
+      ddayState(
+        s,
+        t,
+        final
+      );
 
-    glass(ctx,r,s.glassAlpha,27);
+    glass(
+      ctx,
+      r,
+      s.glassAlpha,
+      27
+    );
 
     drawText(
       ctx,
@@ -306,12 +496,14 @@
       'rgba(255,255,255,.72)'
     );
 
-    const centerY=r.y+53;
+    const centerY=
+      r.y+53;
 
     ctx.save();
 
     if(ds.flipping){
-      const p=clamp(ds.phase);
+      const p=
+        clamp(ds.phase);
 
       const sy=
         p<.55
@@ -320,13 +512,28 @@
 
       ctx.globalAlpha=
         .45+
-        .55*easeOutCubic(
-          Math.min(1,p/.55)
+        .55*
+        easeOutCubic(
+          Math.min(
+            1,
+            p/.55
+          )
         );
 
-      ctx.translate(r.x+17,centerY);
-      ctx.scale(1,sy);
-      ctx.translate(-(r.x+17),-centerY);
+      ctx.translate(
+        r.x+17,
+        centerY
+      );
+
+      ctx.scale(
+        1,
+        sy
+      );
+
+      ctx.translate(
+        -(r.x+17),
+        -centerY
+      );
     }
 
     drawText(
@@ -348,7 +555,9 @@
         .22*
         (
           1-
-          Math.abs(.5-ds.phase)*2
+          Math.abs(
+            .5-ds.phase
+          )*2
         );
 
       ctx.fillStyle='#fff';
@@ -356,7 +565,10 @@
       ctx.fillRect(
         r.x+17,
         r.y+42,
-        Math.min(86,r.w-34),
+        Math.min(
+          86,
+          r.w-34
+        ),
         1
       );
 
@@ -383,13 +595,16 @@
     for(let i=0;i<4;i++){
       const wave=
         .5+
-        .5*Math.sin(
+        .5*
+        Math.sin(
           t*(5.6+i*.7)+i*1.7
         );
 
-      const h=4+wave*9;
+      const h=
+        4+wave*9;
 
-      ctx.fillStyle='rgba(255,255,255,.82)';
+      ctx.fillStyle=
+        'rgba(255,255,255,.82)';
 
       rr(
         ctx,
@@ -407,7 +622,12 @@
   function drawMusic(ctx,s,t=0){
     const r=s.rects.music;
 
-    glass(ctx,r,s.glassAlpha,28);
+    glass(
+      ctx,
+      r,
+      s.glassAlpha,
+      28
+    );
 
     const c=s.rects.cover;
 
@@ -422,7 +642,8 @@
       20
     );
 
-    const tx=c.x+c.w+14;
+    const tx=
+      c.x+c.w+14;
 
     drawText(
       ctx,
@@ -451,13 +672,29 @@
     const eqX=playCx-34;
     const barX=tx;
     const barY=r.y+69;
-    const barW=Math.max(28,eqX-10-barX);
 
-    ctx.fillStyle='rgba(255,255,255,.28)';
-    rr(ctx,barX,barY-1.5,barW,3,2);
+    const barW=
+      Math.max(
+        28,
+        eqX-10-barX
+      );
+
+    ctx.fillStyle=
+      'rgba(255,255,255,.28)';
+
+    rr(
+      ctx,
+      barX,
+      barY-1.5,
+      barW,
+      3,
+      2
+    );
+
     ctx.fill();
 
     ctx.fillStyle='#fff';
+
     rr(
       ctx,
       barX,
@@ -466,21 +703,53 @@
       3,
       2
     );
+
     ctx.fill();
 
-    drawEqualizer(ctx,eqX,barY,t);
+    drawEqualizer(
+      ctx,
+      eqX,
+      barY,
+      t
+    );
 
     ctx.beginPath();
-    ctx.arc(playCx,playCy,playR,0,Math.PI*2);
-    ctx.fillStyle='rgba(255,255,255,.90)';
+
+    ctx.arc(
+      playCx,
+      playCy,
+      playR,
+      0,
+      Math.PI*2
+    );
+
+    ctx.fillStyle=
+      'rgba(255,255,255,.90)';
+
     ctx.fill();
 
     ctx.fillStyle='#17181c';
 
-    rr(ctx,playCx-4.5,playCy-5,3,10,1);
+    rr(
+      ctx,
+      playCx-4.5,
+      playCy-5,
+      3,
+      10,
+      1
+    );
+
     ctx.fill();
 
-    rr(ctx,playCx+1.5,playCy-5,3,10,1);
+    rr(
+      ctx,
+      playCx+1.5,
+      playCy-5,
+      3,
+      10,
+      1
+    );
+
     ctx.fill();
 
     drawText(
@@ -504,12 +773,20 @@
       'right'
     );
 
-    let yy=r.y+114;
+    let yy=
+      r.y+114;
 
-    for(let i=0;i<s.queue.length;i++){
-      const q=s.queue[i];
+    for(
+      let i=0;
+      i<s.queue.length;
+      i++
+    ){
+      const q=
+        s.queue[i];
 
-      ctx.fillStyle='rgba(255,255,255,.16)';
+      ctx.fillStyle=
+        'rgba(255,255,255,.16)';
+
       ctx.fillRect(
         r.x+14,
         yy-7,
@@ -555,8 +832,11 @@
   function drawPost(ctx,s,t,final=false){
     if(!s.postVisible) return;
 
-    const imgR=s.rects.postImage;
-    const titleR=s.rects.postTitle;
+    const imgR=
+      s.rects.postImage;
+
+    const titleR=
+      s.rects.postTitle;
 
     fitImage(
       ctx,
@@ -572,11 +852,19 @@
     glass(
       ctx,
       titleR,
-      Math.min(.26,s.glassAlpha+.02),
+      Math.min(
+        .26,
+        s.glassAlpha+.02
+      ),
       16
     );
 
-    const title=postState(s,t,final);
+    const title=
+      postState(
+        s,
+        t,
+        final
+      );
 
     if(title){
       drawText(
@@ -594,93 +882,229 @@
   }
 
   function drawCommission(ctx,s){
-    if(s.text.commission){
-      drawText(
-        ctx,
-        s.text.commission,
-        12,
-        s.h-10,
-        9,
-        500,
-        'rgba(255,255,255,.65)'
-      );
-    }
+    const text=
+      (s.text.commission||'').trim();
+
+    if(!text) return;
+
+    ctx.save();
+
+    ctx.font=
+      '600 10px Inter, Pretendard, Arial, sans-serif';
+
+    ctx.textAlign='left';
+    ctx.textBaseline='bottom';
+
+    ctx.fillStyle=
+      'rgba(255,255,255,.96)';
+
+    ctx.shadowColor=
+      'rgba(0,0,0,.72)';
+
+    ctx.shadowBlur=5;
+    ctx.shadowOffsetX=0;
+    ctx.shadowOffsetY=1.5;
+
+    ctx.fillText(
+      text,
+      14,
+      s.h-14
+    );
+
+    ctx.restore();
   }
 
   function loadImage(src){
-    return new Promise(resolve=>{
-      if(!src){
-        resolve(null);
-        return;
+    return new Promise(
+      resolve=>{
+        if(!src){
+          resolve(null);
+          return;
+        }
+
+        const img=
+          new Image();
+
+        img.onload=
+          ()=>resolve(img);
+
+        img.onerror=
+          ()=>resolve(null);
+
+        img.src=src;
       }
-
-      const img=new Image();
-
-      img.onload=()=>resolve(img);
-      img.onerror=()=>resolve(null);
-      img.src=src;
-    });
+    );
   }
 
   async function captureState(opts={}){
     const root=$('#capture');
-    const rootRect=root.getBoundingClientRect();
-    const glassValue=num('glassOpacity',34);
+
+    const rootRect=
+      root.getBoundingClientRect();
+
+    const glassValue=
+      num(
+        'glassOpacity',
+        34
+      );
+
     const queue=[];
 
-    for(let i=1;i<=3;i++){
-      const title=val(`queueTitle${i}`);
-      const artist=val(`queueArtist${i}`);
+    for(
+      let i=1;
+      i<=3;
+      i++
+    ){
+      const title=
+        val(
+          `queueTitle${i}`
+        );
+
+      const artist=
+        val(
+          `queueArtist${i}`
+        );
 
       if(title||artist){
         queue.push({
-          title:title||'Untitled',
-          artist:artist||'Unknown'
+          title:
+            title||
+            'Untitled',
+          artist:
+            artist||
+            'Unknown'
         });
       }
     }
 
-    const [bg,main,cover,post]=
+    const [
+      bg,
+      main,
+      cover,
+      post
+    ]=
       await Promise.all([
-        loadImage(window.__pairBgSrc||''),
-        loadImage($('#mainImage')?.src||''),
-        loadImage($('#coverImage')?.src||''),
-        loadImage($('#postImage')?.src||'')
+        loadImage(
+          window.__pairBgSrc||''
+        ),
+        loadImage(
+          $('#mainImage')?.src||''
+        ),
+        loadImage(
+          $('#coverImage')?.src||''
+        ),
+        loadImage(
+          $('#postImage')?.src||''
+        )
       ]);
 
-    const dur=num('duration',5);
-    const f=dur/5;
-    const ddayEl=$('#ddayWidget');
+    const dur=
+      num(
+        'duration',
+        5
+      );
+
+    const f=
+      dur/5;
+
+    const ddayEl=
+      $('#ddayWidget');
 
     return {
       w:540,
-      h:opts.height||Math.round(rootRect.height),
-      duration:dur,
-      effect:val('animEffect')||'pop',
 
-      glassAlpha:clamp(
-        .10+glassValue/100*.34,
-        .12,
-        .34
-      ),
+      h:
+        opts.height||
+        Math.round(
+          rootRect.height
+        ),
+
+      duration:dur,
+
+      effect:
+        val(
+          'animEffect'
+        )||
+        'pop',
+
+      glassAlpha:
+        clamp(
+          .10+
+          glassValue/
+          100*
+          .34,
+          .12,
+          .34
+        ),
 
       timeline:{
-        searchStart:.42*f,
-        musicStart:1.22*f,
-        ddayStart:2.12*f,
-        postStart:3.05*f
+        searchStart:
+          .42*f,
+
+        musicStart:
+          1.22*f,
+
+        ddayStart:
+          2.12*f,
+
+        postStart:
+          3.05*f
       },
 
       rects:{
-        phone:localRect($('#phone'),rootRect),
-        screen:localRect($('.screen'),rootRect),
-        search:localRect($('#searchWidget'),rootRect),
-        dday:localRect(ddayEl,rootRect),
-        music:localRect($('#musicWidget'),rootRect),
-        cover:localRect($('.cover'),rootRect),
-        post:localRect($('#postWidget'),rootRect),
-        postImage:localRect($('.post-image'),rootRect),
-        postTitle:localRect($('.post-title'),rootRect)
+        phone:
+          localRect(
+            $('#phone'),
+            rootRect
+          ),
+
+        screen:
+          localRect(
+            $('.screen'),
+            rootRect
+          ),
+
+        search:
+          localRect(
+            $('#searchWidget'),
+            rootRect
+          ),
+
+        dday:
+          localRect(
+            ddayEl,
+            rootRect
+          ),
+
+        music:
+          localRect(
+            $('#musicWidget'),
+            rootRect
+          ),
+
+        cover:
+          localRect(
+            $('.cover'),
+            rootRect
+          ),
+
+        post:
+          localRect(
+            $('#postWidget'),
+            rootRect
+          ),
+
+        postImage:
+          localRect(
+            $('.post-image'),
+            rootRect
+          ),
+
+        postTitle:
+          localRect(
+            $('.post-title'),
+            rootRect
+          )
       },
 
       images:{
@@ -692,32 +1116,89 @@
 
       queue,
 
-      postVisible:visible($('#postWidget')),
+      postVisible:
+        visible(
+          $('#postWidget')
+        ),
 
       controls:{
-        bgZoom:num('bgZoom',1),
-        bgX:num('bgX'),
-        bgY:num('bgY'),
+        bgZoom:
+          num(
+            'bgZoom',
+            1
+          ),
 
-        mainZoom:num('zoom',1),
-        mainX:num('posX'),
-        mainY:num('posY'),
+        bgX:
+          num('bgX'),
 
-        coverZoom:num('coverZoom',1),
-        coverX:num('coverX'),
-        coverY:num('coverY'),
+        bgY:
+          num('bgY'),
 
-        postZoom:num('postZoom',1),
-        postX:num('postX'),
-        postY:num('postY'),
+        mainZoom:
+          num(
+            'zoom',
+            1
+          ),
 
-        progress:num('progress',42),
+        mainX:
+          num('posX'),
 
-        typingSpeed:num('typingSpeed',18),
-        postTypingSpeed:num('postTypingSpeed',16),
+        mainY:
+          num('posY'),
 
-        ddayFlipSpeed:num('ddayFlipSpeed',.13),
-        ddayStartDays:num('ddayStartDays',5)
+        coverZoom:
+          num(
+            'coverZoom',
+            1
+          ),
+
+        coverX:
+          num('coverX'),
+
+        coverY:
+          num('coverY'),
+
+        postZoom:
+          num(
+            'postZoom',
+            1
+          ),
+
+        postX:
+          num('postX'),
+
+        postY:
+          num('postY'),
+
+        progress:
+          num(
+            'progress',
+            42
+          ),
+
+        typingSpeed:
+          num(
+            'typingSpeed',
+            18
+          ),
+
+        postTypingSpeed:
+          num(
+            'postTypingSpeed',
+            16
+          ),
+
+        ddayFlipSpeed:
+          num(
+            'ddayFlipSpeed',
+            .13
+          ),
+
+        ddayStartDays:
+          num(
+            'ddayStartDays',
+            5
+          )
       },
 
       text:{
@@ -726,35 +1207,61 @@
           txt('#searchTextOut'),
 
         ddayLabel:
-          txt('#ddayLabelOut'),
+          txt(
+            '#ddayLabelOut'
+          ),
 
         ddayCount:
           ddayEl?.dataset.finalText||
-          txt('#ddayCount'),
+          txt(
+            '#ddayCount'
+          ),
 
         ddayDate:
-          visible($('#ddayDateOut'))
-            ? txt('#ddayDateOut')
+          visible(
+            $('#ddayDateOut')
+          )
+            ? txt(
+                '#ddayDateOut'
+              )
             : '',
 
         song:
-          txt('#songOut'),
+          txt(
+            '#songOut'
+          ),
 
         artist:
-          txt('#artistOut'),
+          txt(
+            '#artistOut'
+          ),
 
         current:
-          txt('#currentTimeOut'),
+          txt(
+            '#currentTimeOut'
+          ),
 
         duration:
-          txt('#durationTimeOut'),
+          txt(
+            '#durationTimeOut'
+          ),
 
         postTitle:
-          val('postCaption')||
-          txt('#postCaptionOut'),
+          val(
+            'postCaption'
+          )||
+          txt(
+            '#postCaptionOut'
+          ),
 
         commission:
-          val('commissionText')
+          (
+            (
+              $('#commissionText')?.value||
+              $('#commissionCredit')?.textContent||
+              ''
+            ).trim()
+          )
       },
 
       dday:{
@@ -767,13 +1274,15 @@
           ),
 
         prefix:
-          ddayEl?.dataset.prefix||'D+'
+          ddayEl?.dataset.prefix||
+          'D+'
       }
     };
   }
 
   function motionProgress(s,t,name){
-    const f=s.duration/5;
+    const f=
+      s.duration/5;
 
     const starts={
       search:.42*f,
@@ -790,13 +1299,20 @@
     };
 
     return clamp(
-      (t-starts[name])/
-      Math.max(.001,lens[name])
+      (
+        t-
+        starts[name]
+      )/
+      Math.max(
+        .001,
+        lens[name]
+      )
     );
   }
 
   function motionTransform(effect,p){
-    const q=easeOutCubic(p);
+    const q=
+      easeOutCubic(p);
 
     if(effect==='snap'){
       return {
@@ -809,7 +1325,9 @@
     if(effect==='fade'){
       return {
         alpha:q,
-        scale:.985+.015*q,
+        scale:
+          .985+
+          .015*q,
         dy:0
       };
     }
@@ -818,51 +1336,93 @@
       return {
         alpha:q,
         scale:1,
-        dy:30*(1-q)
+        dy:
+          30*
+          (1-q)
       };
     }
 
     const overshoot=
       .15*
       Math.sin(
-        Math.PI*clamp(p)
+        Math.PI*
+        clamp(p)
       )*
-      Math.exp(-1.35*p);
+      Math.exp(
+        -1.35*p
+      );
 
     return {
-      alpha:clamp(p*1.8),
-      scale:.70+.30*q+overshoot,
-      dy:14*(1-q)
+      alpha:
+        clamp(
+          p*1.8
+        ),
+
+      scale:
+        .70+
+        .30*q+
+        overshoot,
+
+      dy:
+        14*
+        (1-q)
     };
   }
 
-  function drawMotion(ctx,s,t,name,fn,final=false){
+  function drawMotion(
+    ctx,
+    s,
+    t,
+    name,
+    fn,
+    final=false
+  ){
     if(final){
-      fn(ctx,s,t,true);
+      fn(
+        ctx,
+        s,
+        t,
+        true
+      );
       return;
     }
 
-    const p=motionProgress(s,t,name);
+    const p=
+      motionProgress(
+        s,
+        t,
+        name
+      );
 
     if(p<=0) return;
 
-    const m=motionTransform(
-      s.effect||'pop',
-      p
-    );
+    const m=
+      motionTransform(
+        s.effect||
+        'pop',
+        p
+      );
 
-    const r=s.rects[name];
+    const r=
+      s.rects[name];
 
     ctx.save();
 
-    ctx.globalAlpha*=m.alpha;
+    ctx.globalAlpha*=
+      m.alpha;
 
-    const cx=r.x+r.w/2;
-    const cy=r.y+r.h/2;
+    const cx=
+      r.x+
+      r.w/2;
+
+    const cy=
+      r.y+
+      r.h/2;
 
     ctx.translate(
       cx,
-      cy+m.dy
+      cy+
+      m.dy
     );
 
     ctx.scale(
@@ -875,7 +1435,12 @@
       -cy
     );
 
-    fn(ctx,s,t,false);
+    fn(
+      ctx,
+      s,
+      t,
+      false
+    );
 
     ctx.restore();
   }
@@ -883,32 +1448,57 @@
   function render(
     state,
     t,
-    {final=false,scale=1}={}
+    {
+      final=false,
+      scale=1
+    }={}
   ){
-    scale=Math.max(
-      1,
-      Number(scale)||1
-    );
+    scale=
+      Math.max(
+        1,
+        Number(scale)||1
+      );
 
     const c=
-      document.createElement('canvas');
+      document.createElement(
+        'canvas'
+      );
 
     c.width=
-      Math.round(state.w*scale);
+      Math.round(
+        state.w*scale
+      );
 
     c.height=
-      Math.round(state.h*scale);
+      Math.round(
+        state.h*scale
+      );
 
     const ctx=
-      c.getContext('2d');
+      c.getContext(
+        '2d'
+      );
 
-    ctx.imageSmoothingEnabled=true;
-    ctx.imageSmoothingQuality='high';
+    ctx.imageSmoothingEnabled=
+      true;
 
-    ctx.scale(scale,scale);
+    ctx.imageSmoothingQuality=
+      'high';
 
-    drawBackground(ctx,state);
-    drawPhone(ctx,state);
+    ctx.scale(
+      scale,
+      scale
+    );
+
+    drawBackground(
+      ctx,
+      state
+    );
+
+    drawPhone(
+      ctx,
+      state
+    );
 
     drawMotion(
       ctx,
@@ -937,7 +1527,9 @@
       final
     );
 
-    if(state.postVisible){
+    if(
+      state.postVisible
+    ){
       drawMotion(
         ctx,
         state,
@@ -948,13 +1540,16 @@
       );
     }
 
-    drawCommission(ctx,state);
+    drawCommission(
+      ctx,
+      state
+    );
 
     return c;
   }
 
   window.PairExportRenderer={
-    version:'20261007-16',
+    version:'20261007-17',
     captureState,
     render
   };
