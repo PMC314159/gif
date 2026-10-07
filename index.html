@@ -7,7 +7,7 @@
   <title>PAIR GLASS GIF</title>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gif.js.optimized@1.0.1/dist/gif.js"></script>
-  <script src="./export-renderer.js?v=20261007-15" onerror="console.warn('export-renderer.js not found; expert-renderer.js and embedded fallback will be tried')"></script>
+  <script src="./export-renderer.js?v=20261007-16" onerror="console.warn('export-renderer.js not found; expert-renderer.js and embedded fallback will be tried')"></script>
   <style>
     *{box-sizing:border-box}
     html,body{margin:0;min-height:100%;background:#0e0f13;color:#f7f7f7;font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Pretendard","Noto Sans KR",Segoe UI,sans-serif}
@@ -81,6 +81,7 @@
         <div class="grid2"><div class="field"><label>라벨</label><input id="ddayLabel" type="text" value="OUR DAY"></div><div class="field"><label>기념일 날짜</label><input id="ddayDate" type="date"></div></div>
         <div class="field"><label>숫자 아래 날짜 / 짧은 문구</label><input id="ddaySubtext" type="text" value="" placeholder="비우면 이 줄은 숨겨져요"></div>
         <div class="field"><label>숫자 넘김 속도</label><div class="range-row"><input id="ddayFlipSpeed" type="range" min="0.06" max="0.40" step="0.01" value="0.13"><span class="value" id="ddayFlipSpeedV">0.13s</span></div></div>
+        <div class="field"><label>몇 일 전부터 넘기기</label><div class="range-row"><input id="ddayStartDays" type="range" min="1" max="30" step="1" value="5"><span class="value" id="ddayStartDaysV">5일</span></div></div>
         <div class="field"><label>날짜를 선택하면 오늘 기준으로 자동 계산됩니다 · 999일 초과 시 999+</label></div>
         <div class="subhead">위젯 위치</div>
         <div class="grid2"><div class="field"><label>가로</label><input id="ddayWX" type="range" min="-180" max="180" value="0"></div><div class="field"><label>세로</label><input id="ddayWY" type="range" min="-220" max="220" value="0"></div></div>
@@ -117,7 +118,7 @@
       <details class="section accordion"><summary class="section-title">Credit</summary><div class="section-body">
         <div class="field"><label>왼쪽 아래 커미션주</label><input id="commissionText" type="text" maxlength="80" value="" placeholder="예: commission by @name"></div>
       </div></details>
-      <details class="section accordion"><summary class="section-title">Glass & Motion</summary><div class="section-body"><div class="field"><label>위젯 투명도</label><div class="range-row"><input id="glassOpacity" type="range" min="10" max="70" value="34"><span class="value" id="glassV">34%</span></div></div><div class="field"><label>등장 효과</label><select id="animEffect"><option value="pop" selected>팝업 · 살짝 튀어나오기</option><option value="fade">페이드 · 부드럽게 나타나기</option><option value="slide">슬라이드 · 아래에서 위로</option><option value="snap">즉시 · 딱 나타나기</option></select></div><div class="field"><label>전체 GIF 길이</label><div class="range-row"><input id="duration" type="range" min="3.5" max="8" step="0.5" value="5"><span class="value" id="durationV">5.0s</span></div></div><div class="field"><label>FPS</label><select id="fps"><option value="8">8 fps · 가볍게</option><option value="10" selected>10 fps · 추천</option><option value="12">12 fps · 부드럽게</option></select></div><div class="field"><label>GIF 저장 크기</label><select id="gifScale"><option value="1">기본 · 1.00×</option><option value="1.15" selected>조금 크게 · 1.15×</option><option value="1.25">크게 · 1.25×</option></select></div></div></details>
+      <details class="section accordion"><summary class="section-title">Glass & Motion</summary><div class="section-body"><div class="field"><label>위젯 투명도</label><div class="range-row"><input id="glassOpacity" type="range" min="10" max="70" value="34"><span class="value" id="glassV">34%</span></div></div><div class="field"><label>등장 효과</label><select id="animEffect"><option value="pop" selected>팝업 · 살짝 튀어나오기</option><option value="fade">페이드 · 부드럽게 나타나기</option><option value="slide">슬라이드 · 아래에서 위로</option><option value="snap">즉시 · 딱 나타나기</option></select></div><div class="field"><label>전체 GIF 길이</label><div class="range-row"><input id="duration" type="range" min="3.5" max="8" step="0.5" value="5"><span class="value" id="durationV">5.0s</span></div></div><div class="field"><label>FPS</label><select id="fps"><option value="8">8 fps · 가볍게</option><option value="10">10 fps · 보통</option><option value="12">12 fps · 부드럽게</option><option value="15" selected>15 fps · 추천</option></select></div><div class="field"><label>GIF 저장 크기</label><select id="gifScale"><option value="1">기본 · 1.00×</option><option value="1.15">조금 크게 · 1.15×</option><option value="1.25" selected>크게 · 1.25×</option><option value="1.35">아주 크게 · 1.35×</option></select></div></div></details>
       <section class="section"><div class="btns"><button class="ghost" id="replay">↻ 다시 재생</button><button class="ghost" id="savePng">이미지 저장</button><button class="primary" id="saveGif">GIF 저장</button></div><div class="status" id="status">이미지 저장은 모든 위젯이 뜬 최종 장면을 저장합니다.</div></section>
     </aside>
     <section class="stage-wrap"><div class="preview-shell" id="shell"><div id="capture"><div class="bg-layer" id="bgLayer"></div><div class="bg-overlay"></div><div class="noise"></div><div class="scene-content" id="sceneContent"><div class="phone" id="phone"><div class="screen"><img id="mainImage" alt=""><div class="screen-shade"></div></div></div><div class="glass search-widget anim-item" id="searchWidget"><div class="search-text" id="searchTextOut">With suggestions<span class="typing-caret"></span></div><div class="search-icon-wrap"><div class="search-icon"></div></div></div><div class="glass dday anim-item" id="ddayWidget"><div class="label" id="ddayLabelOut">OUR DAY</div><div class="count" id="ddayCount">D+000</div><div class="date" id="ddayDateOut">—</div></div><div class="glass music anim-item" id="musicWidget"><div class="cover"><img id="coverImage" alt=""></div><div class="track"><div class="song" id="songOut">Midnight Hour</div><div class="artist" id="artistOut">Pair Theme</div><div class="timeline"><div class="bar"><i id="barFill"></i></div><div class="eq" aria-hidden="true"><span></span><span></span><span></span><span></span></div><div class="play" aria-label="일시정지"></div></div><div class="time-row"><span id="currentTimeOut">01:31</span><span id="durationTimeOut">03:36</span></div></div><div class="playlist hidden" id="playlistOut"><div class="queue-item hidden" id="queueItem1"><div class="queue-meta"><div class="queue-title" id="queueTitleOut1"></div><div class="queue-artist" id="queueArtistOut1"></div></div><div class="queue-index">02</div></div><div class="queue-item hidden" id="queueItem2"><div class="queue-meta"><div class="queue-title" id="queueTitleOut2"></div><div class="queue-artist" id="queueArtistOut2"></div></div><div class="queue-index">03</div></div><div class="queue-item hidden" id="queueItem3"><div class="queue-meta"><div class="queue-title" id="queueTitleOut3"></div><div class="queue-artist" id="queueArtistOut3"></div></div><div class="queue-index">04</div></div></div></div><div class="post-card anim-item" id="postWidget"><div class="post-inner"><div class="post-image"><img id="postImage" alt=""></div><div class="post-title" id="postCaptionOut">midnight post</div></div></div></div><div class="commission-credit hidden" id="commissionCredit"></div></div></div></section>
@@ -196,10 +197,12 @@
   function setSearchTypingState(elapsed=0,forceFull=false){const full=$('#searchTextInput')?.value||'';const factor=(+$('#duration')?.value||5)/5;const start=.42*factor+.32*factor;const available=Math.max(.25,(+$('#duration')?.value||5)-start-.18*factor);const requested=+$('#typingSpeed')?.value||18;const speed=Math.max(requested,full.length/available);const visible=forceFull?full.length:Math.max(0,Math.min(full.length,Math.floor(Math.max(0,elapsed)*speed)));const shown=full.slice(0,visible);if(searchWidget)searchWidget.style.width=measureSearchWidth(shown)+'px';const out=$('#searchTextOut');if(out)out.innerHTML=`${shown}<span class="typing-caret"></span>`;}
   function setPostTypingState(elapsed=0,forceFull=false){const full=$('#postCaption')?.value||'midnight post';const factor=(+$('#duration')?.value||5)/5;const start=3.05*factor+.28*factor;const available=Math.max(.25,(+$('#duration')?.value||5)-start-.18*factor);const requested=+$('#postTypingSpeed')?.value||16;const speed=Math.max(requested,full.length/available);const visible=forceFull?full.length:Math.max(0,Math.min(full.length,Math.floor(Math.max(0,elapsed)*speed)));const shown=full.slice(0,visible);const out=$('#postCaptionOut');if(out)out.innerHTML=`${shown}${forceFull?'':'<span class="typing-caret"></span>'}`;}
   let lastDdayShown='';
-  function setDdayAnimatedState(elapsed=0,forceFull=false){const count=$('#ddayCount'),finalText=ddayWidget.dataset.finalText||count.textContent||'D+000',animate=ddayWidget.dataset.animate==='1',target=+ddayWidget.dataset.abs||0,prefix=ddayWidget.dataset.prefix||'D+';if(forceFull||!animate){count.textContent=finalText;count.style.transform='';lastDdayShown=finalText;return;}const start=Math.max(0,target-5),stepDur=+$('#ddayFlipSpeed')?.value||.13,steps=Math.min(5,Math.floor(Math.max(0,elapsed)/stepDur)),v=Math.min(target,start+steps),shown=`${prefix}${v}`;if(shown!==lastDdayShown){count.textContent=shown;count.classList.remove('flip-tick');void count.offsetWidth;count.classList.add('flip-tick');lastDdayShown=shown;}}
+  function setDdayAnimatedState(elapsed=0,forceFull=false){const count=$('#ddayCount'),finalText=ddayWidget.dataset.finalText||count.textContent||'D+000',animate=ddayWidget.dataset.animate==='1',target=+ddayWidget.dataset.abs||0,prefix=ddayWidget.dataset.prefix||'D+',startDays=Math.max(1,+$('#ddayStartDays')?.value||5);if(forceFull||!animate){count.textContent=finalText;count.style.transform='';lastDdayShown=finalText;return;}const start=Math.max(0,target-startDays),stepDur=+$('#ddayFlipSpeed')?.value||.13,maxSteps=Math.min(startDays,target),steps=Math.min(maxSteps,Math.floor(Math.max(0,elapsed)/stepDur)),v=Math.min(target,start+steps),shown=`${prefix}${v}`;if(shown!==lastDdayShown){count.textContent=shown;count.classList.remove('flip-tick');void count.offsetWidth;count.classList.add('flip-tick');lastDdayShown=shown;}}
   function updateDdayFlipSpeedUI(){const v=+$('#ddayFlipSpeed')?.value||.13;$('#ddayFlipSpeedV').textContent=v.toFixed(2)+'s';document.documentElement.style.setProperty('--dday-flip-speed',v+'s');}
   $('#ddayFlipSpeed')?.addEventListener('input',()=>{updateDdayFlipSpeedUI();startTime=performance.now();});
-  updateDdayFlipSpeedUI();
+  function updateDdayStartDaysUI(){const v=Math.max(1,+$('#ddayStartDays')?.value||5);$('#ddayStartDaysV').textContent=v+'일';}
+  $('#ddayStartDays')?.addEventListener('input',()=>{updateDdayStartDaysUI();startTime=performance.now();});
+  updateDdayFlipSpeedUI();updateDdayStartDaysUI();
   // 검색창 측정용 canvas가 준비된 뒤 초기 UI를 그린다.
   updateText();
   function updateCanvasLayout(){
@@ -283,7 +286,9 @@
     applyMotion(ddayWidget,pDday,-7,10,dO.x,dO.y,1);setDdayAnimatedState(Math.max(0,t-(ddayStart+ddayCountDelay)),false);
     if(!postWidget.classList.contains('hidden')){applyMotion(postWidget,pPost,7,12,pO.x,pO.y,postScale);setPostTypingState(Math.max(0,t-(postStart+postTypeDelay)),false)}
   }
-  function liveLoop(now){if(exportMode)return;const dur=+$('#duration').value,t=((now-startTime)/1000)%dur;setVisualTime(t);liveRaf=requestAnimationFrame(liveLoop)} liveRaf=requestAnimationFrame(liveLoop);$('#replay').addEventListener('click',()=>{startTime=performance.now();status.textContent='처음부터 다시 재생했어요.'});
+  const FINAL_HOLD=0.6;
+  function getAnimationEndTime(){const dur=+$('#duration').value||5,factor=dur/5,ddayStart=2.12*factor,ddayDelay=.38*factor,startDays=Math.max(1,+$('#ddayStartDays')?.value||5),stepDur=+$('#ddayFlipSpeed')?.value||.13,target=+ddayWidget.dataset.abs||0,steps=ddayWidget.dataset.animate==='1'?Math.min(startDays,target):0,ddayEnd=ddayStart+ddayDelay+(steps+1)*stepDur;return Math.max(dur,ddayEnd);}
+  function liveLoop(now){if(exportMode)return;const endTime=getAnimationEndTime(),cycle=endTime+FINAL_HOLD,raw=((now-startTime)/1000)%cycle,t=Math.min(raw,endTime);setVisualTime(t);liveRaf=requestAnimationFrame(liveLoop)} liveRaf=requestAnimationFrame(liveLoop);$('#replay').addEventListener('click',()=>{startTime=performance.now();status.textContent='처음부터 다시 재생했어요.'});
   async function getWorkerBlobURL(){const url='https://cdn.jsdelivr.net/npm/gif.js.optimized@1.0.1/dist/gif.worker.js',res=await fetch(url);if(!res.ok)throw new Error('GIF worker를 불러오지 못했습니다.');return URL.createObjectURL(await res.blob())}
   function beginNativeCapture(){
     const state={captureTransform:capture.style.transform,shellWidth:shell.style.width,shellHeight:shell.style.height,captureRadius:capture.style.borderRadius,captureHeight:capture.style.height};
@@ -417,14 +422,16 @@
         const meta=s.dday;
         if(!meta || !meta.animate || final) return {text:s.text.ddayCount,phase:1,flipping:false};
         const target=meta.value;
-        const startValue=Math.max(0,target-5);
+        const startDays=Math.max(1,s.controls.ddayStartDays||5);
+        const startValue=Math.max(0,target-startDays);
         const stepDur=s.controls.ddayFlipSpeed||.13;
         const elapsed=Math.max(0,t-(s.timeline.ddayStart+.38*(s.duration/5)));
-        const steps=Math.min(5,Math.floor(elapsed/stepDur));
+        const maxSteps=Math.min(startDays,target);
+        const steps=Math.min(maxSteps,Math.floor(elapsed/stepDur));
         const value=Math.min(target,startValue+steps);
         const phase=clamp((elapsed-steps*stepDur)/stepDur);
         const prefix=meta.prefix||'D+';
-        return {text:`${prefix}${value}`,phase,flipping:value<target, value};
+        return {text:`${prefix}${value}`,phase,flipping:phase<1, value};
       }
     
       function drawBackground(ctx,s){
@@ -466,8 +473,8 @@
         const centerY=r.y+53;
         ctx.save();
         if(ds.flipping){
-          const flip=Math.abs(Math.cos(Math.PI*ds.phase));
-          const sy=.58+.42*flip;
+          const p=clamp(ds.phase),sy=p<.55?.35+.63*easeOutCubic(p/.55):.98+.02*easeOutCubic((p-.55)/.45);
+          ctx.globalAlpha=.45+.55*easeOutCubic(Math.min(1,p/.55));
           ctx.translate(r.x+17,centerY);ctx.scale(1,sy);ctx.translate(-(r.x+17),-centerY);
         }
         drawText(ctx,ds.text,r.x+17,centerY,31,650,'#fff');ctx.restore();
@@ -521,7 +528,7 @@
           timeline:{searchStart:.42*f,musicStart:1.22*f,ddayStart:2.12*f,postStart:3.05*f},
           rects:{phone:localRect($('#phone'),rootRect),screen:localRect($('.screen'),rootRect),search:localRect($('#searchWidget'),rootRect),dday:localRect(ddayEl,rootRect),music:localRect($('#musicWidget'),rootRect),cover:localRect($('.cover'),rootRect),post:localRect($('#postWidget'),rootRect),postImage:localRect($('.post-image'),rootRect),postTitle:localRect($('.post-title'),rootRect)},
           images:{bg,main,cover,post},queue,postVisible:visible($('#postWidget')),
-          controls:{bgZoom:num('bgZoom',1),bgX:num('bgX'),bgY:num('bgY'),mainZoom:num('zoom',1),mainX:num('posX'),mainY:num('posY'),coverZoom:num('coverZoom',1),coverX:num('coverX'),coverY:num('coverY'),postZoom:num('postZoom',1),postX:num('postX'),postY:num('postY'),progress:num('progress',42),typingSpeed:num('typingSpeed',18),postTypingSpeed:num('postTypingSpeed',16),ddayFlipSpeed:num('ddayFlipSpeed',.13)},
+          controls:{bgZoom:num('bgZoom',1),bgX:num('bgX'),bgY:num('bgY'),mainZoom:num('zoom',1),mainX:num('posX'),mainY:num('posY'),coverZoom:num('coverZoom',1),coverX:num('coverX'),coverY:num('coverY'),postZoom:num('postZoom',1),postX:num('postX'),postY:num('postY'),progress:num('progress',42),typingSpeed:num('typingSpeed',18),postTypingSpeed:num('postTypingSpeed',16),ddayFlipSpeed:num('ddayFlipSpeed',.13),ddayStartDays:num('ddayStartDays',5)},
           text:{search:val('searchTextInput')||txt('#searchTextOut'),ddayLabel:txt('#ddayLabelOut'),ddayCount:ddayEl?.dataset.finalText||txt('#ddayCount'),ddayDate:visible($('#ddayDateOut'))?txt('#ddayDateOut'):'',song:txt('#songOut'),artist:txt('#artistOut'),current:txt('#currentTimeOut'),duration:txt('#durationTimeOut'),postTitle:val('postCaption')||txt('#postCaptionOut'),commission:val('commissionText')},
           dday:{animate:ddayEl?.dataset.animate==='1',value:Number(ddayEl?.dataset.abs||0),prefix:ddayEl?.dataset.prefix||'D+'}
         };
@@ -557,18 +564,18 @@
         if(state.postVisible)drawMotion(ctx,state,t,'post',drawPost,final);
         drawCommission(ctx,state);return c;
       }
-      window.PairExportRenderer={version:'20261007-15',captureState,render};
+      window.PairExportRenderer={version:'20261007-16',captureState,render};
   }
 
-  const EXPECTED_RENDERER_VERSION='20261007-15';
+  const EXPECTED_RENDERER_VERSION='20261007-16';
   let rendererLoadPromise=null;
   async function ensureExportRenderer(){
     if(window.PairExportRenderer?.version===EXPECTED_RENDERER_VERSION && window.PairExportRenderer?.captureState && window.PairExportRenderer?.render)return window.PairExportRenderer;
     if(rendererLoadPromise)return rendererLoadPromise;
     rendererLoadPromise=(async()=>{
       const urls=[
-        new URL('export-renderer.js?v=20261007-15',document.baseURI).href,
-        new URL('./export-renderer.js?v=20261007-15',location.href).href,
+        new URL('export-renderer.js?v=20261007-16',document.baseURI).href,
+        new URL('./export-renderer.js?v=20261007-16',location.href).href,
         new URL('expert-renderer.js?v=20261007-15',document.baseURI).href,
         new URL('./expert-renderer.js?v=20261007-15',location.href).href
       ];
@@ -611,10 +618,10 @@
     const btn=$('#saveGif');btn.disabled=true;exportMode=true;if(liveRaf)cancelAnimationFrame(liveRaf);let prep=null,workerScript=null;
     try{
       if(!window.GIF)throw new Error('GIF 라이브러리를 불러오지 못했습니다.');
-      prep=await prepareCanvasExport();const state=prep.state,dur=+$('#duration').value,fps=+$('#fps').value,gifScale=+$('#gifScale').value||1.15,frameCount=Math.max(2,Math.round(dur*fps)),delay=Math.round(1000/fps),gifW=Math.round(state.w*gifScale),gifH=Math.round(state.h*gifScale);
+      prep=await prepareCanvasExport();const state=prep.state,dur=+$('#duration').value,fps=+$('#fps').value,gifScale=+$('#gifScale').value||1.25,endTime=getAnimationEndTime(),totalTime=endTime+FINAL_HOLD,frameCount=Math.max(2,Math.floor(totalTime*fps)+1),delay=Math.round(1000/fps),gifW=Math.round(state.w*gifScale),gifH=Math.round(state.h*gifScale);
       workerScript=await getWorkerBlobURL();const gif=new GIF({workers:2,quality:5,width:gifW,height:gifH,workerScript});
       for(let i=0;i<frameCount;i++){
-        const t=frameCount===1?dur:(i/(frameCount-1))*dur,canvas=window.PairExportRenderer.render(state,t,{scale:gifScale});gif.addFrame(canvas,{copy:true,delay});status.textContent=`GIF 프레임 준비 중 · ${i+1} / ${frameCount}`;
+        const playbackTime=i/fps,t=Math.min(playbackTime,endTime),canvas=window.PairExportRenderer.render(state,t,{scale:gifScale});gif.addFrame(canvas,{copy:true,delay});status.textContent=`GIF 프레임 준비 중 · ${i+1} / ${frameCount}`;
       }
       status.textContent='GIF 압축 중…';gif.on('progress',p=>status.textContent=`GIF 압축 중 · ${Math.round(p*100)}%`);
       gif.on('finished',blob=>{const href=URL.createObjectURL(blob),a=document.createElement('a');a.href=href;a.download='pair-glass.gif';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(href),10000);if(workerScript)URL.revokeObjectURL(workerScript);if(prep)prep.restore();status.textContent='완료! GIF를 저장했어요.';exportMode=false;startTime=performance.now();btn.disabled=false;liveRaf=requestAnimationFrame(liveLoop)});
