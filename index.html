@@ -10,7 +10,7 @@
   <title>PHONE SCREEN MOTION MAKER</title>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gif.js.optimized@1.0.1/dist/gif.js"></script>
-  <script src="./export-renderer.js?v=20261007-28"></script>
+  <script src="./export-renderer.js?v=20261007-29"></script>
   <style>
     *{box-sizing:border-box}
     html,body{margin:0;min-height:100%;background:#0e0f13;color:#f7f7f7;font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Pretendard","Noto Sans KR",Segoe UI,sans-serif}
@@ -290,12 +290,13 @@
     placeWidget('dday',ddayWidget);
     placeWidget('post',postWidget);
   }
-  function applyMotion(el,p,dx,dy,offsetX=0,offsetY=0,scaleMul=1){
+  function applyMotion(el,p,dx,dy,offsetX=0,offsetY=0,scaleMul=1,lockScale=false){
     const effect=$('#animEffect')?.value||'pop',raw=clamp(p),q=easeOutCubic(raw);let alpha=q,x=offsetX,y=offsetY,sc=scaleMul;
     if(effect==='snap'){alpha=raw>0?1:0}
     else if(effect==='fade'){sc=(.985+.015*q)*scaleMul}
     else if(effect==='slide'){y=offsetY+30*(1-q)}
     else{const overshoot=.15*Math.sin(Math.PI*raw)*Math.exp(-1.35*raw);alpha=clamp(raw*1.8);sc=(.70+.30*q+overshoot)*scaleMul;y=offsetY+14*(1-q)}
+    if(lockScale)sc=scaleMul;
     el.style.opacity=alpha.toFixed(3);el.style.transform=`translate(${x}px,${y}px) scale(${sc})`;el.style.filter='none';
   }
   function updateCommission(){const v=($('#commissionText')?.value||'').trim();if(!commissionCredit)return;commissionCredit.textContent=v;commissionCredit.classList.toggle('hidden',!v)}
@@ -393,7 +394,7 @@
 
     const pSearch=reveal(t,searchStart,.62*factor),pMusic=reveal(t,musicStart,.72*factor),pDday=reveal(t,ddayStart,.66*factor),pPost=reveal(t,postStart,.74*factor);
     if(searchWidget){applyMotion(searchWidget,pSearch,-8,8,0,0,1);setSearchTypingState(Math.max(0,t-(searchStart+searchTypeDelay)),false)}
-    applyMotion(musicWidget,pMusic,8,10,0,0,1);
+    applyMotion(musicWidget,pMusic,8,10,0,0,1,true);
     applyMotion(ddayWidget,pDday,-7,10,0,0,1);setDdayAnimatedState(Math.max(0,t-(ddayStart+ddayCountDelay)),false);
     if(!postWidget.classList.contains('hidden')){applyMotion(postWidget,pPost,7,12,0,0,postScale);setPostTypingState(Math.max(0,t-(postStart+postTypeDelay)),false)}
   }
@@ -887,8 +888,8 @@
       function drawMotion(ctx,s,t,name,fn,final=false){
         if(final){fn(ctx,s,t,true);return;}
         const p=motionProgress(s,t,name);if(p<=0)return;
-        const m=motionTransform(s.effect||'pop',p),r=s.rects[name];
-        ctx.save();ctx.globalAlpha*=m.alpha;const cx=r.x+r.w/2,cy=r.y+r.h/2;ctx.translate(cx,cy+m.dy);ctx.scale(m.scale,m.scale);ctx.translate(-cx,-cy);fn(ctx,s,t,false);ctx.restore();
+        const m=motionTransform(s.effect||'pop',p),r=s.rects[name],motionScale=name==='music'?1:m.scale;
+        ctx.save();ctx.globalAlpha*=m.alpha;const cx=r.x+r.w/2,cy=r.y+r.h/2;ctx.translate(cx,cy+m.dy);ctx.scale(motionScale,motionScale);ctx.translate(-cx,-cy);fn(ctx,s,t,false);ctx.restore();
       }
       const renderCache=new WeakMap();
       function getRenderBuffers(state,scale){
@@ -917,10 +918,10 @@
         if(state.postVisible)drawMotion(ctx,state,t,'post',drawPost,final);
         drawCommission(ctx,state);return canvas;
       }
-      window.PairExportRenderer={version:'20261007-28',captureState,render};
+      window.PairExportRenderer={version:'20261007-29',captureState,render};
   }
 
-  const EXPECTED_RENDERER_VERSION='20261007-28';
+  const EXPECTED_RENDERER_VERSION='20261007-29';
   let rendererLoadPromise=null;
   async function ensureExportRenderer(){
     if(
