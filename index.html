@@ -118,9 +118,9 @@
       <details class="section accordion"><summary class="section-title">Credit</summary><div class="section-body">
         <div class="field"><label>왼쪽 아래 커미션주</label><input id="commissionText" type="text" maxlength="80" value="" placeholder="예: commission by @name"></div>
       </div></details>
-      <details class="section accordion"><summary class="section-title">Glass & Motion</summary><div class="section-body"><div class="field"><label>위젯 투명도</label><div class="range-row"><input id="glassOpacity" type="range" min="10" max="70" value="34"><span class="value" id="glassV">34%</span></div></div><div class="field"><label>등장 효과</label><select id="animEffect"><option value="pop" selected>팝업 · 살짝 튀어나오기</option><option value="fade">페이드 · 부드럽게 나타나기</option><option value="slide">슬라이드 · 아래에서 위로</option><option value="snap">즉시 · 딱 나타나기</option></select></div><div class="field"><label>전체 GIF 길이</label><div class="range-row"><input id="duration" type="range" min="3.5" max="8" step="0.5" value="5"><span class="value" id="durationV">5.0s</span></div></div><div class="field"><label>FPS</label><select id="fps"><option value="8">8 fps · 가볍게</option><option value="10">10 fps · 보통</option><option value="12">12 fps · 부드럽게</option><option value="15" selected>15 fps · 추천</option></select></div><div class="field"><label>GIF 저장 크기</label><select id="gifScale"><option value="1">기본 · 1.00×</option><option value="1.15">조금 크게 · 1.15×</option><option value="1.25" selected>크게 · 1.25×</option><option value="1.35">아주 크게 · 1.35×</option></select></div></div></details>
+      <details class="section accordion"><summary class="section-title">Glass & Motion</summary><div class="section-body"><div class="field"><label>위젯 투명도</label><div class="range-row"><input id="glassOpacity" type="range" min="10" max="70" value="34"><span class="value" id="glassV">34%</span></div></div><div class="field"><label>등장 효과</label><select id="animEffect"><option value="pop" selected>팝업 · 살짝 튀어나오기</option><option value="fade">페이드 · 부드럽게 나타나기</option><option value="slide">슬라이드 · 아래에서 위로</option><option value="snap">즉시 · 딱 나타나기</option></select></div><div class="field"><label>전체 애니메이션 길이</label><div class="range-row"><input id="duration" type="range" min="3.5" max="8" step="0.5" value="5"><span class="value" id="durationV">5.0s</span></div></div><div class="field"><label>FPS</label><select id="fps"><option value="8">8 fps · 가볍게</option><option value="10">10 fps · 보통</option><option value="12">12 fps · 부드럽게</option><option value="15" selected>15 fps · 추천</option></select></div><div class="field"><label>GIF 저장 크기</label><select id="gifScale"><option value="1">기본 · 1.00×</option><option value="1.15">조금 크게 · 1.15×</option><option value="1.25" selected>크게 · 1.25×</option><option value="1.35">아주 크게 · 1.35×</option></select></div></div></details>
       <div class="use-notice"><strong>사용 제한</strong>『가비지타임』 성준수 드림과 『괴담에 떨어져도 출근을 해야 하는구나』 이자헌 드림에는 사용 불가능합니다.<br>『귀멸의 칼날』과 『나의 히어로 아카데미아』 장르에는 사용 불가능합니다.</div>
-      <section class="section"><div class="btns"><button class="ghost" id="replay">↻ 다시 재생</button><button class="ghost" id="savePng">이미지 저장</button><button class="primary" id="saveGif">GIF 저장</button><button class="xsave" id="saveGifX">X용 GIF 저장</button></div><div class="status" id="status">이미지 저장은 모든 위젯이 뜬 최종 장면을 저장합니다.</div></section>
+      <section class="section"><div class="btns"><button class="ghost" id="replay">↻ 다시 재생</button><button class="ghost" id="savePng">이미지 저장</button><button class="primary" id="saveGif">GIF 저장</button><button class="xsave" id="saveMp4X">X용 MP4 저장</button></div><div class="status" id="status">이미지 저장은 모든 위젯이 뜬 최종 장면을 저장합니다.</div></section>
     </aside>
     <section class="stage-wrap"><div class="preview-shell" id="shell"><div id="capture"><div class="bg-layer" id="bgLayer"></div><div class="bg-overlay"></div><div class="noise"></div><div class="scene-content" id="sceneContent"><div class="phone" id="phone"><div class="screen"><img id="mainImage" alt=""><div class="screen-shade"></div></div></div><div class="glass search-widget anim-item" id="searchWidget"><div class="search-text" id="searchTextOut">With suggestions<span class="typing-caret"></span></div><div class="search-icon-wrap"><div class="search-icon"></div></div></div><div class="glass dday anim-item" id="ddayWidget"><div class="label" id="ddayLabelOut">OUR DAY</div><div class="count" id="ddayCount">D+000</div><div class="date" id="ddayDateOut">—</div></div><div class="glass music anim-item" id="musicWidget"><div class="cover"><img id="coverImage" alt=""></div><div class="track"><div class="song" id="songOut">Midnight Hour</div><div class="artist" id="artistOut">Pair Theme</div><div class="timeline"><div class="bar"><i id="barFill"></i></div><div class="eq" aria-hidden="true"><span></span><span></span><span></span><span></span></div><div class="play" aria-label="일시정지"></div></div><div class="time-row"><span id="currentTimeOut">01:31</span><span id="durationTimeOut">03:36</span></div></div><div class="playlist hidden" id="playlistOut"><div class="queue-item hidden" id="queueItem1"><div class="queue-meta"><div class="queue-title" id="queueTitleOut1"></div><div class="queue-artist" id="queueArtistOut1"></div></div><div class="queue-index">02</div></div><div class="queue-item hidden" id="queueItem2"><div class="queue-meta"><div class="queue-title" id="queueTitleOut2"></div><div class="queue-artist" id="queueArtistOut2"></div></div><div class="queue-index">03</div></div><div class="queue-item hidden" id="queueItem3"><div class="queue-meta"><div class="queue-title" id="queueTitleOut3"></div><div class="queue-artist" id="queueArtistOut3"></div></div><div class="queue-index">04</div></div></div></div><div class="post-card anim-item" id="postWidget"><div class="post-inner"><div class="post-image"><img id="postImage" alt=""></div><div class="post-title" id="postCaptionOut">midnight post</div></div></div></div><div class="commission-credit hidden" id="commissionCredit"></div></div></div></section>
   </main>
@@ -358,30 +358,48 @@
     a.href=href;a.download=name;document.body.appendChild(a);a.click();a.remove();
     setTimeout(()=>URL.revokeObjectURL(href),10000);
   }
-  function downscaleCanvas(source,scale){
-    if(scale>=.999)return source;
-    const c=document.createElement('canvas');
-    c.width=Math.max(1,Math.round(source.width*scale));
-    c.height=Math.max(1,Math.round(source.height*scale));
-    const ctx=c.getContext('2d');ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';ctx.drawImage(source,0,0,c.width,c.height);
-    return c;
+  function pickMp4Mime(){
+    if(!window.MediaRecorder || !HTMLCanvasElement.prototype.captureStream)return '';
+    const candidates=[
+      'video/mp4;codecs=avc1.42E01E',
+      'video/mp4;codecs=avc1.4D401E',
+      'video/mp4'
+    ];
+    return candidates.find(type=>MediaRecorder.isTypeSupported(type))||'';
   }
-  function encodeXGif(state,{fps,scale,quality,endTime,totalTime,workerScript,attempt,totalAttempts}){
-    return new Promise((resolve,reject)=>{
-      try{
-        const frameCount=Math.max(2,Math.floor(totalTime*fps)+1),delay=Math.round(1000/fps),gifW=Math.max(1,Math.round(state.w*scale)),gifH=Math.max(1,Math.round(state.h*scale));
-        const gif=new GIF({workers:2,quality,width:gifW,height:gifH,workerScript});
-        for(let i=0;i<frameCount;i++){
-          const playbackTime=i/fps,t=Math.min(playbackTime,endTime),base=window.PairExportRenderer.render(state,t,{scale:1}),canvas=downscaleCanvas(base,scale);
-          gif.addFrame(canvas,{copy:true,delay});
-          status.textContent=`X용 GIF 준비 중 · ${attempt}/${totalAttempts} · ${i+1}/${frameCount}`;
-        }
-        gif.on('progress',p=>status.textContent=`X용 GIF 압축 중 · ${attempt}/${totalAttempts} · ${Math.round(p*100)}%`);
-        gif.on('finished',blob=>resolve(blob));
-        gif.render();
-      }catch(err){reject(err)}
-    });
+  const sleep=ms=>new Promise(r=>setTimeout(r,Math.max(0,ms)));
+  async function encodeXMp4(state,{endTime,totalTime,fps=30,scale=2,bitrate=8000000}){
+    const mimeType=pickMp4Mime();
+    if(!mimeType)throw new Error('이 브라우저는 MP4 직접 저장을 지원하지 않습니다. 최신 Chrome 또는 Safari에서 다시 시도해 주세요.');
+    const out=document.createElement('canvas');
+    out.width=Math.max(2,Math.round(state.w*scale));
+    out.height=Math.max(2,Math.round(state.h*scale));
+    const ctx=out.getContext('2d');
+    ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';
+    const stream=out.captureStream(fps),chunks=[];
+    const recorder=new MediaRecorder(stream,{mimeType,videoBitsPerSecond:bitrate});
+    recorder.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data)};
+    const stopped=new Promise((resolve,reject)=>{recorder.onstop=resolve;recorder.onerror=e=>reject(e.error||new Error('MP4 인코딩 중 오류가 발생했습니다.'));});
+    const frameCount=Math.max(2,Math.ceil(totalTime*fps));
+    const frameMs=1000/fps;
+    const started=performance.now();
+    recorder.start(250);
+    for(let i=0;i<frameCount;i++){
+      const playbackTime=i/fps,t=Math.min(playbackTime,endTime);
+      const frame=window.PairExportRenderer.render(state,t,{scale});
+      ctx.clearRect(0,0,out.width,out.height);ctx.drawImage(frame,0,0,out.width,out.height);
+      status.textContent=`X용 MP4 만드는 중 · ${i+1} / ${frameCount}`;
+      const wait=started+(i+1)*frameMs-performance.now();
+      if(wait>0)await sleep(wait);
+    }
+    recorder.stop();
+    await stopped;
+    stream.getTracks().forEach(track=>track.stop());
+    const blob=new Blob(chunks,{type:mimeType});
+    if(!blob.size)throw new Error('MP4 파일을 만들지 못했습니다.');
+    return {blob,mimeType,width:out.width,height:out.height,fps};
   }
+
 
   function installEmbeddedExportRenderer(){
     if(window.PairExportRenderer?.captureState && window.PairExportRenderer?.render)return;
@@ -672,33 +690,23 @@
       gif.render();
     }catch(err){console.error(err);status.textContent='GIF 저장 실패: '+(err?.message||err);if(workerScript)URL.revokeObjectURL(workerScript);if(prep)prep.restore();exportMode=false;startTime=performance.now();btn.disabled=false;liveRaf=requestAnimationFrame(liveLoop)}
   });
-  $('#saveGifX').addEventListener('click',async()=>{
-    const btn=$('#saveGifX'),normalBtn=$('#saveGif');btn.disabled=true;if(normalBtn)normalBtn.disabled=true;exportMode=true;if(liveRaf)cancelAnimationFrame(liveRaf);let prep=null,workerScript=null;
+  $('#saveMp4X').addEventListener('click',async()=>{
+    const btn=$('#saveMp4X'),normalBtn=$('#saveGif');
+    btn.disabled=true;if(normalBtn)normalBtn.disabled=true;
+    exportMode=true;if(liveRaf)cancelAnimationFrame(liveRaf);
+    let prep=null;
     try{
-      if(!window.GIF)throw new Error('GIF 라이브러리를 불러오지 못했습니다.');
       prep=await prepareCanvasExport();
-      const state=prep.state,endTime=getAnimationEndTime(),totalTime=endTime+FINAL_HOLD,targetBytes=14*1024*1024;
-      const profiles=[
-        {scale:1.00,fps:12,quality:10},
-        {scale:.92,fps:10,quality:15},
-        {scale:.84,fps:8,quality:20}
-      ];
-      workerScript=await getWorkerBlobURL();
-      let blob=null,used=null;
-      for(let i=0;i<profiles.length;i++){
-        const profile=profiles[i];
-        blob=await encodeXGif(state,{...profile,endTime,totalTime,workerScript,attempt:i+1,totalAttempts:profiles.length});
-        used=profile;
-        if(blob.size<=targetBytes)break;
-        if(i<profiles.length-1)status.textContent=`용량 ${ (blob.size/1024/1024).toFixed(1) }MB · 더 가볍게 다시 만드는 중…`;
-      }
-      downloadBlob(blob,'pair-glass-x.gif');
-      const mb=(blob.size/1024/1024).toFixed(1);
-      status.textContent=`완료! X용 GIF ${mb}MB · ${used.fps}fps · ${Math.round(used.scale*100)}% 크기`;
+      const state=prep.state,endTime=getAnimationEndTime(),totalTime=endTime+FINAL_HOLD;
+      status.textContent='X용 MP4 준비 중…';
+      const result=await encodeXMp4(state,{endTime,totalTime,fps:30,scale:2,bitrate:8000000});
+      downloadBlob(result.blob,'pair-glass-x.mp4');
+      const mb=(result.blob.size/1024/1024).toFixed(1);
+      status.textContent=`완료! X용 MP4 ${mb}MB · ${result.width}×${result.height} · ${result.fps}fps`;
     }catch(err){
-      console.error(err);status.textContent='X용 GIF 저장 실패: '+(err?.message||err);
+      console.error(err);status.textContent='X용 MP4 저장 실패: '+(err?.message||err);
     }finally{
-      if(workerScript)URL.revokeObjectURL(workerScript);if(prep)prep.restore();exportMode=false;startTime=performance.now();btn.disabled=false;if(normalBtn)normalBtn.disabled=false;liveRaf=requestAnimationFrame(liveLoop);
+      if(prep)prep.restore();exportMode=false;startTime=performance.now();btn.disabled=false;if(normalBtn)normalBtn.disabled=false;liveRaf=requestAnimationFrame(liveLoop);
     }
   });
 })();
