@@ -7,7 +7,7 @@
   <title>PHONE SCREEN MOTION MAKER</title>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gif.js.optimized@1.0.1/dist/gif.js"></script>
-  <script src="./export-renderer.js?v=20261007-18" onerror="console.warn('export-renderer.js not found; expert-renderer.js and embedded fallback will be tried')"></script>
+  <script src="./export-renderer.js?v=20261007-19" onerror="console.warn('export-renderer.js not found; expert-renderer.js and embedded fallback will be tried')"></script>
   <style>
     *{box-sizing:border-box}
     html,body{margin:0;min-height:100%;background:#0e0f13;color:#f7f7f7;font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Pretendard","Noto Sans KR",Segoe UI,sans-serif}
@@ -106,7 +106,7 @@
       <details class="section accordion" open><summary class="section-title">Mini Post</summary><div class="section-body">
         <div class="field"><label style="display:flex;align-items:center;gap:8px;color:rgba(255,255,255,.72)"><input id="postVisible" type="checkbox" checked> 미니 게시글 표시</label></div>
         <div class="field"><label>게시글 이미지</label><input id="postFile" type="file" accept="image/*"></div>
-        <div class="field"><label>사진 제목</label><input id="postCaption" type="text" maxlength="60" value="midnight post" placeholder="사진 제목을 입력해 주세요"></div>
+        <div class="field"><label>사진 제목</label><input id="postCaption" type="text" maxlength="60" value="midnight post" placeholder="사진 제목을 입력해 주세요."></div>
         <div class="field"><label>제목 입력 속도</label><div class="range-row"><input id="postTypingSpeed" type="range" min="6" max="30" step="1" value="16"><span class="value" id="postTypingSpeedV">16</span></div></div>
         <div class="field"><label>이미지 확대</label><div class="range-row"><input id="postZoom" type="range" min="0.7" max="2.2" step="0.01" value="1"><span class="value" id="postZoomV">1.00×</span></div></div>
         <div class="grid2"><div class="field"><label>이미지 가로 위치</label><input id="postX" type="range" min="-80" max="80" value="0"></div><div class="field"><label>이미지 세로 위치</label><input id="postY" type="range" min="-80" max="80" value="0"></div></div>
@@ -507,7 +507,7 @@
 
 
   function installEmbeddedExportRenderer(){
-    if(window.PairExportRenderer?.captureState && window.PairExportRenderer?.render)return;
+    if(window.PairExportRenderer?.version==='20261007-19' && window.PairExportRenderer?.captureState && window.PairExportRenderer?.render)return;
       const $ = s => document.querySelector(s);
       const num = (id, fallback = 0) => {
         const el = $(id.startsWith('#') ? id : `#${id}`);
@@ -621,7 +621,12 @@
         const cx=r.x+r.w-28,cy=r.y+r.h/2;ctx.save();ctx.strokeStyle='rgba(255,255,255,.92)';ctx.lineWidth=2;ctx.beginPath();ctx.arc(cx-2,cy-1,8,0,Math.PI*2);ctx.stroke();ctx.beginPath();ctx.moveTo(cx+4,cy+5);ctx.lineTo(cx+10,cy+11);ctx.stroke();ctx.restore();
       }
       function drawDday(ctx,s,t,final=false){
-        const r=s.rects.dday, ds=ddayState(s,t,final);glass(ctx,r,s.glassAlpha,27);
+        const base=s.rects.dday;
+        const hasSubtext=!!String(s.text.ddayDate||'').trim();
+        // 미리보기에서는 아래 문구가 비어 있으면 .date가 display:none이 되어
+        // 위젯 높이가 줄어든다. 저장본도 같은 compact 높이를 강제로 사용한다.
+        const r={...base,h:hasSubtext?base.h:Math.min(base.h,83)};
+        const ds=ddayState(s,t,final);glass(ctx,r,s.glassAlpha,27);
         drawText(ctx,s.text.ddayLabel,r.x+17,r.y+22,10,700,'rgba(255,255,255,.72)');
         const centerY=r.y+53;
         ctx.save();
@@ -632,7 +637,7 @@
         }
         drawText(ctx,ds.text,r.x+17,centerY,31,650,'#fff');ctx.restore();
         if(ds.flipping){ctx.save();ctx.globalAlpha=.22*(1-Math.abs(.5-ds.phase)*2);ctx.fillStyle='#fff';ctx.fillRect(r.x+17,r.y+42,Math.min(86,r.w-34),1);ctx.restore();}
-        if(s.text.ddayDate) drawText(ctx,s.text.ddayDate,r.x+17,r.y+r.h-13,9,500,'rgba(255,255,255,.68)');
+        if(hasSubtext) drawText(ctx,s.text.ddayDate,r.x+17,r.y+r.h-13,9,500,'rgba(255,255,255,.68)');
       }
       function parseClock(v){
         const m=String(v||'').trim().match(/^(\d{1,3}):([0-5]\d)$/);
@@ -744,18 +749,18 @@
         if(state.postVisible)drawMotion(ctx,state,t,'post',drawPost,final);
         drawCommission(ctx,state);return c;
       }
-      window.PairExportRenderer={version:'20261007-18',captureState,render};
+      window.PairExportRenderer={version:'20261007-19',captureState,render};
   }
 
-  const EXPECTED_RENDERER_VERSION='20261007-18';
+  const EXPECTED_RENDERER_VERSION='20261007-19';
   let rendererLoadPromise=null;
   async function ensureExportRenderer(){
     if(window.PairExportRenderer?.version===EXPECTED_RENDERER_VERSION && window.PairExportRenderer?.captureState && window.PairExportRenderer?.render)return window.PairExportRenderer;
     if(rendererLoadPromise)return rendererLoadPromise;
     rendererLoadPromise=(async()=>{
       const urls=[
-        new URL('export-renderer.js?v=20261007-18',document.baseURI).href,
-        new URL('./export-renderer.js?v=20261007-18',location.href).href,
+        new URL('export-renderer.js?v=20261007-19',document.baseURI).href,
+        new URL('./export-renderer.js?v=20261007-19',location.href).href,
         new URL('expert-renderer.js?v=20261007-15',document.baseURI).href,
         new URL('./expert-renderer.js?v=20261007-15',location.href).href
       ];
