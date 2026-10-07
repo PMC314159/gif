@@ -109,7 +109,7 @@
         <div class="field"><label>이미지 확대</label><div class="range-row"><input id="postZoom" type="range" min="0.7" max="2.2" step="0.01" value="1"><span class="value" id="postZoomV">1.00×</span></div></div>
         <div class="grid2"><div class="field"><label>이미지 가로 위치</label><input id="postX" type="range" min="-80" max="80" value="0"></div><div class="field"><label>이미지 세로 위치</label><input id="postY" type="range" min="-80" max="80" value="0"></div></div>
         <div class="subhead">위젯 크기 / 위치</div>
-        <div class="field"><label>위젯 크기</label><div class="range-row"><input id="postWidgetScale" type="range" min="0.65" max="1.65" step="0.01" value="1.08"><span class="value" id="postWidgetScaleV">1.08×</span></div></div>
+        <div class="field"><label>위젯 크기</label><div class="range-row"><input id="postWidgetScale" type="range" min="0.65" max="1.65" step="0.01" value="1.00"><span class="value" id="postWidgetScaleV">1.00×</span></div></div>
         <div class="grid2"><div class="field"><label>가로</label><input id="postWX" type="range" min="-180" max="180" value="0"></div><div class="field"><label>세로</label><input id="postWY" type="range" min="-220" max="220" value="0"></div></div>
       </div></details>
 
@@ -168,7 +168,7 @@
   function parseDuration(v){const m=String(v||'').trim().match(/^(\d{1,3}):([0-5]\d)$/);if(!m)return 216;return (+m[1])*60+(+m[2])}
   function formatTime(sec){sec=Math.max(0,Math.round(sec));const m=Math.floor(sec/60),s=sec%60;return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`}
   function updateQueueRow(n){const t=($(`#queueTitle${n}`)?.value||'').trim(), a=($(`#queueArtist${n}`)?.value||'').trim(), row=$(`#queueItem${n}`); if(!row) return false; const active=!!(t||a); row.classList.toggle('hidden',!active); if(active){$(`#queueTitleOut${n}`).textContent=t||'Untitled';$(`#queueArtistOut${n}`).textContent=a||'Unknown';} return active;}
-  function updatePlaylist(){const active=[1,2,3].map(updateQueueRow).filter(Boolean).length;const list=$('#playlistOut');if(list)list.classList.toggle('hidden',active===0);musicWidget.style.minHeight=active===0?'114px':'auto';}
+  function updatePlaylist(){const active=[1,2,3].map(updateQueueRow).filter(Boolean).length;const list=$('#playlistOut');if(list)list.classList.toggle('hidden',active===0);musicWidget.style.minHeight=active===0?'114px':'auto';requestAnimationFrame(()=>{updateCanvasLayout();});}
   function updateSearchPreview(){setSearchTypingState(Infinity,true); $('#typingSpeedV').textContent=$('#typingSpeed').value}
   function updatePost(){const visible=$('#postVisible').checked;postWidget.classList.toggle('hidden',!visible);setPostTypingState(Infinity,true);}
   function updateText(){$('#ddayLabelOut').textContent=$('#ddayLabel').value||'OUR DAY';$('#songOut').textContent=$('#song').value||'Untitled';$('#artistOut').textContent=$('#artist').value||'Unknown';const p=+$('#progress').value,total=parseDuration($('#trackDuration').value);$('#barFill').style.width=p+'%';$('#progressV').textContent=p+'%';$('#durationTimeOut').textContent=formatTime(total);$('#currentTimeOut').textContent=formatTime(total*p/100);updatePlaylist();updateSearchPreview();updateDday();updatePost()} ['ddayLabel','ddayDate','ddaySubtext','song','artist','trackDuration','progress','searchTextInput','typingSpeed','queueTitle1','queueArtist1','queueTitle2','queueArtist2','queueTitle3','queueArtist3','postCaption'].forEach(id=>$('#'+id).addEventListener('input',updateText));$('#postVisible').addEventListener('change',()=>{updateText();updateCanvasLayout();});$('#commissionText')?.addEventListener('input',updateCommission);
@@ -177,7 +177,8 @@
   $('#expandAll')?.addEventListener('click',()=>accordions.forEach(d=>d.open=true));
   $('#collapseAll')?.addEventListener('click',()=>accordions.forEach(d=>d.open=false));
   const clamp=(n,a=0,b=1)=>Math.min(b,Math.max(a,n));function easeOutBack(x){const c1=1.70158,c3=c1+1;return 1+c3*Math.pow(x-1,3)+c1*Math.pow(x-1,2)}function easeOutCubic(x){return 1-Math.pow(1-x,3)}function reveal(t,start,len=.72){return easeOutCubic(clamp((t-start)/len))}
-  function widgetOffset(prefix){return {x:+$(`#${prefix}WX`).value||0,y:+$(`#${prefix}WY`).value||0}}
+  function musicAutoLift(){if(!musicWidget)return 0;const base=114;return Math.max(0,(musicWidget.offsetHeight||base)-base)}
+  function widgetOffset(prefix){const x=+$(`#${prefix}WX`).value||0;let y=+$(`#${prefix}WY`).value||0;if(prefix==='music')y-=musicAutoLift();return {x,y}}
   function applyMotion(el,p,dx,dy,offsetX=0,offsetY=0,scaleMul=1){
     const effect=$('#animEffect')?.value||'pop',raw=clamp(p),q=easeOutCubic(raw);let alpha=q,x=offsetX,y=offsetY,sc=scaleMul;
     if(effect==='snap'){alpha=raw>0?1:0}
@@ -204,10 +205,10 @@
     if(sceneContent)sceneContent.style.transform='none';
 
     const offsets={
-      search:+$('#searchWY').value||0,
-      music:+$('#musicWY').value||0,
-      dday:+$('#ddayWY').value||0,
-      post:+$('#postWY').value||0
+      search:widgetOffset('search').y,
+      music:widgetOffset('music').y,
+      dday:widgetOffset('dday').y,
+      post:widgetOffset('post').y
     };
 
     const items=[
