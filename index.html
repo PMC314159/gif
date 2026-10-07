@@ -10,7 +10,7 @@
   <title>PHONE SCREEN MOTION MAKER</title>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gif.js.optimized@1.0.1/dist/gif.js"></script>
-  <script src="./export-renderer.js?v=20261007-30"></script>
+  <script src="./export-renderer.js?v=20261007-31"></script>
   <style>
     *{box-sizing:border-box}
     html,body{margin:0;min-height:100%;background:#0e0f13;color:#f7f7f7;font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Pretendard","Noto Sans KR",Segoe UI,sans-serif}
@@ -523,78 +523,158 @@
     const mimeType=pickMp4Mime();
     if(!mimeType)throw new Error('이 브라우저는 MP4 직접 저장을 지원하지 않아요. 최신 Chrome 또는 Safari에서 다시 시도해 주세요.');
 
-    // 첫 저장에서도 폰트/캔버스/인코더가 안정적으로 준비된 뒤 녹화를 시작해요.
     if(document.fonts?.ready){
       try{await document.fonts.ready;}catch(e){}
     }
 
+    fps=30;
+
     const out=document.createElement('canvas');
     out.width=Math.max(2,Math.round(state.w*scale));
     out.height=Math.max(2,Math.round(state.h*scale));
+
     const ctx=out.getContext('2d');
     ctx.imageSmoothingEnabled=true;
     ctx.imageSmoothingQuality='high';
 
     const drawFrame=t=>{
-      const frame=window.PairExportRenderer.render(state,Math.min(t,endTime),{scale});
+      const frame=window.PairExportRenderer.render(
+        state,
+        Math.min(t,endTime),
+        {scale}
+      );
+
+      ctx.setTransform(1,0,0,1,0,0);
+      ctx.globalAlpha=1;
       ctx.clearRect(0,0,out.width,out.height);
       ctx.drawImage(frame,0,0,out.width,out.height);
     };
 
-    // captureStream을 만들기 전에 첫 프레임을 한 번 그려 캔버스를 워밍업해요.
+    // 첫 프레임을 미리 렌더링해서 폰트/캔버스 캐시까지 준비해요.
     drawFrame(0);
     await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
 
-    const stream=out.captureStream(fps),chunks=[];
+    // requestFrame을 지원하면 자동 캡처를 끄고 프레임을 정확히 한 장씩 넣어요.
+    let stream;
+    try{
+      stream=out.captureStream(0);
+    }catch(e){
+      stream=out.captureStream(fps);
+    }
+
+    const chunks=[];
     const videoTrack=stream.getVideoTracks()[0];
-    const recorder=new MediaRecorder(stream,{mimeType,videoBitsPerSecond:bitrate});
-    recorder.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data)};
+    const manualFrames=typeof videoTrack?.requestFrame==='function';
+
+    // requestFrame을 못 쓰는 브라우저는 지정 FPS 자동 캡처로 다시 생성해요.
+    if(!manualFrames){
+      stream.getTracks().forEach(track=>track.stop());
+      stream=out.captureStream(fps);
+    }
+
+    const activeTrack=stream.getVideoTracks()[0];
+
+    const recorder=new MediaRecorder(stream,{
+      mimeType,
+      videoBitsPerSecond:bitrate
+    });
+
+    recorder.ondataavailable=e=>{
+      if(e.data&&e.data.size)chunks.push(e.data);
+    };
+
     const stopped=new Promise((resolve,reject)=>{
       recorder.onstop=resolve;
-      recorder.onerror=e=>reject(e.error||new Error('MP4 인코딩 중 오류가 발생했어요.'));
+      recorder.onerror=e=>reject(
+        e.error||
+        new Error('MP4 인코딩 중 오류가 발생했어요.')
+      );
     });
+
     const recorderStarted=new Promise((resolve,reject)=>{
       recorder.onstart=resolve;
+
       setTimeout(()=>{
         if(recorder.state==='recording')resolve();
         else reject(new Error('MP4 녹화를 시작하지 못했어요.'));
       },1200);
     });
 
-    const frameCount=Math.max(2,Math.ceil(totalTime*fps));
+    const frameCount=Math.max(
+      2,
+      Math.ceil(totalTime*fps)
+    );
+
     const frameMs=1000/fps;
 
     recorder.start(250);
     await recorderStarted;
 
-    // 인코더가 실제 recording 상태가 된 다음 첫 프레임을 다시 밀어 넣어요.
+    // 녹화가 시작된 다음 0초 프레임을 정확히 한 번 넣어요.
     drawFrame(0);
-    if(typeof videoTrack?.requestFrame==='function')videoTrack.requestFrame();
-    await sleep(120);
 
-    const started=performance.now();
-    for(let i=0;i<frameCount;i++){
-      const playbackTime=i/fps;
-      drawFrame(playbackTime);
-      if(typeof videoTrack?.requestFrame==='function')videoTrack.requestFrame();
-      if(i%6===0 || i===frameCount-1){status.textContent=`MP4 만드는 중 · ${i+1} / ${frameCount}`;}
-      const wait=started+(i+1)*frameMs-performance.now();
-      if(wait>0)await sleep(wait);
+    if(typeof activeTrack?.requestFrame==='function'){
+      activeTrack.requestFrame();
     }
 
-    // 마지막 프레임이 인코더에 들어갈 시간을 조금 확보해요.
+    await sleep(Math.max(18,frameMs));
+
+    let nextDeadline=performance.now();
+
+    for(let i=1;i<frameCount;i++){
+      const playbackTime=i/fps;
+
+      drawFrame(playbackTime);
+
+      if(typeof activeTrack?.requestFrame==='function'){
+        activeTrack.requestFrame();
+      }
+
+      if(i%10===0 || i===frameCount-1){
+        status.textContent=`MP4 만드는 중 · ${i+1} / ${frameCount}`;
+      }
+
+      nextDeadline+=frameMs;
+
+      const wait=nextDeadline-performance.now();
+
+      if(wait>0){
+        await sleep(wait);
+      }else{
+        // 렌더링이 잠깐 늦더라도 이벤트 루프에 한 번 양보해서
+        // 여러 프레임이 한꺼번에 붙는 현상을 막아요.
+        await sleep(0);
+        nextDeadline=performance.now();
+      }
+    }
+
+    // 마지막 장면을 충분히 유지해 마지막 프레임이 잘리지 않게 해요.
     await sleep(Math.max(80,frameMs*2));
+
     if(typeof recorder.requestData==='function'){
       try{recorder.requestData();}catch(e){}
     }
-    await sleep(40);
+
+    await sleep(50);
+
     recorder.stop();
     await stopped;
+
     stream.getTracks().forEach(track=>track.stop());
 
     const blob=new Blob(chunks,{type:mimeType});
-    if(!blob.size)throw new Error('MP4 파일을 만들지 못했어요.');
-    return {blob,mimeType,width:out.width,height:out.height,fps};
+
+    if(!blob.size){
+      throw new Error('MP4 파일을 만들지 못했어요.');
+    }
+
+    return {
+      blob,
+      mimeType,
+      width:out.width,
+      height:out.height,
+      fps
+    };
   }
 
 
@@ -918,10 +998,10 @@
         if(state.postVisible)drawMotion(ctx,state,t,'post',drawPost,final);
         drawCommission(ctx,state);return canvas;
       }
-      window.PairExportRenderer={version:'20261007-30',captureState,render};
+      window.PairExportRenderer={version:'20261007-31',captureState,render};
   }
 
-  const EXPECTED_RENDERER_VERSION='20261007-30';
+  const EXPECTED_RENDERER_VERSION='20261007-31';
   let rendererLoadPromise=null;
   async function ensureExportRenderer(){
     if(
