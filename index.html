@@ -7,7 +7,7 @@
   <title>PAIR GLASS GIF</title>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gif.js.optimized@1.0.1/dist/gif.js"></script>
-  <script src="./export-renderer.js?v=20261007-16" onerror="console.warn('export-renderer.js not found; expert-renderer.js and embedded fallback will be tried')"></script>
+  <script src="./export-renderer.js?v=20261007-17" onerror="console.warn('export-renderer.js not found; expert-renderer.js and embedded fallback will be tried')"></script>
   <style>
     *{box-sizing:border-box}
     html,body{margin:0;min-height:100%;background:#0e0f13;color:#f7f7f7;font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Pretendard","Noto Sans KR",Segoe UI,sans-serif}
@@ -514,7 +514,21 @@
         glass(ctx,titleR,Math.min(.26,s.glassAlpha+.02),16);
         const title=postState(s,t,final);if(title)drawText(ctx,title,titleR.x+12,titleR.y+titleR.h/2,12,620,'#fff','left','middle');
       }
-      function drawCommission(ctx,s){if(s.text.commission)drawText(ctx,s.text.commission,12,s.h-10,9,500,'rgba(255,255,255,.65)');}
+      function drawCommission(ctx,s){
+        const text=(s.text.commission||'').trim();
+        if(!text)return;
+        ctx.save();
+        ctx.font='600 10px Inter, Pretendard, Arial, sans-serif';
+        ctx.textAlign='left';
+        ctx.textBaseline='bottom';
+        ctx.fillStyle='rgba(255,255,255,.96)';
+        ctx.shadowColor='rgba(0,0,0,.72)';
+        ctx.shadowBlur=5;
+        ctx.shadowOffsetX=0;
+        ctx.shadowOffsetY=1.5;
+        ctx.fillText(text,14,s.h-14);
+        ctx.restore();
+      }
       function loadImage(src){return new Promise(resolve=>{if(!src){resolve(null);return;}const img=new Image();img.onload=()=>resolve(img);img.onerror=()=>resolve(null);img.src=src;});}
     
       async function captureState(opts={}){
@@ -529,7 +543,7 @@
           rects:{phone:localRect($('#phone'),rootRect),screen:localRect($('.screen'),rootRect),search:localRect($('#searchWidget'),rootRect),dday:localRect(ddayEl,rootRect),music:localRect($('#musicWidget'),rootRect),cover:localRect($('.cover'),rootRect),post:localRect($('#postWidget'),rootRect),postImage:localRect($('.post-image'),rootRect),postTitle:localRect($('.post-title'),rootRect)},
           images:{bg,main,cover,post},queue,postVisible:visible($('#postWidget')),
           controls:{bgZoom:num('bgZoom',1),bgX:num('bgX'),bgY:num('bgY'),mainZoom:num('zoom',1),mainX:num('posX'),mainY:num('posY'),coverZoom:num('coverZoom',1),coverX:num('coverX'),coverY:num('coverY'),postZoom:num('postZoom',1),postX:num('postX'),postY:num('postY'),progress:num('progress',42),typingSpeed:num('typingSpeed',18),postTypingSpeed:num('postTypingSpeed',16),ddayFlipSpeed:num('ddayFlipSpeed',.13),ddayStartDays:num('ddayStartDays',5)},
-          text:{search:val('searchTextInput')||txt('#searchTextOut'),ddayLabel:txt('#ddayLabelOut'),ddayCount:ddayEl?.dataset.finalText||txt('#ddayCount'),ddayDate:visible($('#ddayDateOut'))?txt('#ddayDateOut'):'',song:txt('#songOut'),artist:txt('#artistOut'),current:txt('#currentTimeOut'),duration:txt('#durationTimeOut'),postTitle:val('postCaption')||txt('#postCaptionOut'),commission:val('commissionText')},
+          text:{search:val('searchTextInput')||txt('#searchTextOut'),ddayLabel:txt('#ddayLabelOut'),ddayCount:ddayEl?.dataset.finalText||txt('#ddayCount'),ddayDate:visible($('#ddayDateOut'))?txt('#ddayDateOut'):'',song:txt('#songOut'),artist:txt('#artistOut'),current:txt('#currentTimeOut'),duration:txt('#durationTimeOut'),postTitle:val('postCaption')||txt('#postCaptionOut'),commission:(($('#commissionText')?.value||$('#commissionCredit')?.textContent||'').trim())},
           dday:{animate:ddayEl?.dataset.animate==='1',value:Number(ddayEl?.dataset.abs||0),prefix:ddayEl?.dataset.prefix||'D+'}
         };
       }
@@ -564,18 +578,18 @@
         if(state.postVisible)drawMotion(ctx,state,t,'post',drawPost,final);
         drawCommission(ctx,state);return c;
       }
-      window.PairExportRenderer={version:'20261007-16',captureState,render};
+      window.PairExportRenderer={version:'20261007-17',captureState,render};
   }
 
-  const EXPECTED_RENDERER_VERSION='20261007-16';
+  const EXPECTED_RENDERER_VERSION='20261007-17';
   let rendererLoadPromise=null;
   async function ensureExportRenderer(){
     if(window.PairExportRenderer?.version===EXPECTED_RENDERER_VERSION && window.PairExportRenderer?.captureState && window.PairExportRenderer?.render)return window.PairExportRenderer;
     if(rendererLoadPromise)return rendererLoadPromise;
     rendererLoadPromise=(async()=>{
       const urls=[
-        new URL('export-renderer.js?v=20261007-16',document.baseURI).href,
-        new URL('./export-renderer.js?v=20261007-16',location.href).href,
+        new URL('export-renderer.js?v=20261007-17',document.baseURI).href,
+        new URL('./export-renderer.js?v=20261007-17',location.href).href,
         new URL('expert-renderer.js?v=20261007-15',document.baseURI).href,
         new URL('./expert-renderer.js?v=20261007-15',location.href).href
       ];
