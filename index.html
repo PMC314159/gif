@@ -10,7 +10,7 @@
   <title>PHONE SCREEN MOTION MAKER</title>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gif.js.optimized@1.0.1/dist/gif.js"></script>
-  <script src="./export-renderer.js?v=20261007-23"></script>
+  <script src="./export-renderer.js?v=20261007-24"></script>
   <style>
     *{box-sizing:border-box}
     html,body{margin:0;min-height:100%;background:#0e0f13;color:#f7f7f7;font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Pretendard","Noto Sans KR",Segoe UI,sans-serif}
@@ -84,7 +84,7 @@
         <div class="grid2"><div class="field"><label>라벨</label><input id="ddayLabel" type="text" value="OUR DAY"></div><div class="field"><label>기념일 날짜</label><input id="ddayDate" type="date"></div></div>
         <div class="field"><label>숫자 넘김 속도</label><div class="range-row"><input id="ddayFlipSpeed" type="range" min="0.06" max="0.40" step="0.01" value="0.13"><span class="value" id="ddayFlipSpeedV">0.13s</span></div></div>
         <div class="field"><label>몇 일 전부터 넘기기</label><div class="range-row"><input id="ddayStartDays" type="range" min="1" max="30" step="1" value="5"><span class="value" id="ddayStartDaysV">5일</span></div></div>
-        <div class="field"><label>날짜를 선택하면 오늘 기준으로 자동 계산돼요 · 999일 초과 시 999+로 표시돼요</label></div>
+        <div class="field"><label>선택한 날짜를 1일째로 계산해요 · 미래 날짜는 D-로 표시돼요 · 999일 초과 시 999+로 표시돼요</label></div>
         <div class="subhead">위젯 위치</div>
         <div class="grid2"><div class="field"><label>가로</label><input id="ddayWX" type="range" min="-180" max="180" value="0"></div><div class="field"><label>세로</label><input id="ddayWY" type="range" min="-220" max="220" value="0"></div></div>
       </div></details>
@@ -172,19 +172,30 @@
             a=new Date(today.getFullYear(),today.getMonth(),today.getDate()),
             diff=Math.round((a-target)/86400000);
 
-      abs=Math.abs(diff);
+      // 커플 디데이 방식: 시작한 날을 1일째로 계산해요.
+      // 미래 날짜는 기존처럼 남은 날짜를 D-로 표시해요.
+      if(diff>=0){
+        abs=diff+1;
+        prefix='D+';
 
-      if(diff===0){
-        finalText='D-DAY';
-        prefix='';
-      }else if(abs>=999){
-        prefix=diff>0?'D+':'D-';
-        finalText=abs>999 ? `${prefix}999+` : `${prefix}999`;
-        animate=false;
+        if(abs>=999){
+          finalText=abs>999 ? 'D+999+' : 'D+999';
+          animate=false;
+        }else{
+          finalText=`D+${abs}`;
+          animate=true;
+        }
       }else{
-        prefix=diff>0?'D+':'D-';
-        finalText=`${prefix}${abs}`;
-        animate=true;
+        abs=Math.abs(diff);
+        prefix='D-';
+
+        if(abs>=999){
+          finalText=abs>999 ? 'D-999+' : 'D-999';
+          animate=false;
+        }else{
+          finalText=`D-${abs}`;
+          animate=true;
+        }
       }
     }
 
@@ -843,10 +854,10 @@
         if(state.postVisible)drawMotion(ctx,state,t,'post',drawPost,final);
         drawCommission(ctx,state);return c;
       }
-      window.PairExportRenderer={version:'20261007-23',captureState,render};
+      window.PairExportRenderer={version:'20261007-24',captureState,render};
   }
 
-  const EXPECTED_RENDERER_VERSION='20261007-23';
+  const EXPECTED_RENDERER_VERSION='20261007-24';
   let rendererLoadPromise=null;
   async function ensureExportRenderer(){
     if(
