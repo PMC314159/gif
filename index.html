@@ -125,7 +125,7 @@
 (() => {
   const $ = s => document.querySelector(s), capture=$('#capture'), shell=$('#shell'), status=$('#status'), mainImage=$('#mainImage'), coverImage=$('#coverImage'), postImage=$('#postImage'), bgLayer=$('#bgLayer'), sceneContent=$('#sceneContent'), commissionCredit=$('#commissionCredit'), searchWidget=$('#searchWidget'), ddayWidget=$('#ddayWidget'), musicWidget=$('#musicWidget'), postWidget=$('#postWidget');
   const glassEls=[searchWidget,ddayWidget,musicWidget].filter(Boolean); let startTime=performance.now(), liveRaf=null, exportMode=false, bgUserSrc='', canvasHeight=960, sceneShift=0, exportLayoutFrozen=false;
-  const PREVIEW_BASE_HEIGHT=960;
+  const PREVIEW_BASE_HEIGHT=920;
   function fitCapture(){
     const stage=shell.parentElement?.getBoundingClientRect();
     const mobile=window.matchMedia('(max-width:900px)').matches;
