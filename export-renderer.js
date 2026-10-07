@@ -49,7 +49,7 @@
       };
     }
 
-    const r =
+    const r=
       el.getBoundingClientRect();
 
     return {
@@ -72,14 +72,13 @@
       radius
     );
 
-    ctx.fillStyle =
+    ctx.fillStyle=
       `rgba(238,242,248,${alpha})`;
 
     ctx.fill();
 
-    ctx.lineWidth = 1;
-
-    ctx.strokeStyle =
+    ctx.lineWidth=1;
+    ctx.strokeStyle=
       'rgba(255,255,255,.58)';
 
     ctx.stroke();
@@ -106,13 +105,13 @@
       return;
     }
 
-    const nw =
+    const nw=
       img.naturalWidth;
 
-    const nh =
+    const nh=
       img.naturalHeight;
 
-    const base =
+    const base=
       fit==='contain'
         ? Math.min(
             r.w/nw,
@@ -123,10 +122,10 @@
             r.h/nh
           );
 
-    const dw =
+    const dw=
       nw*base*zoom;
 
-    const dh =
+    const dh=
       nh*base*zoom;
 
     ctx.save();
@@ -155,12 +154,8 @@
     ctx.restore();
   }
 
-  function font(
-    ctx,
-    size,
-    weight=500
-  ){
-    ctx.font =
+  function font(ctx,size,weight=500){
+    ctx.font=
       `${weight} ${size}px Inter, Pretendard, Arial, sans-serif`;
   }
 
@@ -183,13 +178,13 @@
       weight
     );
 
-    ctx.fillStyle =
+    ctx.fillStyle=
       color;
 
-    ctx.textAlign =
+    ctx.textAlign=
       align;
 
-    ctx.textBaseline =
+    ctx.textBaseline=
       baseline;
 
     ctx.fillText(
@@ -201,10 +196,10 @@
     ctx.restore();
   }
 
-  const measureCanvas =
+  const measureCanvas=
     document.createElement('canvas');
 
-  const measureCtx =
+  const measureCtx=
     measureCanvas.getContext('2d');
 
   function measureTextWidth(
@@ -214,17 +209,21 @@
   ){
     if(!measureCtx){
       return (
-        text||''
+        text||
+        ''
       ).length*
       size*
       .58;
     }
 
-    measureCtx.font =
+    measureCtx.font=
       `${weight} ${size}px Inter, Pretendard, Arial, sans-serif`;
 
     return measureCtx
-      .measureText(text||'')
+      .measureText(
+        text||
+        ''
+      )
       .width;
   }
 
@@ -233,17 +232,19 @@
     t,
     final=false
   ){
-    const full =
-      s.text.search||'';
+    const full=
+      s.text.search||
+      '';
 
-    const f =
-      s.duration/5;
+    const f=
+      s.duration/
+      5;
 
-    const start =
+    const start=
       s.timeline.searchStart+
       .32*f;
 
-    const available =
+    const available=
       Math.max(
         .25,
         s.duration-
@@ -251,13 +252,15 @@
         .18*f
       );
 
-    const speed =
+    const speed=
       Math.max(
-        s.controls.typingSpeed||18,
-        full.length/available
+        s.controls.typingSpeed||
+        18,
+        full.length/
+        available
       );
 
-    const count =
+    const count=
       final
         ? full.length
         : clamp(
@@ -272,8 +275,11 @@
             full.length
           );
 
-    const text =
-      full.slice(0,count);
+    const text=
+      full.slice(
+        0,
+        count
+      );
 
     return {
       text,
@@ -301,17 +307,19 @@
     t,
     final=false
   ){
-    const full =
-      s.text.postTitle||'';
+    const full=
+      s.text.postTitle||
+      '';
 
-    const f =
-      s.duration/5;
+    const f=
+      s.duration/
+      5;
 
-    const start =
+    const start=
       s.timeline.postStart+
       .28*f;
 
-    const available =
+    const available=
       Math.max(
         .25,
         s.duration-
@@ -319,13 +327,15 @@
         .18*f
       );
 
-    const speed =
+    const speed=
       Math.max(
-        s.controls.postTypingSpeed||16,
-        full.length/available
+        s.controls.postTypingSpeed||
+        16,
+        full.length/
+        available
       );
 
-    const count =
+    const count=
       final
         ? full.length
         : clamp(
@@ -351,7 +361,7 @@
     t,
     final=false
   ){
-    const meta =
+    const meta=
       s.dday;
 
     if(
@@ -366,72 +376,87 @@
       };
     }
 
-    const target =
+    const target=
       meta.value;
 
-    const startDays =
+    const startDays=
       Math.max(
         1,
-        s.controls.ddayStartDays||5
+        s.controls.ddayStartDays||
+        5
       );
 
-    const startValue =
+    const startValue=
       Math.max(
         0,
-        target-startDays
+        target-
+        startDays
       );
 
-    const stepDur =
-      s.controls.ddayFlipSpeed||.13;
+    const stepDur=
+      s.controls.ddayFlipSpeed||
+      .13;
 
-    const elapsed =
+    const elapsed=
       Math.max(
         0,
         t-
         (
           s.timeline.ddayStart+
-          .38*(s.duration/5)
+          .38*
+          (
+            s.duration/
+            5
+          )
         )
       );
 
-    const maxSteps =
+    const maxSteps=
       Math.min(
         startDays,
         target
       );
 
-    const steps =
+    const steps=
       Math.min(
         maxSteps,
         Math.floor(
-          elapsed/stepDur
+          elapsed/
+          stepDur
         )
       );
 
-    const value =
+    const value=
       Math.min(
         target,
-        startValue+steps
+        startValue+
+        steps
       );
 
-    const phase =
+    const phase=
       clamp(
         (
           elapsed-
-          steps*stepDur
+          steps*
+          stepDur
         )/
         stepDur
       );
 
-    const prefix =
-      meta.prefix||'D+';
+    const prefix=
+      meta.prefix||
+      'D+';
 
     return {
       text:
         `${prefix}${value}`,
+
       phase,
+
       flipping:
-        phase<1,
+        phase<
+        1,
+
       value
     };
   }
@@ -440,7 +465,7 @@
     ctx,
     s
   ){
-    ctx.fillStyle =
+    ctx.fillStyle=
       '#68707c';
 
     ctx.fillRect(
@@ -450,7 +475,7 @@
       s.h
     );
 
-    const img =
+    const img=
       s.images.bg;
 
     if(
@@ -460,7 +485,7 @@
     ){
       ctx.save();
 
-      ctx.filter =
+      ctx.filter=
         `blur(${s.controls.bgBlur||0}px) saturate(.85) brightness(.78)`;
 
       fitImage(
@@ -481,7 +506,7 @@
 
       ctx.restore();
     }else{
-      const g =
+      const g=
         ctx.createLinearGradient(
           0,
           0,
@@ -504,7 +529,7 @@
         '#4d5159'
       );
 
-      ctx.fillStyle =
+      ctx.fillStyle=
         g;
 
       ctx.fillRect(
@@ -515,7 +540,7 @@
       );
     }
 
-    const ov =
+    const ov=
       ctx.createLinearGradient(
         0,
         0,
@@ -538,7 +563,7 @@
       'rgba(6,7,10,.45)'
     );
 
-    ctx.fillStyle =
+    ctx.fillStyle=
       ov;
 
     ctx.fillRect(
@@ -553,10 +578,10 @@
     ctx,
     s
   ){
-    const p =
+    const p=
       s.rects.phone;
 
-    const sc =
+    const sc=
       s.rects.screen;
 
     ctx.save();
@@ -570,15 +595,15 @@
       51
     );
 
-    ctx.fillStyle =
+    ctx.fillStyle=
       'rgba(214,220,230,.24)';
 
     ctx.fill();
 
-    ctx.lineWidth =
+    ctx.lineWidth=
       1.2;
 
-    ctx.strokeStyle =
+    ctx.strokeStyle=
       'rgba(255,255,255,.52)';
 
     ctx.stroke();
@@ -596,7 +621,7 @@
       44
     );
 
-    ctx.fillStyle =
+    ctx.fillStyle=
       '#77808d';
 
     ctx.fill();
@@ -614,7 +639,7 @@
       44
     );
 
-    const shade =
+    const shade=
       ctx.createLinearGradient(
         0,
         sc.y,
@@ -651,7 +676,7 @@
 
     ctx.clip();
 
-    ctx.fillStyle =
+    ctx.fillStyle=
       shade;
 
     ctx.fillRect(
@@ -663,14 +688,17 @@
 
     ctx.restore();
 
-    const island = {
+    const island={
       x:
         p.x+
-        p.w/2-
+        p.w/
+        2-
         41.5,
+
       y:
         p.y+
         15,
+
       w:83,
       h:23
     };
@@ -686,7 +714,7 @@
       12
     );
 
-    ctx.fillStyle =
+    ctx.fillStyle=
       '#050608';
 
     ctx.fill();
@@ -700,17 +728,17 @@
     t,
     final=false
   ){
-    const base =
+    const base=
       s.rects.search;
 
-    const st =
+    const st=
       searchState(
         s,
         t,
         final
       );
 
-    const r = {
+    const r={
       x:base.x,
       y:base.y,
       w:st.width,
@@ -728,8 +756,11 @@
       drawText(
         ctx,
         st.text,
-        r.x+18,
-        r.y+r.h/2,
+        r.x+
+        18,
+        r.y+
+        r.h/
+        2,
         14,
         500,
         'rgba(255,255,255,.92)',
@@ -738,30 +769,35 @@
       );
     }
 
-    const cx =
+    const cx=
       r.x+
       r.w-
       28;
 
-    const cy =
+    const cy=
       r.y+
-      r.h/2;
+      r.h/
+      2;
 
     ctx.save();
 
-    ctx.strokeStyle =
+    ctx.strokeStyle=
       'rgba(255,255,255,.92)';
 
-    ctx.lineWidth = 2;
+    ctx.lineWidth=
+      2;
 
     ctx.beginPath();
 
     ctx.arc(
-      cx-2,
-      cy-1,
+      cx-
+      2,
+      cy-
+      1,
       8,
       0,
-      Math.PI*2
+      Math.PI*
+      2
     );
 
     ctx.stroke();
@@ -769,13 +805,17 @@
     ctx.beginPath();
 
     ctx.moveTo(
-      cx+4,
-      cy+5
+      cx+
+      4,
+      cy+
+      5
     );
 
     ctx.lineTo(
-      cx+10,
-      cy+11
+      cx+
+      10,
+      cy+
+      11
     );
 
     ctx.stroke();
@@ -789,22 +829,23 @@
     t,
     final=false
   ){
-    const base =
+    const base=
       s.rects.dday;
 
-    const labelRect =
+    const labelRect=
       s.rects.ddayLabel;
 
-    const countRect =
+    const countRect=
       s.rects.ddayCount;
 
-    const bottomPadding =
+    const bottomPadding=
       Math.max(
         0,
-        s.dday?.bottomPadding??15
+        s.dday?.bottomPadding??
+        15
       );
 
-    const compactH =
+    const compactH=
       countRect &&
       countRect.h
         ? Math.ceil(
@@ -817,12 +858,12 @@
           )
         : 83;
 
-    const r = {
+    const r={
       ...base,
       h:compactH
     };
 
-    const ds =
+    const ds=
       ddayState(
         s,
         t,
@@ -836,22 +877,25 @@
       27
     );
 
-    const labelY =
+    const labelY=
       labelRect &&
       labelRect.h
         ? labelRect.y+
-          labelRect.h/2
+          labelRect.h/
+          2
         : r.y+
           21;
 
     drawText(
       ctx,
       s.text.ddayLabel,
+
       labelRect &&
       labelRect.w
         ? labelRect.x
         : r.x+
           17,
+
       labelY,
       10,
       700,
@@ -860,52 +904,57 @@
       'middle'
     );
 
-    const countX =
+    const countX=
       countRect &&
       countRect.w
         ? countRect.x
         : r.x+
           17;
 
-    const countY =
+    const countY=
       countRect &&
       countRect.h
         ? countRect.y+
-          countRect.h/2
+          countRect.h/
+          2
         : r.y+
           53;
 
     ctx.save();
 
     if(ds.flipping){
-      const p =
+      const p=
         clamp(
           ds.phase
         );
 
-      const sy =
-        p<.55
+      const sy=
+        p<
+        .55
           ? .35+
             .63*
             easeOutCubic(
-              p/.55
+              p/
+              .55
             )
           : .98+
             .02*
             easeOutCubic(
               (
-                p-.55
+                p-
+                .55
               )/
               .45
             );
 
-      ctx.globalAlpha =
+      ctx.globalAlpha=
         .45+
         .55*
         easeOutCubic(
           Math.min(
             1,
-            p/.55
+            p/
+            .55
           )
         );
 
@@ -942,7 +991,7 @@
     if(ds.flipping){
       ctx.save();
 
-      ctx.globalAlpha =
+      ctx.globalAlpha=
         .22*
         (
           1-
@@ -953,7 +1002,7 @@
           2
         );
 
-      ctx.fillStyle =
+      ctx.fillStyle=
         '#fff';
 
       ctx.fillRect(
@@ -971,61 +1020,8 @@
     }
   }
 
-  function drawEqualizer(
-    ctx,
-    x,
-    y,
-    t
-  ){
-    const widths = 2.2;
-    const gap = 2.4;
-
-    for(
-      let i=0;
-      i<4;
-      i++
-    ){
-      const wave =
-        .5+
-        .5*
-        Math.sin(
-          t*
-          (
-            5.6+
-            i*.7
-          )+
-          i*1.7
-        );
-
-      const h =
-        4+
-        wave*
-        9;
-
-      ctx.fillStyle =
-        'rgba(255,255,255,.82)';
-
-      rr(
-        ctx,
-        x+
-        i*
-        (
-          widths+
-          gap
-        ),
-        y-
-        h/2,
-        widths,
-        h,
-        1.1
-      );
-
-      ctx.fill();
-    }
-  }
-
   function parseClock(v){
-    const m =
+    const m=
       String(
         v||
         ''
@@ -1036,25 +1032,28 @@
         );
 
     return m
-      ? (+m[1])*60+
+      ? (+m[1])*
+        60+
         (+m[2])
       : 216;
   }
 
   function formatClock(sec){
-    sec =
+    sec=
       Math.max(
         0,
-        Math.round(sec)
+        Math.round(
+          sec
+        )
       );
 
-    const m =
+    const m=
       Math.floor(
         sec/
         60
       );
 
-    const s =
+    const s=
       sec%
       60;
 
@@ -1065,12 +1064,12 @@
     s,
     t
   ){
-    const total =
+    const total=
       parseClock(
         s.text.duration
       );
 
-    const start =
+    const start=
       total*
       (
         s.controls.progress||
@@ -1078,22 +1077,23 @@
       )/
       100;
 
-    const elapsed =
+    const elapsed=
       Math.max(
         0,
         t-
         s.timeline.musicStart
       );
 
-    const current =
+    const current=
       Math.min(
         total,
         start+
         elapsed
       );
 
-    const pct =
-      total>0
+    const pct=
+      total>
+      0
         ? Math.min(
             100,
             current/
@@ -1112,12 +1112,71 @@
     };
   }
 
+  function drawEqualizer(
+    ctx,
+    x,
+    y,
+    t
+  ){
+    const widths=
+      2.2;
+
+    const gap=
+      2.4;
+
+    for(
+      let i=0;
+      i<4;
+      i++
+    ){
+      const wave=
+        .5+
+        .5*
+        Math.sin(
+          t*
+          (
+            5.6+
+            i*
+            .7
+          )+
+          i*
+          1.7
+        );
+
+      const h=
+        4+
+        wave*
+        9;
+
+      ctx.fillStyle=
+        'rgba(255,255,255,.82)';
+
+      rr(
+        ctx,
+        x+
+        i*
+        (
+          widths+
+          gap
+        ),
+        y-
+        h/
+        2,
+        widths,
+        h,
+        1.1
+      );
+
+      ctx.fill();
+    }
+  }
+
   function drawMusic(
     ctx,
     s,
     t=0
   ){
-    const r =
+    const r=
       s.rects.music;
 
     glass(
@@ -1127,7 +1186,7 @@
       28
     );
 
-    const c =
+    const c=
       s.rects.cover;
 
     fitImage(
@@ -1141,7 +1200,7 @@
       20
     );
 
-    const tx =
+    const tx=
       c.x+
       c.w+
       14;
@@ -1168,30 +1227,30 @@
       'rgba(255,255,255,.68)'
     );
 
-    const playR =
+    const playR=
       14;
 
-    const playCx =
+    const playCx=
       r.x+
       r.w-
       28;
 
-    const playCy =
+    const playCy=
       r.y+
       69;
 
-    const eqX =
+    const eqX=
       playCx-
       34;
 
-    const barX =
+    const barX=
       tx;
 
-    const barY =
+    const barY=
       r.y+
       69;
 
-    const barW =
+    const barW=
       Math.max(
         28,
         eqX-
@@ -1199,13 +1258,13 @@
         barX
       );
 
-    const pb =
+    const pb=
       musicPlaybackState(
         s,
         t
       );
 
-    ctx.fillStyle =
+    ctx.fillStyle=
       'rgba(255,255,255,.28)';
 
     rr(
@@ -1220,7 +1279,7 @@
 
     ctx.fill();
 
-    ctx.fillStyle =
+    ctx.fillStyle=
       '#fff';
 
     rr(
@@ -1255,12 +1314,12 @@
       2
     );
 
-    ctx.fillStyle =
+    ctx.fillStyle=
       'rgba(255,255,255,.90)';
 
     ctx.fill();
 
-    ctx.fillStyle =
+    ctx.fillStyle=
       '#17181c';
 
     rr(
@@ -1318,19 +1377,20 @@
       'right'
     );
 
-    let yy =
+    let yy=
       r.y+
       114;
 
     for(
       let i=0;
-      i<s.queue.length;
+      i<
+      s.queue.length;
       i++
     ){
-      const q =
+      const q=
         s.queue[i];
 
-      ctx.fillStyle =
+      ctx.fillStyle=
         'rgba(255,255,255,.16)';
 
       ctx.fillRect(
@@ -1403,10 +1463,10 @@
       return;
     }
 
-    const imgR =
+    const imgR=
       s.rects.postImage;
 
-    const titleR =
+    const titleR=
       s.rects.postTitle;
 
     fitImage(
@@ -1431,7 +1491,7 @@
       16
     );
 
-    const title =
+    const title=
       postState(
         s,
         t,
@@ -1460,40 +1520,42 @@
     ctx,
     s
   ){
-    const text =
+    const text=
       (
         s.text.commission||
         ''
       ).trim();
 
-    if(!text){
+    if(
+      !text
+    ){
       return;
     }
 
     ctx.save();
 
-    ctx.font =
+    ctx.font=
       '600 10px Inter, Pretendard, Arial, sans-serif';
 
-    ctx.textAlign =
+    ctx.textAlign=
       'left';
 
-    ctx.textBaseline =
+    ctx.textBaseline=
       'bottom';
 
-    ctx.fillStyle =
+    ctx.fillStyle=
       'rgba(255,255,255,.96)';
 
-    ctx.shadowColor =
+    ctx.shadowColor=
       'rgba(0,0,0,.72)';
 
-    ctx.shadowBlur =
+    ctx.shadowBlur=
       5;
 
-    ctx.shadowOffsetX =
+    ctx.shadowOffsetX=
       0;
 
-    ctx.shadowOffsetY =
+    ctx.shadowOffsetY=
       1.5;
 
     ctx.fillText(
@@ -1509,21 +1571,32 @@
   function loadImage(src){
     return new Promise(
       resolve=>{
-        if(!src){
-          resolve(null);
+        if(
+          !src
+        ){
+          resolve(
+            null
+          );
+
           return;
         }
 
-        const img =
+        const img=
           new Image();
 
-        img.onload =
-          ()=>resolve(img);
+        img.onload=
+          ()=>
+            resolve(
+              img
+            );
 
-        img.onerror =
-          ()=>resolve(null);
+        img.onerror=
+          ()=>
+            resolve(
+              null
+            );
 
-        img.src =
+        img.src=
           src;
       }
     );
@@ -1532,19 +1605,19 @@
   async function captureState(
     opts={}
   ){
-    const root =
+    const root=
       $('#capture');
 
-    const rootRect =
+    const rootRect=
       root.getBoundingClientRect();
 
-    const glassValue =
+    const glassValue=
       num(
         'glassOpacity',
         34
       );
 
-    const queue =
+    const queue=
       [];
 
     for(
@@ -1552,12 +1625,12 @@
       i<=3;
       i++
     ){
-      const title =
+      const title=
         val(
           `queueTitle${i}`
         );
 
-      const artist =
+      const artist=
         val(
           `queueArtist${i}`
         );
@@ -1583,7 +1656,7 @@
       main,
       cover,
       post
-    ] =
+    ]=
       await Promise.all([
         loadImage(
           window.__pairBgSrc||
@@ -1606,17 +1679,17 @@
         )
       ]);
 
-    const dur =
+    const dur=
       num(
         'duration',
         5
       );
 
-    const f =
+    const f=
       dur/
       5;
 
-    const ddayEl =
+    const ddayEl=
       $('#ddayWidget');
 
     return {
@@ -1905,7 +1978,8 @@
 
       dday:{
         animate:
-          ddayEl?.dataset.animate==='1',
+          ddayEl?.dataset.animate===
+          '1',
 
         value:
           Number(
@@ -1933,11 +2007,11 @@
     t,
     name
   ){
-    const f =
+    const f=
       s.duration/
       5;
 
-    const starts = {
+    const starts={
       search:
         .42*f,
 
@@ -1951,7 +2025,7 @@
         3.05*f
     };
 
-    const lens = {
+    const lens={
       search:
         .62*f,
 
@@ -1981,7 +2055,7 @@
     effect,
     p
   ){
-    const q =
+    const q=
       easeOutCubic(
         p
       );
@@ -2003,9 +2077,12 @@
     ){
       return {
         alpha:q,
+
         scale:
           .985+
-          .015*q,
+          .015*
+          q,
+
         dy:0
       };
     }
@@ -2017,15 +2094,17 @@
       return {
         alpha:q,
         scale:1,
+
         dy:
           30*
           (
-            1-q
+            1-
+            q
           )
       };
     }
 
-    const overshoot =
+    const overshoot=
       .15*
       Math.sin(
         Math.PI*
@@ -2047,13 +2126,15 @@
 
       scale:
         .70+
-        .30*q+
+        .30*
+        q+
         overshoot,
 
       dy:
         14*
         (
-          1-q
+          1-
+          q
         )
     };
   }
@@ -2077,7 +2158,7 @@
       return;
     }
 
-    const p =
+    const p=
       motionProgress(
         s,
         t,
@@ -2085,32 +2166,33 @@
       );
 
     if(
-      p<=0
+      p<=
+      0
     ){
       return;
     }
 
-    const m =
+    const m=
       motionTransform(
         s.effect||
         'pop',
         p
       );
 
-    const r =
+    const r=
       s.rects[name];
 
     ctx.save();
 
-    ctx.globalAlpha *=
+    ctx.globalAlpha*=
       m.alpha;
 
-    const cx =
+    const cx=
       r.x+
       r.w/
       2;
 
-    const cy =
+    const cy=
       r.y+
       r.h/
       2;
@@ -2141,6 +2223,131 @@
     ctx.restore();
   }
 
+  const renderCache=
+    new WeakMap();
+
+  function getRenderBuffers(
+    state,
+    scale
+  ){
+    let scales=
+      renderCache.get(
+        state
+      );
+
+    if(!scales){
+      scales=
+        new Map();
+
+      renderCache.set(
+        state,
+        scales
+      );
+    }
+
+    const key=
+      String(
+        scale
+      );
+
+    let cached=
+      scales.get(
+        key
+      );
+
+    if(!cached){
+      const width=
+        Math.round(
+          state.w*
+          scale
+        );
+
+      const height=
+        Math.round(
+          state.h*
+          scale
+        );
+
+      const base=
+        document.createElement(
+          'canvas'
+        );
+
+      base.width=
+        width;
+
+      base.height=
+        height;
+
+      const baseCtx=
+        base.getContext(
+          '2d'
+        );
+
+      baseCtx.imageSmoothingEnabled=
+        true;
+
+      baseCtx.imageSmoothingQuality=
+        'high';
+
+      baseCtx.setTransform(
+        scale,
+        0,
+        0,
+        scale,
+        0,
+        0
+      );
+
+      drawBackground(
+        baseCtx,
+        state
+      );
+
+      drawPhone(
+        baseCtx,
+        state
+      );
+
+      const canvas=
+        document.createElement(
+          'canvas'
+        );
+
+      canvas.width=
+        width;
+
+      canvas.height=
+        height;
+
+      const ctx=
+        canvas.getContext(
+          '2d'
+        );
+
+      ctx.imageSmoothingEnabled=
+        true;
+
+      ctx.imageSmoothingQuality=
+        'high';
+
+      cached={
+        canvas,
+        ctx,
+        base,
+        width,
+        height
+      };
+
+      scales.set(
+        key,
+        cached
+      );
+    }
+
+    return cached;
+  }
+
   function render(
     state,
     t,
@@ -2149,7 +2356,7 @@
       scale=1
     }={}
   ){
-    scale =
+    scale=
       Math.max(
         1,
         Number(
@@ -2158,47 +2365,50 @@
         1
       );
 
-    const c =
-      document.createElement(
-        'canvas'
-      );
-
-    c.width =
-      Math.round(
-        state.w*
+    const {
+      canvas,
+      ctx,
+      base,
+      width,
+      height
+    }=
+      getRenderBuffers(
+        state,
         scale
       );
 
-    c.height =
-      Math.round(
-        state.h*
-        scale
-      );
+    ctx.setTransform(
+      1,
+      0,
+      0,
+      1,
+      0,
+      0
+    );
 
-    const ctx =
-      c.getContext(
-        '2d'
-      );
+    ctx.globalAlpha=
+      1;
 
-    ctx.imageSmoothingEnabled =
-      true;
+    ctx.clearRect(
+      0,
+      0,
+      width,
+      height
+    );
 
-    ctx.imageSmoothingQuality =
-      'high';
+    ctx.drawImage(
+      base,
+      0,
+      0
+    );
 
-    ctx.scale(
+    ctx.setTransform(
       scale,
-      scale
-    );
-
-    drawBackground(
-      ctx,
-      state
-    );
-
-    drawPhone(
-      ctx,
-      state
+      0,
+      0,
+      scale,
+      0,
+      0
     );
 
     drawMotion(
@@ -2246,11 +2456,11 @@
       state
     );
 
-    return c;
+    return canvas;
   }
 
-  window.PairExportRenderer = {
-    version:'20261007-25',
+  window.PairExportRenderer={
+    version:'20261007-27',
     captureState,
     render
   };
