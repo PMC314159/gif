@@ -24,8 +24,8 @@
     input[type="text"],input[type="date"],textarea,select{width:100%;min-width:0;max-width:100%;border:1px solid rgba(255,255,255,.11);background:#15171e;color:#fff;border-radius:12px;padding:10px 11px;outline:none}input[type="date"]{display:block;min-width:0;max-width:100%}input[type="date"]::-webkit-date-and-time-value{min-width:0;text-align:left}input[type="file"]{width:100%;font-size:11px;color:rgba(255,255,255,.56)}textarea{resize:vertical;min-height:72px;line-height:1.45}input[type="range"]{display:block;width:100%;height:24px;margin:0;padding:0;accent-color:#fff;align-self:center}
     .range-row{display:grid;grid-template-columns:minmax(0,1fr) 44px;gap:8px;align-items:center;min-height:24px}.range-row input[type="range"]{height:24px;margin:0}.value{font-size:11px;color:rgba(255,255,255,.5);text-align:right;font-variant-numeric:tabular-nums}.btns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:4px}.btns button{min-width:0;padding-left:8px;padding-right:8px}button{border:0;border-radius:13px;padding:11px 12px;cursor:pointer;transition:.18s ease}button:hover{transform:translateY(-1px)}.ghost{background:rgba(255,255,255,.07);color:#fff;border:1px solid rgba(255,255,255,.09)}.primary{background:#f7f7f7;color:#111218;font-weight:750}.xsave{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.16);font-weight:700}.primary:disabled,.xsave:disabled{opacity:.45;cursor:not-allowed;transform:none}.status{min-height:18px;margin-top:10px;font-size:11px;color:rgba(255,255,255,.58);line-height:1.5}.mobile-save-note{display:none;margin-top:8px;padding:9px 10px;border-radius:11px;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.08);font-size:10px;line-height:1.55;color:rgba(255,255,255,.56)}.mobile-save-note.show{display:block}.mobile-save-note.warn{color:rgba(255,225,225,.76);border-color:rgba(255,170,170,.16);background:rgba(255,120,120,.055)}.ios-save-ready{display:none;margin-top:9px;padding:11px;border-radius:13px;background:rgba(255,255,255,.065);border:1px solid rgba(255,255,255,.11)}.ios-save-ready.show{display:block}.ios-save-ready .ios-save-title{font-size:11px;font-weight:720;color:rgba(255,255,255,.92);margin-bottom:4px}.ios-save-ready .ios-save-desc{font-size:10px;line-height:1.55;color:rgba(255,255,255,.6);margin-bottom:9px}.ios-save-ready button{width:100%;padding:10px 12px;background:#f7f7f7;color:#111218;font-weight:760;border-radius:11px}.use-notice{margin:14px 0 2px;padding:12px 13px;border-radius:14px;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.09);font-size:10px;line-height:1.65;color:rgba(255,255,255,.62)}.use-notice strong{display:block;margin-bottom:4px;font-size:10px;letter-spacing:.08em;color:rgba(255,255,255,.82)}
     .stage-wrap{height:calc(100vh - 32px);min-height:0;display:grid;place-items:center;padding:8px 18px;overflow:hidden}.preview-shell{position:relative;width:min(600px,calc((100vh - 36px)*.64),100%);filter:drop-shadow(0 30px 60px rgba(0,0,0,.38))}#capture{position:absolute;inset:0;width:540px;height:960px;transform-origin:top left;border-radius:0;overflow:hidden;background:#d4d4d4;isolation:isolate}
-    .bg-layer{position:absolute;inset:0;transform-origin:center center;background:linear-gradient(135deg,rgba(255,255,255,.16),rgba(255,255,255,.01)),linear-gradient(150deg,#cfd2d9 0%,#9da4b0 40%,#4d5159 100%);background-size:contain;background-repeat:no-repeat;background-position:center;filter:blur(0px) saturate(.85) brightness(.78);transform:translate(0px,0px) scale(1)}.bg-overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(9,10,14,.18),rgba(7,8,11,.26) 60%,rgba(6,7,10,.45))}.noise{position:absolute;inset:0;opacity:.16;mix-blend-mode:soft-light;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.34'/%3E%3C/svg%3E")}
-        .phone{position:absolute;z-index:4;left:95px;top:118px;width:350px;height:646px;border-radius:51px;padding:8px;background:rgba(218,222,230,.26);border:1px solid rgba(255,255,255,.42);box-shadow:0 35px 70px rgba(0,0,0,.36),0 0 0 1px rgba(255,255,255,.16) inset}.phone:before{content:"";position:absolute;z-index:3;left:50%;top:15px;transform:translateX(-50%);width:83px;height:23px;border-radius:20px;background:#050608;box-shadow:0 0 0 1px rgba(255,255,255,.05)}.screen{position:relative;width:100%;height:100%;border-radius:44px;overflow:hidden;background:linear-gradient(160deg,#bfc2c9,#626975)}.screen img{position:absolute;left:50%;top:50%;width:100%;height:100%;object-fit:cover;transform:translate(-50%,-50%) scale(1);user-select:none;-webkit-user-drag:none}.screen-shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.08),transparent 42%,rgba(0,0,0,.18));pointer-events:none}
+    .bg-layer{position:absolute;inset:0;overflow:hidden;background:linear-gradient(135deg,rgba(255,255,255,.16),rgba(255,255,255,.01)),linear-gradient(150deg,#cfd2d9 0%,#9da4b0 40%,#4d5159 100%)}.bg-layer img{position:absolute;left:50%;top:50%;width:auto;height:auto;max-width:none;max-height:none;display:block;transform-origin:center center;will-change:transform,filter;user-select:none;-webkit-user-drag:none}.bg-overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(9,10,14,.18),rgba(7,8,11,.26) 60%,rgba(6,7,10,.45))}.noise{position:absolute;inset:0;opacity:.16;mix-blend-mode:soft-light;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.34'/%3E%3C/svg%3E")}
+        .phone{position:absolute;z-index:4;left:95px;top:118px;width:350px;height:646px;border-radius:51px;padding:8px;background:rgba(218,222,230,.26);border:1px solid rgba(255,255,255,.42);box-shadow:0 35px 70px rgba(0,0,0,.36),0 0 0 1px rgba(255,255,255,.16) inset}.phone:before{content:"";position:absolute;z-index:3;left:50%;top:15px;transform:translateX(-50%);width:83px;height:23px;border-radius:20px;background:#050608;box-shadow:0 0 0 1px rgba(255,255,255,.05)}.screen{position:relative;width:100%;height:100%;border-radius:44px;overflow:hidden;background:linear-gradient(160deg,#bfc2c9,#626975)}.screen img{position:absolute;left:50%;top:50%;width:auto;height:auto;max-width:none;max-height:none;display:block;transform-origin:center center;will-change:transform;user-select:none;-webkit-user-drag:none}.screen-shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.08),transparent 42%,rgba(0,0,0,.18));pointer-events:none}
 
     .glass{position:absolute;z-index:8;color:white;background:linear-gradient(145deg,rgba(255,255,255,.24),rgba(255,255,255,.10));border:1px solid rgba(255,255,255,.34);box-shadow:0 18px 45px rgba(0,0,0,.18),0 1px 0 rgba(255,255,255,.28) inset;overflow:hidden}.glass:after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(110deg,rgba(255,255,255,.22),transparent 28%,transparent 70%,rgba(255,255,255,.08));mix-blend-mode:screen}
     .search-widget{left:8px;top:470px;width:88px;height:58px;border-radius:999px;padding:8px 10px 8px 18px;display:grid;grid-template-columns:1fr 40px;gap:9px;align-items:center;overflow:hidden}.search-text{position:relative;z-index:1;font-size:14px;color:rgba(255,255,255,.78);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:-.01em;text-align:left}.search-icon-wrap{position:relative;z-index:1;justify-self:end;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(180deg,rgba(255,255,255,.24),rgba(255,255,255,.08));box-shadow:0 1px 0 rgba(255,255,255,.42) inset,0 8px 20px rgba(0,0,0,.10)}.search-icon{position:relative;width:16px;height:16px;border:2px solid rgba(255,255,255,.82);border-radius:50%}.search-icon:after{content:"";position:absolute;width:7px;height:2px;background:rgba(255,255,255,.82);border-radius:3px;right:-5px;bottom:-1px;transform:rotate(45deg)}.typing-caret{display:inline-block;width:1px;height:1em;vertical-align:-.12em;background:rgba(255,255,255,.56);margin-left:2px;opacity:.82}
@@ -125,11 +125,11 @@
       <div class="use-notice"><strong>사용 제한</strong>『가비지타임』 성준수 드림과 『괴담에 떨어져도 출근을 해야 하는구나』 이자헌 드림에는 사용 불가능합니다.<br>『귀멸의 칼날』과 『나의 히어로 아카데미아』 장르에는 사용 불가능합니다.</div>
       <section class="section"><div class="btns"><button class="ghost" id="replay">↻ 다시 재생</button><button class="ghost" id="savePng">이미지 저장</button><button class="primary" id="saveMp4X">MP4 저장 · 추천</button><button class="ghost" id="saveGif">GIF 저장 · 보조</button></div><div class="status" id="status">영상 저장에는 MP4를 추천합니다. GIF 저장은 GIF가 꼭 필요할 때 사용해 주세요.</div><div class="mobile-save-note" id="mobileSaveNote"></div><div class="ios-save-ready" id="iosSaveReady"><div class="ios-save-title" id="iosSaveTitle">저장 파일이 준비됐어요.</div><div class="ios-save-desc" id="iosSaveDesc">아래 버튼을 누른 뒤 저장을 선택해 주세요.</div><button type="button" id="iosSaveAction">iPhone에 저장</button></div></section>
     </aside>
-    <section class="stage-wrap"><div class="preview-shell" id="shell"><div id="capture"><div class="bg-layer" id="bgLayer"></div><div class="bg-overlay"></div><div class="noise"></div><div class="scene-content" id="sceneContent"><div class="phone" id="phone"><div class="screen"><img id="mainImage" alt=""><div class="screen-shade"></div></div></div><div class="glass search-widget anim-item" id="searchWidget"><div class="search-text" id="searchTextOut">With suggestions<span class="typing-caret"></span></div><div class="search-icon-wrap"><div class="search-icon"></div></div></div><div class="glass dday anim-item" id="ddayWidget"><div class="label" id="ddayLabelOut">OUR DAY</div><div class="count" id="ddayCount">D+000</div><div class="date hidden" id="ddayDateOut"></div></div><div class="glass music anim-item" id="musicWidget"><div class="cover"><img id="coverImage" alt=""></div><div class="track"><div class="song" id="songOut">Midnight Hour</div><div class="artist" id="artistOut">Pair Theme</div><div class="timeline"><div class="bar"><i id="barFill"></i></div><div class="eq" aria-hidden="true"><span></span><span></span><span></span><span></span></div><div class="play" aria-label="일시정지"></div></div><div class="time-row"><span id="currentTimeOut">01:31</span><span id="durationTimeOut">03:36</span></div></div><div class="playlist hidden" id="playlistOut"><div class="queue-item hidden" id="queueItem1"><div class="queue-meta"><div class="queue-title" id="queueTitleOut1"></div><div class="queue-artist" id="queueArtistOut1"></div></div><div class="queue-index">02</div></div><div class="queue-item hidden" id="queueItem2"><div class="queue-meta"><div class="queue-title" id="queueTitleOut2"></div><div class="queue-artist" id="queueArtistOut2"></div></div><div class="queue-index">03</div></div><div class="queue-item hidden" id="queueItem3"><div class="queue-meta"><div class="queue-title" id="queueTitleOut3"></div><div class="queue-artist" id="queueArtistOut3"></div></div><div class="queue-index">04</div></div></div></div><div class="post-card anim-item" id="postWidget"><div class="post-inner"><div class="post-image"><img id="postImage" alt=""></div><div class="post-title" id="postCaptionOut">midnight post</div></div></div></div><div class="commission-credit hidden" id="commissionCredit"></div></div></div></section>
+    <section class="stage-wrap"><div class="preview-shell" id="shell"><div id="capture"><div class="bg-layer" id="bgLayer"><img id="bgImage" alt=""></div><div class="bg-overlay"></div><div class="noise"></div><div class="scene-content" id="sceneContent"><div class="phone" id="phone"><div class="screen"><img id="mainImage" alt=""><div class="screen-shade"></div></div></div><div class="glass search-widget anim-item" id="searchWidget"><div class="search-text" id="searchTextOut">With suggestions<span class="typing-caret"></span></div><div class="search-icon-wrap"><div class="search-icon"></div></div></div><div class="glass dday anim-item" id="ddayWidget"><div class="label" id="ddayLabelOut">OUR DAY</div><div class="count" id="ddayCount">D+000</div><div class="date hidden" id="ddayDateOut"></div></div><div class="glass music anim-item" id="musicWidget"><div class="cover"><img id="coverImage" alt=""></div><div class="track"><div class="song" id="songOut">Midnight Hour</div><div class="artist" id="artistOut">Pair Theme</div><div class="timeline"><div class="bar"><i id="barFill"></i></div><div class="eq" aria-hidden="true"><span></span><span></span><span></span><span></span></div><div class="play" aria-label="일시정지"></div></div><div class="time-row"><span id="currentTimeOut">01:31</span><span id="durationTimeOut">03:36</span></div></div><div class="playlist hidden" id="playlistOut"><div class="queue-item hidden" id="queueItem1"><div class="queue-meta"><div class="queue-title" id="queueTitleOut1"></div><div class="queue-artist" id="queueArtistOut1"></div></div><div class="queue-index">02</div></div><div class="queue-item hidden" id="queueItem2"><div class="queue-meta"><div class="queue-title" id="queueTitleOut2"></div><div class="queue-artist" id="queueArtistOut2"></div></div><div class="queue-index">03</div></div><div class="queue-item hidden" id="queueItem3"><div class="queue-meta"><div class="queue-title" id="queueTitleOut3"></div><div class="queue-artist" id="queueArtistOut3"></div></div><div class="queue-index">04</div></div></div></div><div class="post-card anim-item" id="postWidget"><div class="post-inner"><div class="post-image"><img id="postImage" alt=""></div><div class="post-title" id="postCaptionOut">midnight post</div></div></div></div><div class="commission-credit hidden" id="commissionCredit"></div></div></div></section>
   </main>
 <script>
 (() => {
-  const $ = s => document.querySelector(s), capture=$('#capture'), shell=$('#shell'), status=$('#status'), mainImage=$('#mainImage'), coverImage=$('#coverImage'), postImage=$('#postImage'), bgLayer=$('#bgLayer'), sceneContent=$('#sceneContent'), commissionCredit=$('#commissionCredit'), searchWidget=$('#searchWidget'), ddayWidget=$('#ddayWidget'), musicWidget=$('#musicWidget'), postWidget=$('#postWidget');
+  const $ = s => document.querySelector(s), capture=$('#capture'), shell=$('#shell'), status=$('#status'), mainImage=$('#mainImage'), coverImage=$('#coverImage'), postImage=$('#postImage'), bgLayer=$('#bgLayer'), bgImage=$('#bgImage'), sceneContent=$('#sceneContent'), commissionCredit=$('#commissionCredit'), searchWidget=$('#searchWidget'), ddayWidget=$('#ddayWidget'), musicWidget=$('#musicWidget'), postWidget=$('#postWidget');
   const glassEls=[searchWidget,ddayWidget,musicWidget].filter(Boolean); let startTime=performance.now(), liveRaf=null, exportMode=false, bgUserSrc='', canvasHeight=960, sceneShift=0, exportLayoutFrozen=false;
   const PREVIEW_BASE_HEIGHT=840;
   function fitCapture(){
@@ -148,9 +148,57 @@
     capture.style.transform=`scale(${scale})`;
   } window.addEventListener('resize',fitCapture);
   function loadImage(input,cb){const file=input.files&&input.files[0];if(!file)return;const reader=new FileReader();reader.onload=e=>cb(e.target.result);reader.readAsDataURL(file)}
-  $('#bgFile').addEventListener('change',e=>loadImage(e.target,src=>{bgUserSrc=src;window.__pairBgSrc=src;bgLayer.style.backgroundImage=`linear-gradient(135deg,rgba(255,255,255,.14),rgba(0,0,0,.02)),url("${src}")`}));$('#mainFile').addEventListener('change',e=>loadImage(e.target,src=>mainImage.src=src));$('#coverFile').addEventListener('change',e=>loadImage(e.target,src=>coverImage.src=src));$('#postFile').addEventListener('change',e=>loadImage(e.target,src=>postImage.src=src));
-  function setMainTransform(){const z=+$('#zoom').value,x=+$('#posX').value,y=+$('#posY').value;mainImage.style.transform=`translate(calc(-50% + ${x}px),calc(-50% + ${y}px)) scale(${z})`;$('#zoomV').textContent=z.toFixed(2)+'×'}
-  function setBgTransform(){const z=+$('#bgZoom').value,x=+$('#bgX').value,y=+$('#bgY').value,b=+$('#bgBlur').value;bgLayer.style.transform=`translate(${x}px,${y}px) scale(${z})`;bgLayer.style.filter=`blur(${b}px) saturate(.85) brightness(.78)`;$('#bgZoomV').textContent=z.toFixed(2)+'×';$('#bgBlurV').textContent=b.toFixed(1)+'px'}
+  $('#bgFile').addEventListener('change',e=>loadImage(e.target,src=>{bgUserSrc=src;window.__pairBgSrc=src;bgImage.src=src;}));$('#mainFile').addEventListener('change',e=>loadImage(e.target,src=>mainImage.src=src));$('#coverFile').addEventListener('change',e=>loadImage(e.target,src=>coverImage.src=src));$('#postFile').addEventListener('change',e=>loadImage(e.target,src=>postImage.src=src));
+  function setMainTransform(){
+    const z=+$('#zoom').value||1,
+          x=+$('#posX').value||0,
+          y=+$('#posY').value||0,
+          box=mainImage.parentElement;
+
+    if(mainImage.naturalWidth&&mainImage.naturalHeight&&box){
+      const w=box.clientWidth||334,
+            h=box.clientHeight||630,
+            base=Math.max(
+              w/mainImage.naturalWidth,
+              h/mainImage.naturalHeight
+            );
+
+      mainImage.style.width=`${mainImage.naturalWidth*base}px`;
+      mainImage.style.height=`${mainImage.naturalHeight*base}px`;
+    }
+
+    mainImage.style.transform=
+      `translate(calc(-50% + ${x}px),calc(-50% + ${y}px)) scale(${z})`;
+
+    $('#zoomV').textContent=z.toFixed(2)+'×';
+  }
+  function setBgTransform(){
+    const z=+$('#bgZoom').value||1,
+          x=+$('#bgX').value||0,
+          y=+$('#bgY').value||0,
+          b=+$('#bgBlur').value||0;
+
+    if(bgImage.naturalWidth&&bgImage.naturalHeight){
+      const w=bgLayer.clientWidth||540,
+            h=bgLayer.clientHeight||canvasHeight,
+            base=Math.min(
+              w/bgImage.naturalWidth,
+              h/bgImage.naturalHeight
+            );
+
+      bgImage.style.width=`${bgImage.naturalWidth*base}px`;
+      bgImage.style.height=`${bgImage.naturalHeight*base}px`;
+    }
+
+    bgImage.style.transform=
+      `translate(calc(-50% + ${x}px),calc(-50% + ${y}px)) scale(${z})`;
+
+    bgImage.style.filter=
+      `blur(${b}px) saturate(.85) brightness(.78)`;
+
+    $('#bgZoomV').textContent=z.toFixed(2)+'×';
+    $('#bgBlurV').textContent=b.toFixed(1)+'px';
+  }
   function setCoverTransform(){
     const z=+$('#coverZoom').value||1,
           x=+$('#coverX').value||0,
@@ -176,7 +224,9 @@
   }
   function setPostImageTransform(){const z=+$('#postZoom').value,x=+$('#postX').value,y=+$('#postY').value;postImage.style.transform=`translate(${x}px,${y}px) scale(${z})`;$('#postZoomV').textContent=z.toFixed(2)+'×'}
   ['zoom','posX','posY'].forEach(id=>$('#'+id).addEventListener('input',setMainTransform));
+  mainImage.addEventListener('load',setMainTransform);
   ['bgZoom','bgBlur','bgX','bgY'].forEach(id=>$('#'+id).addEventListener('input',setBgTransform));
+  bgImage.addEventListener('load',setBgTransform);
   ['coverZoom','coverX','coverY'].forEach(id=>$('#'+id).addEventListener('input',setCoverTransform));
   coverImage.addEventListener('load',setCoverTransform);
   ['postZoom','postX','postY'].forEach(id=>$('#'+id).addEventListener('input',setPostImageTransform));
@@ -353,6 +403,7 @@
     const bottomGap=edgeGap+10;
     canvasHeight=Math.min(1280,Math.ceil(bottomEdge+bottomGap));
     capture.style.height=`${canvasHeight}px`;
+    setBgTransform();
     fitCapture();
   }
   function updateWidgetUI(){
@@ -521,7 +572,7 @@
     if(!bgUserSrc)return null;
     const img=new Image();img.src=bgUserSrc;try{if(img.decode)await img.decode()}catch(e){await new Promise(r=>{img.onload=r;img.onerror=r})}
     const w=540,h=canvasHeight,nw=img.naturalWidth||w,nh=img.naturalHeight||h,z=+$('#bgZoom').value||1,b=+$('#bgBlur').value||0,x=+$('#bgX').value||0,y=+$('#bgY').value||0;
-    const layerW=720,layerH=h+180,base=Math.min(layerW/nw,layerH/nh),dw=nw*base*z,dh=nh*base*z;
+    const base=Math.min(w/nw,h/nh),dw=nw*base*z,dh=nh*base*z;
     const c=document.createElement('canvas');c.width=w;c.height=h;c.className='export-bg-canvas';
     const ctx=c.getContext('2d');ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';
     ctx.fillStyle='#808791';ctx.fillRect(0,0,w,h);
