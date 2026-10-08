@@ -10,7 +10,7 @@
   <title>PHONE SCREEN MOTION MAKER</title>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gif.js.optimized@1.0.1/dist/gif.js"></script>
-  <script src="./export-renderer.js?v=20261007-33"></script>
+  <script src="./export-renderer.js?v=20261009-41"></script>
   <style>
     *{box-sizing:border-box}
     html,body{margin:0;min-height:100%;background:#0e0f13;color:#f7f7f7;font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Pretendard","Noto Sans KR",Segoe UI,sans-serif}
@@ -24,7 +24,7 @@
     input[type="text"],input[type="date"],textarea,select{width:100%;min-width:0;max-width:100%;border:1px solid rgba(255,255,255,.11);background:#15171e;color:#fff;border-radius:12px;padding:10px 11px;outline:none}input[type="date"]{display:block;min-width:0;max-width:100%}input[type="date"]::-webkit-date-and-time-value{min-width:0;text-align:left}input[type="file"]{width:100%;font-size:11px;color:rgba(255,255,255,.56)}textarea{resize:vertical;min-height:72px;line-height:1.45}input[type="range"]{display:block;width:100%;height:24px;margin:0;padding:0;accent-color:#fff;align-self:center}
     .range-row{display:grid;grid-template-columns:minmax(0,1fr) 44px;gap:8px;align-items:center;min-height:24px}.range-row input[type="range"]{height:24px;margin:0}.value{font-size:11px;color:rgba(255,255,255,.5);text-align:right;font-variant-numeric:tabular-nums}.btns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:4px}.btns button{min-width:0;padding-left:8px;padding-right:8px}button{border:0;border-radius:13px;padding:11px 12px;cursor:pointer;transition:.18s ease}button:hover{transform:translateY(-1px)}.ghost{background:rgba(255,255,255,.07);color:#fff;border:1px solid rgba(255,255,255,.09)}.primary{background:#f7f7f7;color:#111218;font-weight:750}.xsave{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.16);font-weight:700}.primary:disabled,.xsave:disabled{opacity:.45;cursor:not-allowed;transform:none}.status{min-height:18px;margin-top:10px;font-size:11px;color:rgba(255,255,255,.58);line-height:1.5}.mobile-save-note{display:none;margin-top:8px;padding:9px 10px;border-radius:11px;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.08);font-size:10px;line-height:1.55;color:rgba(255,255,255,.56)}.mobile-save-note.show{display:block}.mobile-save-note.warn{color:rgba(255,225,225,.76);border-color:rgba(255,170,170,.16);background:rgba(255,120,120,.055)}.ios-save-ready{display:none;margin-top:9px;padding:11px;border-radius:13px;background:rgba(255,255,255,.065);border:1px solid rgba(255,255,255,.11)}.ios-save-ready.show{display:block}.ios-save-ready .ios-save-title{font-size:11px;font-weight:720;color:rgba(255,255,255,.92);margin-bottom:4px}.ios-save-ready .ios-save-desc{font-size:10px;line-height:1.55;color:rgba(255,255,255,.6);margin-bottom:9px}.ios-save-ready button{width:100%;padding:10px 12px;background:#f7f7f7;color:#111218;font-weight:760;border-radius:11px}.use-notice{margin:14px 0 2px;padding:12px 13px;border-radius:14px;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.09);font-size:10px;line-height:1.65;color:rgba(255,255,255,.62)}.use-notice strong{display:block;margin-bottom:4px;font-size:10px;letter-spacing:.08em;color:rgba(255,255,255,.82)}
     .stage-wrap{height:calc(100vh - 32px);min-height:0;display:grid;place-items:center;padding:8px 18px;overflow:hidden}.preview-shell{position:relative;width:min(600px,calc((100vh - 36px)*.64),100%);filter:drop-shadow(0 30px 60px rgba(0,0,0,.38))}#capture{position:absolute;inset:0;width:540px;height:960px;transform-origin:top left;border-radius:0;overflow:hidden;background:#d4d4d4;isolation:isolate}
-    .bg-layer{position:absolute;inset:0;overflow:hidden;background:linear-gradient(135deg,rgba(255,255,255,.16),rgba(255,255,255,.01)),linear-gradient(150deg,#cfd2d9 0%,#9da4b0 40%,#4d5159 100%)}.bg-layer img{position:absolute;left:50%;top:50%;width:auto;height:auto;max-width:none;max-height:none;display:block;transform-origin:center center;will-change:transform,filter;user-select:none;-webkit-user-drag:none}.bg-overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(9,10,14,.18),rgba(7,8,11,.26) 60%,rgba(6,7,10,.45))}.noise{position:absolute;inset:0;opacity:.16;mix-blend-mode:soft-light;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.34'/%3E%3C/svg%3E")}
+    .bg-layer{position:absolute;inset:0;overflow:hidden;background:linear-gradient(135deg,rgba(255,255,255,.16),rgba(255,255,255,.01)),linear-gradient(150deg,#cfd2d9 0%,#9da4b0 40%,#4d5159 100%)}.bg-filter{position:absolute;inset:0;will-change:filter;transform:translateZ(0)}.bg-layer img{position:absolute;left:50%;top:50%;width:auto;height:auto;max-width:none;max-height:none;display:block;transform-origin:center center;will-change:transform;user-select:none;-webkit-user-drag:none}.bg-overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(9,10,14,.18),rgba(7,8,11,.26) 60%,rgba(6,7,10,.45))}.noise{position:absolute;inset:0;opacity:.16;mix-blend-mode:soft-light;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.34'/%3E%3C/svg%3E")}
         .phone{position:absolute;z-index:4;left:95px;top:118px;width:350px;height:646px;border-radius:51px;padding:8px;background:rgba(218,222,230,.26);border:1px solid rgba(255,255,255,.42);box-shadow:0 35px 70px rgba(0,0,0,.36),0 0 0 1px rgba(255,255,255,.16) inset}.phone:before{content:"";position:absolute;z-index:3;left:50%;top:15px;transform:translateX(-50%);width:83px;height:23px;border-radius:20px;background:#050608;box-shadow:0 0 0 1px rgba(255,255,255,.05)}.screen{position:relative;width:100%;height:100%;border-radius:44px;overflow:hidden;background:linear-gradient(160deg,#bfc2c9,#626975)}.screen img{position:absolute;left:50%;top:50%;width:auto;height:auto;max-width:none;max-height:none;display:block;transform-origin:center center;will-change:transform;user-select:none;-webkit-user-drag:none}.screen-shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.08),transparent 42%,rgba(0,0,0,.18));pointer-events:none}
 
     .glass{position:absolute;z-index:8;color:white;background:linear-gradient(145deg,rgba(255,255,255,.24),rgba(255,255,255,.10));border:1px solid rgba(255,255,255,.34);box-shadow:0 18px 45px rgba(0,0,0,.18),0 1px 0 rgba(255,255,255,.28) inset;overflow:hidden}.glass:after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(110deg,rgba(255,255,255,.22),transparent 28%,transparent 70%,rgba(255,255,255,.08));mix-blend-mode:screen}
@@ -125,11 +125,11 @@
       <div class="use-notice"><strong>사용 제한</strong>『가비지타임』 성준수 드림과 『괴담에 떨어져도 출근을 해야 하는구나』 이자헌 드림에는 사용 불가능합니다.<br>『귀멸의 칼날』과 『나의 히어로 아카데미아』 장르에는 사용 불가능합니다.</div>
       <section class="section"><div class="btns"><button class="ghost" id="replay">↻ 다시 재생</button><button class="ghost" id="savePng">이미지 저장</button><button class="primary" id="saveMp4X">MP4 저장 · 추천</button><button class="ghost" id="saveGif">GIF 저장 · 보조</button></div><div class="status" id="status">영상 저장에는 MP4를 추천합니다. GIF 저장은 GIF가 꼭 필요할 때 사용해 주세요.</div><div class="mobile-save-note" id="mobileSaveNote"></div><div class="ios-save-ready" id="iosSaveReady"><div class="ios-save-title" id="iosSaveTitle">저장 파일이 준비됐어요.</div><div class="ios-save-desc" id="iosSaveDesc">아래 버튼을 누른 뒤 저장을 선택해 주세요.</div><button type="button" id="iosSaveAction">iPhone에 저장</button></div></section>
     </aside>
-    <section class="stage-wrap"><div class="preview-shell" id="shell"><div id="capture"><div class="bg-layer" id="bgLayer"><img id="bgImage" alt=""></div><div class="bg-overlay"></div><div class="noise"></div><div class="scene-content" id="sceneContent"><div class="phone" id="phone"><div class="screen"><img id="mainImage" alt=""><div class="screen-shade"></div></div></div><div class="glass search-widget anim-item" id="searchWidget"><div class="search-text" id="searchTextOut">With suggestions<span class="typing-caret"></span></div><div class="search-icon-wrap"><div class="search-icon"></div></div></div><div class="glass dday anim-item" id="ddayWidget"><div class="label" id="ddayLabelOut">OUR DAY</div><div class="count" id="ddayCount">D+000</div><div class="date hidden" id="ddayDateOut"></div></div><div class="glass music anim-item" id="musicWidget"><div class="cover"><img id="coverImage" alt=""></div><div class="track"><div class="song" id="songOut">Midnight Hour</div><div class="artist" id="artistOut">Pair Theme</div><div class="timeline"><div class="bar"><i id="barFill"></i></div><div class="eq" aria-hidden="true"><span></span><span></span><span></span><span></span></div><div class="play" aria-label="일시정지"></div></div><div class="time-row"><span id="currentTimeOut">01:31</span><span id="durationTimeOut">03:36</span></div></div><div class="playlist hidden" id="playlistOut"><div class="queue-item hidden" id="queueItem1"><div class="queue-meta"><div class="queue-title" id="queueTitleOut1"></div><div class="queue-artist" id="queueArtistOut1"></div></div><div class="queue-index">02</div></div><div class="queue-item hidden" id="queueItem2"><div class="queue-meta"><div class="queue-title" id="queueTitleOut2"></div><div class="queue-artist" id="queueArtistOut2"></div></div><div class="queue-index">03</div></div><div class="queue-item hidden" id="queueItem3"><div class="queue-meta"><div class="queue-title" id="queueTitleOut3"></div><div class="queue-artist" id="queueArtistOut3"></div></div><div class="queue-index">04</div></div></div></div><div class="post-card anim-item" id="postWidget"><div class="post-inner"><div class="post-image"><img id="postImage" alt=""></div><div class="post-title" id="postCaptionOut">midnight post</div></div></div></div><div class="commission-credit hidden" id="commissionCredit"></div></div></div></section>
+    <section class="stage-wrap"><div class="preview-shell" id="shell"><div id="capture"><div class="bg-layer" id="bgLayer"><div class="bg-filter" id="bgFilter"><img id="bgImage" alt=""></div></div><div class="bg-overlay"></div><div class="noise"></div><div class="scene-content" id="sceneContent"><div class="phone" id="phone"><div class="screen"><img id="mainImage" alt=""><div class="screen-shade"></div></div></div><div class="glass search-widget anim-item" id="searchWidget"><div class="search-text" id="searchTextOut">With suggestions<span class="typing-caret"></span></div><div class="search-icon-wrap"><div class="search-icon"></div></div></div><div class="glass dday anim-item" id="ddayWidget"><div class="label" id="ddayLabelOut">OUR DAY</div><div class="count" id="ddayCount">D+000</div><div class="date hidden" id="ddayDateOut"></div></div><div class="glass music anim-item" id="musicWidget"><div class="cover"><img id="coverImage" alt=""></div><div class="track"><div class="song" id="songOut">Midnight Hour</div><div class="artist" id="artistOut">Pair Theme</div><div class="timeline"><div class="bar"><i id="barFill"></i></div><div class="eq" aria-hidden="true"><span></span><span></span><span></span><span></span></div><div class="play" aria-label="일시정지"></div></div><div class="time-row"><span id="currentTimeOut">01:31</span><span id="durationTimeOut">03:36</span></div></div><div class="playlist hidden" id="playlistOut"><div class="queue-item hidden" id="queueItem1"><div class="queue-meta"><div class="queue-title" id="queueTitleOut1"></div><div class="queue-artist" id="queueArtistOut1"></div></div><div class="queue-index">02</div></div><div class="queue-item hidden" id="queueItem2"><div class="queue-meta"><div class="queue-title" id="queueTitleOut2"></div><div class="queue-artist" id="queueArtistOut2"></div></div><div class="queue-index">03</div></div><div class="queue-item hidden" id="queueItem3"><div class="queue-meta"><div class="queue-title" id="queueTitleOut3"></div><div class="queue-artist" id="queueArtistOut3"></div></div><div class="queue-index">04</div></div></div></div><div class="post-card anim-item" id="postWidget"><div class="post-inner"><div class="post-image"><img id="postImage" alt=""></div><div class="post-title" id="postCaptionOut">midnight post</div></div></div></div><div class="commission-credit hidden" id="commissionCredit"></div></div></div></section>
   </main>
 <script>
 (() => {
-  const $ = s => document.querySelector(s), capture=$('#capture'), shell=$('#shell'), status=$('#status'), mainImage=$('#mainImage'), coverImage=$('#coverImage'), postImage=$('#postImage'), bgLayer=$('#bgLayer'), bgImage=$('#bgImage'), sceneContent=$('#sceneContent'), commissionCredit=$('#commissionCredit'), searchWidget=$('#searchWidget'), ddayWidget=$('#ddayWidget'), musicWidget=$('#musicWidget'), postWidget=$('#postWidget');
+  const $ = s => document.querySelector(s), capture=$('#capture'), shell=$('#shell'), status=$('#status'), mainImage=$('#mainImage'), coverImage=$('#coverImage'), postImage=$('#postImage'), bgLayer=$('#bgLayer'), bgFilter=$('#bgFilter'), bgImage=$('#bgImage'), sceneContent=$('#sceneContent'), commissionCredit=$('#commissionCredit'), searchWidget=$('#searchWidget'), ddayWidget=$('#ddayWidget'), musicWidget=$('#musicWidget'), postWidget=$('#postWidget');
   const glassEls=[searchWidget,ddayWidget,musicWidget].filter(Boolean); let startTime=performance.now(), liveRaf=null, exportMode=false, bgUserSrc='', canvasHeight=960, sceneShift=0, exportLayoutFrozen=false;
   const PREVIEW_BASE_HEIGHT=840;
   function fitCapture(){
@@ -193,7 +193,7 @@
     bgImage.style.transform=
       `translate(calc(-50% + ${x}px),calc(-50% + ${y}px)) scale(${z})`;
 
-    bgImage.style.filter=
+    bgFilter.style.filter=
       `blur(${b}px) saturate(.85) brightness(.78)`;
 
     $('#bgZoomV').textContent=z.toFixed(2)+'×';
@@ -623,6 +623,34 @@
     const ua=navigator.userAgent||'';
     return /iPhone|iPad|iPod/i.test(ua) || (navigator.platform==='MacIntel' && navigator.maxTouchPoints>1);
   }
+  function isIPhoneDevice(){
+    return /iPhone|iPod/i.test(navigator.userAgent||'');
+  }
+  function evenFloor(v){
+    return Math.max(2,Math.floor(v/2)*2);
+  }
+  function safeIPhoneMp4Scale(state,requested=2){
+    if(!isIPhoneDevice())return requested;
+    return Math.max(
+      1,
+      Math.min(
+        requested,
+        1080/state.w,
+        1920/state.h
+      )
+    );
+  }
+  function safeIPhoneGifScale(state,requested=1.25){
+    if(!isIPhoneDevice())return requested;
+    return Math.max(
+      1,
+      Math.min(
+        requested,
+        720/state.w,
+        1280/state.h
+      )
+    );
+  }
   function isIOSSafari(){
     const ua=navigator.userAgent||'';
     const webkit=/WebKit/i.test(ua), other=/CriOS|FxiOS|EdgiOS|OPiOS/i.test(ua);
@@ -750,9 +778,11 @@
 
     fps=30;
 
+    scale=safeIPhoneMp4Scale(state,scale);
+
     const out=document.createElement('canvas');
-    out.width=Math.max(2,Math.round(state.w*scale));
-    out.height=Math.max(2,Math.round(state.h*scale));
+    out.width=evenFloor(state.w*scale);
+    out.height=evenFloor(state.h*scale);
 
     const ctx=out.getContext('2d',{alpha:false,desynchronized:true})||out.getContext('2d');
     ctx.imageSmoothingEnabled=true;
@@ -982,14 +1012,50 @@
         return {text:`${prefix}${value}`,phase,flipping:phase<1, value};
       }
     
+      function drawBackgroundImage(ctx,s,img){
+        const blur=Math.max(0,Number(s.controls.bgBlur)||0);
+
+        if(blur<.25){
+          ctx.save();
+          ctx.filter='saturate(.85) brightness(.78)';
+          fitImage(ctx,img,{x:0,y:0,w:s.w,h:s.h},'contain',s.controls.bgZoom,s.controls.bgX,s.controls.bgY,0);
+          ctx.restore();
+          return;
+        }
+
+        // Safari/iPhone에서 CanvasRenderingContext2D blur가 무시되는 경우가 있어서,
+        // 배경을 한 번 작게 렌더링한 뒤 다시 확대해 실제 픽셀을 부드럽게 만들어요.
+        const ratio=Math.max(.18,1/(1+blur*.18)),
+              sw=Math.max(48,Math.round(s.w*ratio)),
+              sh=Math.max(48,Math.round(s.h*ratio)),
+              small=document.createElement('canvas');
+
+        small.width=sw;
+        small.height=sh;
+
+        const sc=small.getContext('2d');
+        sc.imageSmoothingEnabled=true;
+        sc.imageSmoothingQuality='high';
+        sc.setTransform(sw/s.w,0,0,sh/s.h,0,0);
+
+        try{
+          sc.filter='saturate(.85) brightness(.78)';
+        }catch(e){}
+
+        fitImage(sc,img,{x:0,y:0,w:s.w,h:s.h},'contain',s.controls.bgZoom,s.controls.bgX,s.controls.bgY,0);
+
+        ctx.save();
+        ctx.imageSmoothingEnabled=true;
+        ctx.imageSmoothingQuality='high';
+        ctx.drawImage(small,0,0,sw,sh,0,0,s.w,s.h);
+        ctx.restore();
+      }
+
       function drawBackground(ctx,s){
         ctx.fillStyle='#68707c';ctx.fillRect(0,0,s.w,s.h);
         const img=s.images.bg;
         if(img && img.complete && img.naturalWidth){
-          ctx.save();
-          ctx.filter=`blur(${s.controls.bgBlur||0}px) saturate(.85) brightness(.78)`;
-          fitImage(ctx,img,{x:0,y:0,w:s.w,h:s.h},'contain',s.controls.bgZoom,s.controls.bgX,s.controls.bgY,0);
-          ctx.restore();
+          drawBackgroundImage(ctx,s,img);
         } else {
           const g=ctx.createLinearGradient(0,0,s.w,s.h);
           g.addColorStop(0,'#cfd2d9');g.addColorStop(.45,'#929aa6');g.addColorStop(1,'#4d5159');
@@ -1241,10 +1307,10 @@
         if(state.postVisible)drawMotion(ctx,state,t,'post',drawPost,final);
         drawCommission(ctx,state);return canvas;
       }
-      window.PairExportRenderer={version:'20261007-33',captureState,render};
+      window.PairExportRenderer={version:'20261009-41',captureState,render};
   }
 
-  const EXPECTED_RENDERER_VERSION='20261007-33';
+  const EXPECTED_RENDERER_VERSION='20261009-41';
   let rendererLoadPromise=null;
   async function ensureExportRenderer(){
     if(
@@ -1325,7 +1391,7 @@
     const btn=$('#saveGif');btn.disabled=true;exportMode=true;if(liveRaf)cancelAnimationFrame(liveRaf);let prep=null,workerScript=null;
     try{
       if(!window.GIF)throw new Error('GIF 라이브러리를 불러오지 못했어요.');
-      prep=await prepareCanvasExport();const state=prep.state,dur=+$('#duration').value,fps=+$('#fps').value,gifScale=+$('#gifScale').value||1.25,endTime=getAnimationEndTime(),totalTime=endTime+FINAL_HOLD,frameCount=Math.max(2,Math.floor(totalTime*fps)+1),delay=Math.round(1000/fps),gifW=Math.round(state.w*gifScale),gifH=Math.round(state.h*gifScale);
+      prep=await prepareCanvasExport();const state=prep.state,dur=+$('#duration').value,fps=+$('#fps').value,requestedGifScale=+$('#gifScale').value||1.25,gifScale=safeIPhoneGifScale(state,requestedGifScale),endTime=getAnimationEndTime(),totalTime=endTime+FINAL_HOLD,frameCount=Math.max(2,Math.floor(totalTime*fps)+1),delay=Math.round(1000/fps),gifW=Math.max(2,Math.round(state.w*gifScale)),gifH=Math.max(2,Math.round(state.h*gifScale));
       workerScript=await getWorkerBlobURL();const gif=new GIF({workers:2,quality:5,width:gifW,height:gifH,workerScript});
       for(let i=0;i<frameCount;i++){
         const playbackTime=i/fps,t=Math.min(playbackTime,endTime),canvas=window.PairExportRenderer.render(state,t,{scale:gifScale});gif.addFrame(canvas,{copy:true,delay});status.textContent=`GIF 프레임 준비 중 · ${i+1} / ${frameCount}`;
