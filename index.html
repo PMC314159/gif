@@ -1260,22 +1260,152 @@
         }
       }
       function drawMusic(ctx,s,t=0){
-        const r=s.rects.music;glass(ctx,r,s.glassAlpha,28);
-        const c=s.rects.cover;fitImage(ctx,s.images.cover,c,'cover',s.controls.coverZoom,s.controls.coverX,s.controls.coverY,20);
-        const tx=c.x+c.w+14;
-        drawText(ctx,s.text.song,tx,r.y+29,13,700,'#fff');
-        drawText(ctx,s.text.artist,tx,r.y+47,10,500,'rgba(255,255,255,.68)');
-        const playR=14, playCx=r.x+r.w-28, playCy=r.y+69;
-        const eqX=playCx-34, barX=tx, barY=r.y+69, barW=Math.max(28,eqX-10-barX);
+        const r=s.rects.music;
+        glass(ctx,r,s.glassAlpha,28);
+
+        const c=s.rects.cover;
+        fitImage(
+          ctx,
+          s.images.cover,
+          c,
+          'cover',
+          s.controls.coverZoom,
+          s.controls.coverX,
+          s.controls.coverY,
+          20
+        );
+
+        const songR=s.rects.musicSong,
+              artistR=s.rects.musicArtist,
+              barR=s.rects.musicBar,
+              eqR=s.rects.musicEq,
+              playRct=s.rects.musicPlay,
+              currentR=s.rects.musicCurrent,
+              durationR=s.rects.musicDuration;
+
+        // 미리보기의 실제 CSS 레이아웃 좌표를 그대로 사용해요.
+        if(songR?.w){
+          drawText(
+            ctx,
+            s.text.song,
+            songR.x,
+            songR.y+songR.h/2,
+            13,
+            700,
+            '#fff',
+            'left',
+            'middle'
+          );
+        }
+
+        if(artistR?.w){
+          drawText(
+            ctx,
+            s.text.artist,
+            artistR.x,
+            artistR.y+artistR.h/2,
+            10,
+            500,
+            'rgba(255,255,255,.68)',
+            'left',
+            'middle'
+          );
+        }
+
         const pb=musicPlaybackState(s,t);
-        ctx.fillStyle='rgba(255,255,255,.28)';rr(ctx,barX,barY-1.5,barW,3,2);ctx.fill();ctx.fillStyle='#fff';rr(ctx,barX,barY-1.5,barW*pb.pct/100,3,2);ctx.fill();
-        drawEqualizer(ctx,eqX,barY,t);
-        ctx.beginPath();ctx.arc(playCx,playCy,playR,0,Math.PI*2);ctx.fillStyle='rgba(255,255,255,.90)';ctx.fill();
-        ctx.fillStyle='#17181c';ctx.fillRect(playCx-5,playCy-5,3,10);ctx.fillRect(playCx+2,playCy-5,3,10);
-        drawText(ctx,formatClock(pb.current),barX,r.y+90,8,500,'rgba(255,255,255,.62)');drawText(ctx,formatClock(pb.total),r.x+r.w-15,r.y+90,8,500,'rgba(255,255,255,.62)','right');
+
+        if(barR?.w){
+          const bh=Math.max(2,barR.h||3),
+                by=barR.y+(barR.h-bh)/2;
+
+          ctx.fillStyle='rgba(255,255,255,.28)';
+          rr(ctx,barR.x,by,barR.w,bh,bh/2);
+          ctx.fill();
+
+          const fillW=Math.max(0,barR.w*pb.pct/100);
+          if(fillW>0){
+            ctx.fillStyle='#fff';
+            rr(ctx,barR.x,by,fillW,bh,bh/2);
+            ctx.fill();
+          }
+        }
+
+        if(eqR?.w){
+          drawEqualizer(
+            ctx,
+            eqR.x+eqR.w/2-7,
+            eqR.y+eqR.h/2,
+            t
+          );
+        }
+
+        if(playRct?.w){
+          const playCx=playRct.x+playRct.w/2,
+                playCy=playRct.y+playRct.h/2,
+                radius=Math.min(playRct.w,playRct.h)/2;
+
+          ctx.beginPath();
+          ctx.arc(playCx,playCy,radius,0,Math.PI*2);
+          ctx.fillStyle='rgba(255,255,255,.90)';
+          ctx.fill();
+
+          // 두 막대도 실제 버튼 중심을 기준으로 대칭 배치해요.
+          ctx.fillStyle='#17181c';
+          ctx.fillRect(playCx-5,playCy-5,3,10);
+          ctx.fillRect(playCx+2,playCy-5,3,10);
+        }
+
+        if(currentR?.w){
+          drawText(
+            ctx,
+            formatClock(pb.current),
+            currentR.x,
+            currentR.y+currentR.h/2,
+            8,
+            500,
+            'rgba(255,255,255,.62)',
+            'left',
+            'middle'
+          );
+        }
+
+        if(durationR?.w){
+          drawText(
+            ctx,
+            formatClock(pb.total),
+            durationR.x+durationR.w,
+            durationR.y+durationR.h/2,
+            8,
+            500,
+            'rgba(255,255,255,.62)',
+            'right',
+            'middle'
+          );
+        }
+
+        // 재생목록은 기존 구조를 유지하되 플레이어 본체 아래에서만 그려요.
         let yy=r.y+114;
+
         for(let i=0;i<s.queue.length;i++){
-          const q=s.queue[i];ctx.fillStyle='rgba(255,255,255,.16)';ctx.fillRect(r.x+14,yy-7,r.w-28,1);drawText(ctx,q.title,r.x+14,yy+10,11,620,'#fff');drawText(ctx,q.artist,r.x+14,yy+25,9,500,'rgba(255,255,255,.62)');drawText(ctx,String(i+2).padStart(2,'0'),r.x+r.w-14,yy+10,9,500,'rgba(255,255,255,.45)','right');yy+=40;
+          const q=s.queue[i];
+
+          ctx.fillStyle='rgba(255,255,255,.16)';
+          ctx.fillRect(r.x+14,yy-7,r.w-28,1);
+
+          drawText(ctx,q.title,r.x+14,yy+10,11,620,'#fff');
+          drawText(ctx,q.artist,r.x+14,yy+25,9,500,'rgba(255,255,255,.62)');
+          drawText(
+            ctx,
+            String(i+2).padStart(2,'0'),
+            r.x+r.w-14,
+            yy+10,
+            9,
+            500,
+            'rgba(255,255,255,.45)',
+            'right'
+          );
+
+          yy+=40;
         }
       }
       function drawPost(ctx,s,t,final=false){
@@ -1462,7 +1592,16 @@
         return {
           w:540,h:stateH,duration:dur,effect:val('animEffect')||'pop',glassAlpha:clamp(.10+glassValue/100*.34,.12,.34),
           timeline:{searchStart:.42*f,musicStart:1.22*f,ddayStart,postStart},
-          rects:{phone:localRect($('#phone'),rootRect),screen:localRect($('.screen'),rootRect),search:localRect($('#searchWidget'),rootRect),dday:localRect(ddayEl,rootRect),ddayLabel:localRect($('#ddayLabelOut'),rootRect),ddayCount:localRect($('#ddayCount'),rootRect),ddayDate:localRect($('#ddayDateOut'),rootRect),music:localRect($('#musicWidget'),rootRect),cover:localRect($('.cover'),rootRect),post:localRect($('#postWidget'),rootRect),postImage:localRect($('.post-image'),rootRect),postTitle:localRect($('.post-title'),rootRect)},
+          rects:{phone:localRect($('#phone'),rootRect),screen:localRect($('.screen'),rootRect),search:localRect($('#searchWidget'),rootRect),dday:localRect(ddayEl,rootRect),ddayLabel:localRect($('#ddayLabelOut'),rootRect),ddayCount:localRect($('#ddayCount'),rootRect),ddayDate:localRect($('#ddayDateOut'),rootRect),music:localRect($('#musicWidget'),rootRect),
+          cover:localRect($('.cover'),rootRect),
+          musicSong:localRect($('#songOut'),rootRect),
+          musicArtist:localRect($('#artistOut'),rootRect),
+          musicBar:localRect($('.music .bar'),rootRect),
+          musicEq:localRect($('.music .eq'),rootRect),
+          musicPlay:localRect($('.music .play'),rootRect),
+          musicCurrent:localRect($('#currentTimeOut'),rootRect),
+          musicDuration:localRect($('#durationTimeOut'),rootRect),
+          post:localRect($('#postWidget'),rootRect),postImage:localRect($('.post-image'),rootRect),postTitle:localRect($('.post-title'),rootRect)},
           images:{bg,bgPrepared,main,cover,post},queue,postVisible:visible($('#postWidget')),
           controls:{bgZoom,bgBlur,bgX,bgY,mainZoom:num('zoom',1),mainX:num('posX'),mainY:num('posY'),coverZoom:num('coverZoom',1),coverX:num('coverX'),coverY:num('coverY'),postZoom:num('postZoom',1),postX:num('postX'),postY:num('postY'),progress:num('progress',42),typingSpeed:num('typingSpeed',18),postTypingSpeed:num('postTypingSpeed',16),ddayFlipSpeed:num('ddayFlipSpeed',.13),ddayStartDays:num('ddayStartDays',5)},
           text:{search:val('searchTextInput')||txt('#searchTextOut'),ddayLabel:txt('#ddayLabelOut'),ddayCount:ddayEl?.dataset.finalText||txt('#ddayCount'),ddayDate:visible($('#ddayDateOut'))?txt('#ddayDateOut'):'',song:txt('#songOut'),artist:txt('#artistOut'),current:txt('#currentTimeOut'),duration:txt('#durationTimeOut'),postTitle:val('postCaption')||txt('#postCaptionOut'),commission:(($('#commissionText')?.value||$('#commissionCredit')?.textContent||'').trim())},
@@ -1522,10 +1661,10 @@
         if(state.postVisible)drawMotion(ctx,state,t,'post',drawPost,final);
         drawCommission(ctx,state);return canvas;
       }
-      window.PairExportRenderer={version:'20261009-46',captureState,render};
+      window.PairExportRenderer={version:'20261009-47',captureState,render};
   }
 
-  const EXPECTED_RENDERER_VERSION='20261009-46';
+  const EXPECTED_RENDERER_VERSION='20261009-47';
   let rendererLoadPromise=null;
   async function ensureExportRenderer(){
     if(
