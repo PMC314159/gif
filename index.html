@@ -10,7 +10,7 @@
   <title>PHONE SCREEN MOTION MAKER</title>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gif.js.optimized@1.0.1/dist/gif.js"></script>
-  <script src="./export-renderer.js?v=20261009-44"></script>
+  <script src="./export-renderer.js?v=20261009-46"></script>
   <style>
     *{box-sizing:border-box}
     html,body{margin:0;min-height:100%;background:#0e0f13;color:#f7f7f7;font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Pretendard","Noto Sans KR",Segoe UI,sans-serif}
@@ -1078,6 +1078,17 @@
       }
     
       function drawBackgroundImage(ctx,s,img){
+        const prepared=s.images.bgPrepared;
+
+        if(prepared && prepared.complete && prepared.naturalWidth){
+          ctx.save();
+          ctx.imageSmoothingEnabled=true;
+          ctx.imageSmoothingQuality='high';
+          ctx.drawImage(prepared,0,0,s.w,s.h);
+          ctx.restore();
+          return;
+        }
+
         const blur=Math.max(0,Number(s.controls.bgBlur)||0);
 
         if(blur<.25){
@@ -1330,13 +1341,110 @@
         ctx.restore();
       }
       function loadImage(src){return new Promise(resolve=>{if(!src){resolve(null);return;}const img=new Image();img.onload=()=>resolve(img);img.onerror=()=>resolve(null);img.src=src;});}
+      function loadObjectImage(url){
+        return new Promise((resolve,reject)=>{
+          const img=new Image();
+          img.onload=()=>resolve(img);
+          img.onerror=()=>reject(new Error('배경 필터 이미지를 만들지 못했어요.'));
+          img.src=url;
+        });
+      }
+
+      async function prepareFilteredBackground(img,w,h,zoom,ox,oy,blur){
+        if(!img || !img.naturalWidth || !img.naturalHeight)return null;
+
+        const isPhone=/iPhone|iPod/i.test(navigator.userAgent||''),
+              phoneScale=Math.min(2,1080/w,1920/h),
+              rasterScale=isPhone?Math.max(1,phoneScale):2,
+              rw=Math.max(2,Math.round(w*rasterScale)),
+              rh=Math.max(2,Math.round(h*rasterScale)),
+              raw=document.createElement('canvas');
+
+        raw.width=rw;
+        raw.height=rh;
+
+        const rc=raw.getContext('2d');
+        rc.imageSmoothingEnabled=true;
+        rc.imageSmoothingQuality='high';
+        rc.setTransform(rasterScale,0,0,rasterScale,0,0);
+
+        fitImage(
+          rc,
+          img,
+          {x:0,y:0,w,h},
+          'contain',
+          zoom,
+          ox,
+          oy,
+          0
+        );
+
+        const rawUrl=raw.toDataURL('image/png'),
+              sigma=Math.max(0,Number(blur)||0)*rasterScale,
+              pad=Math.ceil(Math.max(2,sigma*4));
+
+        const svg=
+`<svg xmlns="http://www.w3.org/2000/svg" width="${rw}" height="${rh}" viewBox="0 0 ${rw} ${rh}">
+  <defs>
+    <filter id="bgf"
+      filterUnits="userSpaceOnUse"
+      x="${-pad}" y="${-pad}"
+      width="${rw+pad*2}" height="${rh+pad*2}"
+      color-interpolation-filters="sRGB">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="${sigma}"/>
+      <feColorMatrix type="saturate" values="0.85"/>
+      <feComponentTransfer>
+        <feFuncR type="linear" slope="0.78"/>
+        <feFuncG type="linear" slope="0.78"/>
+        <feFuncB type="linear" slope="0.78"/>
+        <feFuncA type="identity"/>
+      </feComponentTransfer>
+    </filter>
+  </defs>
+  <image
+    href="${rawUrl}"
+    x="0" y="0"
+    width="${rw}" height="${rh}"
+    preserveAspectRatio="none"
+    filter="url(#bgf)"/>
+</svg>`;
+
+        const blob=new Blob([svg],{type:'image/svg+xml;charset=utf-8'}),
+              url=URL.createObjectURL(blob);
+
+        try{
+          return await loadObjectImage(url);
+        }catch(e){
+          console.warn('정확한 배경 블러 생성에 실패해 기존 렌더링을 사용해요.',e);
+          return null;
+        }finally{
+          URL.revokeObjectURL(url);
+        }
+      }
+
     
       async function captureState(opts={}){
         const root=$('#capture'),rootRect=root.getBoundingClientRect(),glassValue=num('glassOpacity',34),queue=[];
         for(let i=1;i<=3;i++){const title=val(`queueTitle${i}`),artist=val(`queueArtist${i}`);if(title||artist)queue.push({title:title||'Untitled',artist:artist||'Unknown'});}
         const [bg,main,cover,post]=await Promise.all([loadImage(window.__pairBgSrc||''),loadImage($('#mainImage')?.src||''),loadImage($('#coverImage')?.src||''),loadImage($('#postImage')?.src||'')]);
         const dur=num('duration',5),f=dur/5;
-        const ddayEl=$('#ddayWidget');
+        const ddayEl=$('#ddayWidget'),
+              stateH=opts.height||Math.round(rootRect.height),
+              bgZoom=num('bgZoom',1),
+              bgBlur=num('bgBlur',0),
+              bgX=num('bgX'),
+              bgY=num('bgY'),
+              bgPrepared=bg
+                ? await prepareFilteredBackground(
+                    bg,
+                    540,
+                    stateH,
+                    bgZoom,
+                    bgX,
+                    bgY,
+                    bgBlur
+                  )
+                : null;
 
         const ddayStart=2.12*f,
               ddayDelay=.38*f,
@@ -1352,11 +1460,11 @@
               postStart=Math.max(3.05*f,ddaySequenceEnd+.14);
 
         return {
-          w:540,h:opts.height||Math.round(rootRect.height),duration:dur,effect:val('animEffect')||'pop',glassAlpha:clamp(.10+glassValue/100*.34,.12,.34),
+          w:540,h:stateH,duration:dur,effect:val('animEffect')||'pop',glassAlpha:clamp(.10+glassValue/100*.34,.12,.34),
           timeline:{searchStart:.42*f,musicStart:1.22*f,ddayStart,postStart},
           rects:{phone:localRect($('#phone'),rootRect),screen:localRect($('.screen'),rootRect),search:localRect($('#searchWidget'),rootRect),dday:localRect(ddayEl,rootRect),ddayLabel:localRect($('#ddayLabelOut'),rootRect),ddayCount:localRect($('#ddayCount'),rootRect),ddayDate:localRect($('#ddayDateOut'),rootRect),music:localRect($('#musicWidget'),rootRect),cover:localRect($('.cover'),rootRect),post:localRect($('#postWidget'),rootRect),postImage:localRect($('.post-image'),rootRect),postTitle:localRect($('.post-title'),rootRect)},
-          images:{bg,main,cover,post},queue,postVisible:visible($('#postWidget')),
-          controls:{bgZoom:num('bgZoom',1),bgBlur:num('bgBlur',0),bgX:num('bgX'),bgY:num('bgY'),mainZoom:num('zoom',1),mainX:num('posX'),mainY:num('posY'),coverZoom:num('coverZoom',1),coverX:num('coverX'),coverY:num('coverY'),postZoom:num('postZoom',1),postX:num('postX'),postY:num('postY'),progress:num('progress',42),typingSpeed:num('typingSpeed',18),postTypingSpeed:num('postTypingSpeed',16),ddayFlipSpeed:num('ddayFlipSpeed',.13),ddayStartDays:num('ddayStartDays',5)},
+          images:{bg,bgPrepared,main,cover,post},queue,postVisible:visible($('#postWidget')),
+          controls:{bgZoom,bgBlur,bgX,bgY,mainZoom:num('zoom',1),mainX:num('posX'),mainY:num('posY'),coverZoom:num('coverZoom',1),coverX:num('coverX'),coverY:num('coverY'),postZoom:num('postZoom',1),postX:num('postX'),postY:num('postY'),progress:num('progress',42),typingSpeed:num('typingSpeed',18),postTypingSpeed:num('postTypingSpeed',16),ddayFlipSpeed:num('ddayFlipSpeed',.13),ddayStartDays:num('ddayStartDays',5)},
           text:{search:val('searchTextInput')||txt('#searchTextOut'),ddayLabel:txt('#ddayLabelOut'),ddayCount:ddayEl?.dataset.finalText||txt('#ddayCount'),ddayDate:visible($('#ddayDateOut'))?txt('#ddayDateOut'):'',song:txt('#songOut'),artist:txt('#artistOut'),current:txt('#currentTimeOut'),duration:txt('#durationTimeOut'),postTitle:val('postCaption')||txt('#postCaptionOut'),commission:(($('#commissionText')?.value||$('#commissionCredit')?.textContent||'').trim())},
           dday:{animate:ddayEl?.dataset.animate==='1',value:Number(ddayEl?.dataset.abs||0),prefix:ddayEl?.dataset.prefix||'D+',bottomPadding:parseFloat(getComputedStyle(ddayEl).paddingBottom)||15}
         };
@@ -1414,10 +1522,10 @@
         if(state.postVisible)drawMotion(ctx,state,t,'post',drawPost,final);
         drawCommission(ctx,state);return canvas;
       }
-      window.PairExportRenderer={version:'20261009-44',captureState,render};
+      window.PairExportRenderer={version:'20261009-46',captureState,render};
   }
 
-  const EXPECTED_RENDERER_VERSION='20261009-44';
+  const EXPECTED_RENDERER_VERSION='20261009-46';
   let rendererLoadPromise=null;
   async function ensureExportRenderer(){
     if(
