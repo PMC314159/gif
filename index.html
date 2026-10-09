@@ -849,7 +849,10 @@
 
     // 최종 MP4 크기는 2×로 유지하되,
     // 움직이는 프레임은 조금 가볍게 렌더링해 30fps 누락을 줄여요.
-    const renderScale=Math.min(scale,1.5);
+    const renderScale=Math.min(
+      scale,
+      isIPhoneDevice()?1.15:1.5
+    );
 
     const drawFrame=t=>{
       const frame=window.PairExportRenderer.render(
@@ -931,16 +934,27 @@
       activeTrack.requestFrame();
     }
 
+    // 첫 프레임도 한 프레임 시간 이상 유지해서 녹화기가 확실히 잡게 해요.
     await sleep(frameMs);
 
-    let nextDeadline=performance.now();
+    const manualCapture=
+      typeof activeTrack?.requestFrame==='function';
+
+    // 자동 captureStream을 쓰는 Safari/iPhone에서는 한 프레임을 조금 더 오래
+    // 유지해야 중간 팝업 프레임을 건너뛰지 않아요.
+    const minHoldMs=
+      manualCapture
+        ? frameMs
+        : Math.ceil(frameMs*1.18);
 
     for(let i=1;i<frameCount;i++){
       const playbackTime=i/fps;
 
+      // 영상 시간은 항상 정확히 i/fps로 계산하고,
+      // 처리 속도가 늦더라도 논리 프레임 자체는 절대 건너뛰지 않아요.
       drawFrame(playbackTime);
 
-      if(typeof activeTrack?.requestFrame==='function'){
+      if(manualCapture){
         activeTrack.requestFrame();
       }
 
@@ -948,21 +962,13 @@
         status.textContent=`MP4 만드는 중 · ${i+1} / ${frameCount}`;
       }
 
-      nextDeadline+=frameMs;
-
-      const wait=nextDeadline-performance.now();
-
-      if(wait>0){
-        await sleep(wait);
-      }else{
-        // 한 프레임이 늦어도 타임라인 자체를 뒤로 밀지 않아요.
-        // 다음 프레임의 영상 시간은 계속 정확히 1/30초 간격을 유지해요.
-        await sleep(0);
-      }
+      // 중요: 이전처럼 늦어진 시간을 따라잡기 위해 다음 프레임을 즉시 그리지 않아요.
+      // 각 프레임을 실제 캔버스에 유지해서 MediaRecorder가 순서대로 캡처하게 해요.
+      await sleep(minHoldMs);
     }
 
     // 마지막 장면을 충분히 유지해 마지막 프레임이 잘리지 않게 해요.
-    await sleep(Math.max(80,frameMs*2));
+    await sleep(Math.max(120,frameMs*3));
 
     if(typeof recorder.requestData==='function'){
       try{recorder.requestData();}catch(e){}
@@ -1493,10 +1499,46 @@
     const btn=$('#saveGif');btn.disabled=true;exportMode=true;if(liveRaf)cancelAnimationFrame(liveRaf);let prep=null,workerScript=null;
     try{
       if(!window.GIF)throw new Error('GIF 라이브러리를 불러오지 못했어요.');
-      prep=await prepareCanvasExport();const state=prep.state,dur=+$('#duration').value,fps=+$('#fps').value,requestedGifScale=+$('#gifScale').value||1.25,gifScale=safeIPhoneGifScale(state,requestedGifScale),endTime=getAnimationEndTime(),totalTime=endTime+FINAL_HOLD,frameCount=Math.max(2,Math.floor(totalTime*fps)+1),delay=Math.round(1000/fps),gifW=Math.max(2,Math.round(state.w*gifScale)),gifH=Math.max(2,Math.round(state.h*gifScale));
+      prep=await prepareCanvasExport();
+      const state=prep.state,
+            dur=+$('#duration').value,
+            selectedFps=+$('#fps').value||10,
+            fps=(state.effect==='pop')
+              ? Math.max(12,selectedFps)
+              : selectedFps,
+            requestedGifScale=+$('#gifScale').value||1.25,
+            gifScale=safeIPhoneGifScale(state,requestedGifScale),
+            endTime=getAnimationEndTime(),
+            totalTime=endTime+FINAL_HOLD,
+            frameCount=Math.max(2,Math.floor(totalTime*fps)+1),
+            delay=Math.round(1000/fps),
+            gifW=Math.max(2,Math.round(state.w*gifScale)),
+            gifH=Math.max(2,Math.round(state.h*gifScale));
       workerScript=await getWorkerBlobURL();const gif=new GIF({workers:2,quality:5,width:gifW,height:gifH,workerScript});
       for(let i=0;i<frameCount;i++){
-        const playbackTime=i/fps,t=Math.min(playbackTime,endTime),canvas=window.PairExportRenderer.render(state,t,{scale:gifScale});gif.addFrame(canvas,{copy:true,delay});status.textContent=`GIF 프레임 준비 중 · ${i+1} / ${frameCount}`;
+        const playbackTime=i/fps,
+              t=Math.min(playbackTime,endTime),
+              canvas=window.PairExportRenderer.render(
+                state,
+                t,
+                {scale:gifScale}
+              );
+
+        // copy:true로 현재 프레임을 즉시 독립 복사해 다음 렌더가 덮어쓰지 않게 해요.
+        gif.addFrame(
+          canvas,
+          {
+            copy:true,
+            delay
+          }
+        );
+
+        if(i%6===0 || i===frameCount-1){
+          status.textContent=`GIF 프레임 준비 중 · ${i+1} / ${frameCount}`;
+
+          // 모바일 Safari가 긴 동기 루프를 한 번에 처리하지 않게 잠깐 양보해요.
+          await sleep(0);
+        }
       }
       status.textContent='GIF 압축 중…';gif.on('progress',p=>status.textContent=`GIF 압축 중 · ${Math.round(p*100)}%`);
       gif.on('finished',blob=>{
