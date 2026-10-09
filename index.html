@@ -675,15 +675,20 @@
 
     if(!box||!title||!desc||!action)return;
 
-    const isVideo=kind==='video';
+    const isVideo=kind==='video',
+          isGif=kind==='gif';
 
     title.textContent=isVideo
       ? '영상이 준비됐어요.'
-      : '이미지가 준비됐어요.';
+      : isGif
+        ? 'GIF가 준비됐어요.'
+        : '이미지가 준비됐어요.';
 
     desc.textContent=isVideo
       ? '아래 버튼을 누른 뒤 공유창에서 ‘비디오 저장’을 선택해 주세요.'
-      : '아래 버튼을 누른 뒤 공유창에서 ‘이미지 저장’을 선택해 주세요.';
+      : isGif
+        ? '아래 버튼을 누른 뒤 공유창에서 ‘이미지 저장’을 선택해 주세요. 사진 앱에 움직이는 GIF로 저장돼요.'
+        : '아래 버튼을 누른 뒤 공유창에서 ‘이미지 저장’을 선택해 주세요.';
 
     action.textContent='iPhone에 저장';
     box.classList.add('show');
@@ -693,8 +698,18 @@
     if(!pendingIOSSave)return;
 
     const {blob,name,kind}=pendingIOSSave;
-    const fallbackType=kind==='video'?'video/mp4':'image/png';
-    const file=new File([blob],name,{type:blob.type||fallbackType});
+    const fallbackType=
+      kind==='video'
+        ? 'video/mp4'
+        : kind==='gif'
+          ? 'image/gif'
+          : 'image/png';
+
+    const file=new File(
+      [blob],
+      name,
+      {type:blob.type||fallbackType}
+    );
 
     try{
       if(navigator.share && (!navigator.canShare || navigator.canShare({files:[file]}))){
@@ -702,7 +717,9 @@
 
         status.textContent=kind==='video'
           ? '공유창에서 ‘비디오 저장’을 선택해 주세요.'
-          : '공유창에서 ‘이미지 저장’을 선택해 주세요.';
+          : kind==='gif'
+            ? '공유창에서 ‘이미지 저장’을 선택해 주세요. GIF는 사진 앱에서 움직여요.'
+            : '공유창에서 ‘이미지 저장’을 선택해 주세요.';
 
         return;
       }
@@ -722,7 +739,9 @@
 
       status.textContent=kind==='video'
         ? '영상이 열리면 공유 버튼 → 비디오 저장을 선택해 주세요.'
-        : '이미지가 열리면 공유 버튼 → 이미지 저장을 선택해 주세요.';
+        : kind==='gif'
+          ? 'GIF가 열리면 공유 버튼 → 이미지 저장을 선택해 주세요.'
+          : '이미지가 열리면 공유 버튼 → 이미지 저장을 선택해 주세요.';
     }catch(err){
       if(err?.name==='AbortError'){
         status.textContent='저장을 취소했어요. 다시 ‘iPhone에 저장’을 누르면 돼요.';
@@ -1388,6 +1407,7 @@
     finally{if(prep)prep.restore();exportMode=false;startTime=performance.now();btn.disabled=false;liveRaf=requestAnimationFrame(liveLoop)}
   });
   $('#saveGif').addEventListener('click',async()=>{
+    clearIOSSaveReady();
     const btn=$('#saveGif');btn.disabled=true;exportMode=true;if(liveRaf)cancelAnimationFrame(liveRaf);let prep=null,workerScript=null;
     try{
       if(!window.GIF)throw new Error('GIF 라이브러리를 불러오지 못했어요.');
@@ -1397,7 +1417,43 @@
         const playbackTime=i/fps,t=Math.min(playbackTime,endTime),canvas=window.PairExportRenderer.render(state,t,{scale:gifScale});gif.addFrame(canvas,{copy:true,delay});status.textContent=`GIF 프레임 준비 중 · ${i+1} / ${frameCount}`;
       }
       status.textContent='GIF 압축 중…';gif.on('progress',p=>status.textContent=`GIF 압축 중 · ${Math.round(p*100)}%`);
-      gif.on('finished',blob=>{const href=URL.createObjectURL(blob),a=document.createElement('a');a.href=href;a.download='phone-screen-motion-maker.gif';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(href),10000);if(workerScript)URL.revokeObjectURL(workerScript);if(prep)prep.restore();status.textContent='완료! GIF를 저장했어요.';exportMode=false;startTime=performance.now();btn.disabled=false;liveRaf=requestAnimationFrame(liveLoop)});
+      gif.on('finished',blob=>{
+        if(isIOSDevice()){
+          showIOSSaveReady(
+            blob,
+            'phone-screen-motion-maker.gif',
+            'gif'
+          );
+
+          status.textContent=
+            'GIF가 준비됐어요. 아래의 ‘iPhone에 저장’을 눌러 주세요.';
+        }else{
+          const href=URL.createObjectURL(blob),
+                a=document.createElement('a');
+
+          a.href=href;
+          a.download='phone-screen-motion-maker.gif';
+
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+
+          setTimeout(
+            ()=>URL.revokeObjectURL(href),
+            10000
+          );
+
+          status.textContent='완료! GIF를 저장했어요.';
+        }
+
+        if(workerScript)URL.revokeObjectURL(workerScript);
+        if(prep)prep.restore();
+
+        exportMode=false;
+        startTime=performance.now();
+        btn.disabled=false;
+        liveRaf=requestAnimationFrame(liveLoop);
+      });
       gif.render();
     }catch(err){console.error(err);status.textContent='GIF 저장에 실패했어요: '+(err?.message||err);if(workerScript)URL.revokeObjectURL(workerScript);if(prep)prep.restore();exportMode=false;startTime=performance.now();btn.disabled=false;liveRaf=requestAnimationFrame(liveLoop)}
   });
