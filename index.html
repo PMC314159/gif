@@ -304,11 +304,11 @@
     // 제목이 더 길어지면 그 길이만큼 플레이어 전체를 함께 늘려요.
     const fixedWidth=128; // 좌우 padding + 앨범커버 + grid gap
     const trackWidth=Math.max(152,titleWidth+4);
-    const targetWidth=Math.max(280,Math.min(500,fixedWidth+trackWidth));
+    const targetWidth=Math.max(280,Math.min(540-WIDGET_SAFE_X*2,fixedWidth+trackWidth));
 
     musicWidget.style.width=`${targetWidth}px`;
   }
-  function updatePlaylist(){const active=[1,2,3].map(updateQueueRow).filter(Boolean).length;const list=$('#playlistOut');if(list)list.classList.toggle('hidden',active===0);musicWidget.style.minHeight=active===0?'114px':'auto';requestAnimationFrame(()=>{applyAllWidgetPositions();updateCanvasLayout();});}
+  function updatePlaylist(){const active=[1,2,3].map(updateQueueRow).filter(Boolean).length;const list=$('#playlistOut');if(list)list.classList.toggle('hidden',active===0);musicWidget.style.minHeight=active===0?'114px':'auto';requestAnimationFrame(()=>{if(exportLayoutFrozen)return;applyAllWidgetPositions();updateCanvasLayout();});}
   function updateSearchPreview(){setSearchTypingState(Infinity,true); $('#typingSpeedV').textContent=$('#typingSpeed').value}
   function updatePost(){const visible=$('#postVisible').checked;postWidget.classList.toggle('hidden',!visible);setPostTypingState(Infinity,true);const speed=+$('#postTypingSpeed')?.value||16;$('#postTypingSpeedV').textContent=String(speed);}
   function updateText(){
@@ -346,25 +346,38 @@
   const clamp=(n,a=0,b=1)=>Math.min(b,Math.max(a,n));function easeOutBack(x){const c1=1.70158,c3=c1+1;return 1+c3*Math.pow(x-1,3)+c1*Math.pow(x-1,2)}function easeOutCubic(x){return 1-Math.pow(1-x,3)}function reveal(t,start,len=.72){return easeOutCubic(clamp((t-start)/len))}
   function musicAutoLift(){if(!musicWidget)return 0;const base=114;return Math.max(0,(musicWidget.offsetHeight||base)-base)}
   function widgetOffset(prefix){const x=+$(`#${prefix}WX`).value||0;let y=+$(`#${prefix}WY`).value||0;if(prefix==='music')y-=musicAutoLift();return {x,y}}
-  const WIDGET_BASE={search:{left:8,top:470},music:{left:248,top:668},dday:{left:348,top:285},post:{left:32,top:24}};
+  const WIDGET_SAFE_X=24;
+  const WIDGET_BASE={search:{left:24,top:470},music:{left:236,top:668},dday:{left:342,top:285},post:{left:32,top:24}};
   function placeWidget(prefix,el){
     if(!el)return;
-    const base=WIDGET_BASE[prefix],o=widgetOffset(prefix);
+
+    const base=WIDGET_BASE[prefix],
+          o=widgetOffset(prefix),
+          width=el.offsetWidth||0;
+
+    let left;
 
     if(prefix==='music'){
-      // 음악 플레이어는 오른쪽 여백을 유지한 채 제목 길이만큼 왼쪽으로 확장해요.
-      // bar는 1fr이라 같이 길어지고, EQ/일시정지 버튼은 넓어진 track의 오른쪽 끝을 따라가요.
-      const width=el.offsetWidth||280;
-      el.style.left=`${540-12-width+o.x}px`;
+      // 제목이 길어져도 오른쪽 안전 여백 안에서 왼쪽으로 확장해요.
+      left=540-WIDGET_SAFE_X-width+o.x;
     }else{
-      el.style.left=`${base.left+o.x}px`;
+      left=base.left+o.x;
     }
 
+    // X/Twitter 전체화면에서 가장자리 요소가 잘려 보이는 경우를 줄이기 위해
+    // 모든 위젯을 캔버스 좌우 24px 안쪽에 유지해요.
+    if(width>0){
+      const maxLeft=Math.max(WIDGET_SAFE_X,540-WIDGET_SAFE_X-width);
+      left=Math.max(WIDGET_SAFE_X,Math.min(maxLeft,left));
+    }
+
+    el.style.left=`${left}px`;
     el.style.top=`${base.top+o.y}px`;
     el.style.right='auto';
     el.style.bottom='auto';
   }
   function applyAllWidgetPositions(){
+    if(exportLayoutFrozen)return;
     placeWidget('search',searchWidget);
     placeWidget('music',musicWidget);
     placeWidget('dday',ddayWidget);
@@ -416,6 +429,7 @@
   // 검색창 측정용 canvas가 준비된 뒤 초기 UI를 그린다.
   updateText();
   function updateCanvasLayout(){
+    if(exportLayoutFrozen)return;
     sceneShift=0;
     if(sceneContent)sceneContent.style.transform='none';
 
@@ -453,6 +467,26 @@
     updateCanvasLayout();
   }
   ['searchWX','searchWY','musicWX','musicWY','ddayWX','ddayWY','postWX','postWY','postWidgetScale'].forEach(id=>$('#'+id).addEventListener('input',updateWidgetUI));updateWidgetUI();updateCommission();
+  function stableMusicHeight(){
+    if(!musicWidget)return 114;
+
+    const list=$('#playlistOut');
+
+    // 재생목록이 없으면 음악 위젯의 정상 높이는 항상 114px이에요.
+    if(!list || list.classList.contains('hidden')){
+      return 114;
+    }
+
+    const mr=musicWidget.getBoundingClientRect(),
+          lr=list.getBoundingClientRect();
+
+    // 재생목록이 있으면 마지막 내용 + 아래 padding 14px까지만 포함해요.
+    return Math.max(
+      114,
+      Math.ceil(lr.bottom-mr.top+14)
+    );
+  }
+
   function freezeWidgetLayoutForExport(){
     const states=[];
     const items=[
@@ -461,18 +495,52 @@
       [ddayWidget,'dday',1],
       [postWidget,'post',+$('#postWidgetScale').value||1]
     ];
+
+    // 먼저 현재 미리보기 위치를 확정해요.
+    applyAllWidgetPositions();
+
+    exportLayoutFrozen=true;
+
     for(const [el,prefix,scale] of items){
       if(!el)continue;
-      states.push({el,style:el.getAttribute('style')});
-      const left=el.offsetLeft, top=el.offsetTop;
-      el.style.left=`${left}px`;el.style.top=`${top}px`;el.style.right='auto';el.style.bottom='auto';
+
+      states.push({
+        el,
+        style:el.getAttribute('style')
+      });
+
+      const left=el.offsetLeft,
+            top=el.offsetTop;
+
+      el.style.left=`${left}px`;
+      el.style.top=`${top}px`;
+      el.style.right='auto';
+      el.style.bottom='auto';
       el.style.transform=scale===1?'none':`scale(${scale})`;
       el.style.transformOrigin='top left';
+
+      if(prefix==='music'){
+        const h=stableMusicHeight();
+        el.style.height=`${h}px`;
+        el.style.minHeight=`${h}px`;
+        el.style.maxHeight=`${h}px`;
+        el.style.boxSizing='border-box';
+      }
     }
-    exportLayoutFrozen=true;
+
     return ()=>{
       exportLayoutFrozen=false;
-      for(const s of states){if(s.style===null)s.el.removeAttribute('style');else s.el.setAttribute('style',s.style)}
+
+      for(const s of states){
+        if(s.style===null){
+          s.el.removeAttribute('style');
+        }else{
+          s.el.setAttribute('style',s.style);
+        }
+      }
+
+      applyAllWidgetPositions();
+      updateCanvasLayout();
     };
   }
   function getTypedMarkup(t){const full=$('#searchTextInput').value||''; const speed=+$('#typingSpeed').value||18; const visible=Math.max(0,Math.min(full.length,Math.floor(t*speed))); const text=(full.slice(0,visible)||' '); return `${text}<span class="typing-caret"></span>`;}
@@ -1019,6 +1087,39 @@
         const r=el.getBoundingClientRect();
         return {x:r.left-rootRect.left,y:r.top-rootRect.top,w:r.width,h:r.height};
       }
+
+      function stableMusicRect(rootRect,queueCount){
+        const el=$('#musicWidget'),
+              raw=localRect(el,rootRect),
+              list=$('#playlistOut');
+
+        if(!el)return raw;
+
+        if(!queueCount || !list || !visible(list)){
+          return {
+            ...raw,
+            h:114
+          };
+        }
+
+        const listRect=localRect(list,rootRect),
+              h=listRect.h
+                ? Math.max(
+                    114,
+                    Math.ceil(
+                      listRect.y+
+                      listRect.h-
+                      raw.y+
+                      14
+                    )
+                  )
+                : 114;
+
+        return {
+          ...raw,
+          h
+        };
+      }
       function glass(ctx,r,alpha=.22,radius=24){
         ctx.save();rr(ctx,r.x,r.y,r.w,r.h,radius);ctx.fillStyle=`rgba(238,242,248,${alpha})`;ctx.fill();ctx.lineWidth=1;ctx.strokeStyle='rgba(255,255,255,.58)';ctx.stroke();ctx.restore();
       }
@@ -1383,29 +1484,65 @@
           );
         }
 
-        // 재생목록은 기존 구조를 유지하되 플레이어 본체 아래에서만 그려요.
-        let yy=r.y+114;
+        const playlistR=s.rects.musicPlaylist;
 
-        for(let i=0;i<s.queue.length;i++){
-          const q=s.queue[i];
-
+        if(s.queue.length && playlistR?.w){
+          // 미리보기 .playlist의 border-top을 그대로 재현해요.
           ctx.fillStyle='rgba(255,255,255,.16)';
-          ctx.fillRect(r.x+14,yy-7,r.w-28,1);
-
-          drawText(ctx,q.title,r.x+14,yy+10,11,620,'#fff');
-          drawText(ctx,q.artist,r.x+14,yy+25,9,500,'rgba(255,255,255,.62)');
-          drawText(
-            ctx,
-            String(i+2).padStart(2,'0'),
-            r.x+r.w-14,
-            yy+10,
-            9,
-            500,
-            'rgba(255,255,255,.45)',
-            'right'
+          ctx.fillRect(
+            playlistR.x,
+            playlistR.y,
+            playlistR.w,
+            1
           );
+        }
 
-          yy+=40;
+        for(const q of s.queue){
+          const titleR=q.titleRect,
+                artistR=q.artistRect,
+                indexR=q.indexRect;
+
+          if(titleR?.w){
+            drawText(
+              ctx,
+              q.title,
+              titleR.x,
+              titleR.y+titleR.h/2,
+              11,
+              620,
+              '#fff',
+              'left',
+              'middle'
+            );
+          }
+
+          if(artistR?.w){
+            drawText(
+              ctx,
+              q.artist,
+              artistR.x,
+              artistR.y+artistR.h/2,
+              9,
+              500,
+              'rgba(255,255,255,.58)',
+              'left',
+              'middle'
+            );
+          }
+
+          if(indexR?.w){
+            drawText(
+              ctx,
+              q.index,
+              indexR.x+indexR.w,
+              indexR.y+indexR.h/2,
+              9,
+              500,
+              'rgba(255,255,255,.4)',
+              'right',
+              'middle'
+            );
+          }
         }
       }
       function drawPost(ctx,s,t,final=false){
@@ -1554,8 +1691,29 @@
 
     
       async function captureState(opts={}){
-        const root=$('#capture'),rootRect=root.getBoundingClientRect(),glassValue=num('glassOpacity',34),queue=[];
-        for(let i=1;i<=3;i++){const title=val(`queueTitle${i}`),artist=val(`queueArtist${i}`);if(title||artist)queue.push({title:title||'Untitled',artist:artist||'Unknown'});}
+        const root=$('#capture'),
+              rootRect=root.getBoundingClientRect(),
+              glassValue=num('glassOpacity',34),
+              queue=[];
+
+        for(let i=1;i<=3;i++){
+          const row=$(`#queueItem${i}`),
+                titleEl=$(`#queueTitleOut${i}`),
+                artistEl=$(`#queueArtistOut${i}`),
+                indexEl=row?.querySelector('.queue-index');
+
+          if(!row || !visible(row))continue;
+
+          queue.push({
+            title:(titleEl?.textContent||'Untitled').trim()||'Untitled',
+            artist:(artistEl?.textContent||'Unknown').trim()||'Unknown',
+            index:(indexEl?.textContent||String(i+1).padStart(2,'0')).trim(),
+            rect:localRect(row,rootRect),
+            titleRect:localRect(titleEl,rootRect),
+            artistRect:localRect(artistEl,rootRect),
+            indexRect:localRect(indexEl,rootRect)
+          });
+        }
         const [bg,main,cover,post]=await Promise.all([loadImage(window.__pairBgSrc||''),loadImage($('#mainImage')?.src||''),loadImage($('#coverImage')?.src||''),loadImage($('#postImage')?.src||'')]);
         const dur=num('duration',5),f=dur/5;
         const ddayEl=$('#ddayWidget'),
@@ -1592,7 +1750,7 @@
         return {
           w:540,h:stateH,duration:dur,effect:val('animEffect')||'pop',glassAlpha:clamp(.10+glassValue/100*.34,.12,.34),
           timeline:{searchStart:.42*f,musicStart:1.22*f,ddayStart,postStart},
-          rects:{phone:localRect($('#phone'),rootRect),screen:localRect($('.screen'),rootRect),search:localRect($('#searchWidget'),rootRect),dday:localRect(ddayEl,rootRect),ddayLabel:localRect($('#ddayLabelOut'),rootRect),ddayCount:localRect($('#ddayCount'),rootRect),ddayDate:localRect($('#ddayDateOut'),rootRect),music:localRect($('#musicWidget'),rootRect),
+          rects:{phone:localRect($('#phone'),rootRect),screen:localRect($('.screen'),rootRect),search:localRect($('#searchWidget'),rootRect),dday:localRect(ddayEl,rootRect),ddayLabel:localRect($('#ddayLabelOut'),rootRect),ddayCount:localRect($('#ddayCount'),rootRect),ddayDate:localRect($('#ddayDateOut'),rootRect),music:stableMusicRect(rootRect,queue.length),
           cover:localRect($('.cover'),rootRect),
           musicSong:localRect($('#songOut'),rootRect),
           musicArtist:localRect($('#artistOut'),rootRect),
@@ -1601,6 +1759,7 @@
           musicPlay:localRect($('.music .play'),rootRect),
           musicCurrent:localRect($('#currentTimeOut'),rootRect),
           musicDuration:localRect($('#durationTimeOut'),rootRect),
+          musicPlaylist:localRect($('#playlistOut'),rootRect),
           post:localRect($('#postWidget'),rootRect),postImage:localRect($('.post-image'),rootRect),postTitle:localRect($('.post-title'),rootRect)},
           images:{bg,bgPrepared,main,cover,post},queue,postVisible:visible($('#postWidget')),
           controls:{bgZoom,bgBlur,bgX,bgY,mainZoom:num('zoom',1),mainX:num('posX'),mainY:num('posY'),coverZoom:num('coverZoom',1),coverX:num('coverX'),coverY:num('coverY'),postZoom:num('postZoom',1),postX:num('postX'),postY:num('postY'),progress:num('progress',42),typingSpeed:num('typingSpeed',18),postTypingSpeed:num('postTypingSpeed',16),ddayFlipSpeed:num('ddayFlipSpeed',.13),ddayStartDays:num('ddayStartDays',5)},
@@ -1661,10 +1820,10 @@
         if(state.postVisible)drawMotion(ctx,state,t,'post',drawPost,final);
         drawCommission(ctx,state);return canvas;
       }
-      window.PairExportRenderer={version:'20261009-47',captureState,render};
+      window.PairExportRenderer={version:'20261009-49',captureState,render};
   }
 
-  const EXPECTED_RENDERER_VERSION='20261009-47';
+  const EXPECTED_RENDERER_VERSION='20261009-49';
   let rendererLoadPromise=null;
   async function ensureExportRenderer(){
     if(
@@ -1709,11 +1868,37 @@
   }
   async function prepareCanvasExport(){
     const renderer=await ensureExportRenderer();
-    const oldTransform=capture.style.transform, oldWidth=shell.style.width, oldHeight=shell.style.height;
-    capture.style.transform='none';shell.style.width='540px';shell.style.height=`${canvasHeight}px`;capture.style.height=`${canvasHeight}px`;
-    setFinalScene();await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+    const oldTransform=capture.style.transform,
+          oldWidth=shell.style.width,
+          oldHeight=shell.style.height;
+
+    capture.style.transform='none';
+    shell.style.width='540px';
+    shell.style.height=`${canvasHeight}px`;
+    capture.style.height=`${canvasHeight}px`;
+
+    setFinalScene();
+
+    // CSS 레이아웃이 완전히 반영된 뒤 저장용 위치/크기를 고정해요.
+    await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+
+    const unfreeze=freezeWidgetLayoutForExport();
+
+    // 고정된 geometry가 브라우저에 반영될 시간을 한 번 더 줘요.
+    await new Promise(r=>requestAnimationFrame(r));
+
     const state=await window.PairExportRenderer.captureState({height:canvasHeight});
-    return {state,restore(){capture.style.transform=oldTransform;shell.style.width=oldWidth;shell.style.height=oldHeight;fitCapture();}};
+
+    return {
+      state,
+      restore(){
+        unfreeze();
+        capture.style.transform=oldTransform;
+        shell.style.width=oldWidth;
+        shell.style.height=oldHeight;
+        fitCapture();
+      }
+    };
   }
   $('#savePng').addEventListener('click',async()=>{
     clearIOSSaveReady();
