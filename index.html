@@ -10,7 +10,7 @@
   <title>PHONE SCREEN MOTION MAKER</title>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gif.js.optimized@1.0.1/dist/gif.js"></script>
-  <script src="./export-renderer.js?v=20261009-41"></script>
+  <script src="./export-renderer.js?v=20261009-43"></script>
   <style>
     *{box-sizing:border-box}
     html,body{margin:0;min-height:100%;background:#0e0f13;color:#f7f7f7;font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Pretendard","Noto Sans KR",Segoe UI,sans-serif}
@@ -1044,9 +1044,11 @@
 
         // Safari/iPhone에서 CanvasRenderingContext2D blur가 무시되는 경우가 있어서,
         // 배경을 한 번 작게 렌더링한 뒤 다시 확대해 실제 픽셀을 부드럽게 만들어요.
-        const ratio=Math.max(.18,1/(1+blur*.18)),
-              sw=Math.max(48,Math.round(s.w*ratio)),
-              sh=Math.max(48,Math.round(s.h*ratio)),
+        // CSS blur(px) 미리보기보다 저장본이 약하게 보이지 않도록
+        // downsample 강도를 조금 더 높여서 시각적 강도를 맞춰요.
+        const ratio=Math.max(.12,1/(1+blur*.26)),
+              sw=Math.max(40,Math.round(s.w*ratio)),
+              sh=Math.max(40,Math.round(s.h*ratio)),
               small=document.createElement('canvas');
 
         small.width=sw;
@@ -1326,10 +1328,10 @@
         if(state.postVisible)drawMotion(ctx,state,t,'post',drawPost,final);
         drawCommission(ctx,state);return canvas;
       }
-      window.PairExportRenderer={version:'20261009-41',captureState,render};
+      window.PairExportRenderer={version:'20261009-43',captureState,render};
   }
 
-  const EXPECTED_RENDERER_VERSION='20261009-41';
+  const EXPECTED_RENDERER_VERSION='20261009-43';
   let rendererLoadPromise=null;
   async function ensureExportRenderer(){
     if(
