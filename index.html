@@ -10,7 +10,7 @@
   <title>PHONE SCREEN MOTION MAKER</title>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gif.js.optimized@1.0.1/dist/gif.js"></script>
-  <script src="./export-renderer.js?v=20261009-43"></script>
+  <script src="./export-renderer.js?v=20261009-44"></script>
   <style>
     *{box-sizing:border-box}
     html,body{margin:0;min-height:100%;background:#0e0f13;color:#f7f7f7;font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Pretendard","Noto Sans KR",Segoe UI,sans-serif}
@@ -35,7 +35,7 @@
     .post-inner{position:relative;z-index:1;display:grid;gap:7px;padding:0}
     .post-image{position:relative;width:100%;height:176px;border-radius:22px;overflow:hidden;background:rgba(255,255,255,.08);box-shadow:none;border:0}
     .post-image img{width:100%;height:100%;object-fit:contain;display:block;transform-origin:center center;will-change:transform}
-    .post-title{font-size:12px;font-weight:620;line-height:1.35;color:#fff;letter-spacing:-.015em;padding:9px 12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-shadow:0 2px 12px rgba(0,0,0,.22);background:linear-gradient(145deg,rgba(255,255,255,.24),rgba(255,255,255,.09));border:1px solid rgba(255,255,255,.36);border-radius:16px;box-shadow:0 10px 28px rgba(0,0,0,.14),0 1px 0 rgba(255,255,255,.25) inset}
+    .post-title{font-size:12px;font-weight:620;line-height:1.35;color:#fff;letter-spacing:-.015em;padding:9px 12px;white-space:pre-line;overflow:hidden;overflow-wrap:anywhere;text-shadow:0 2px 12px rgba(0,0,0,.22);background:linear-gradient(145deg,rgba(255,255,255,.24),rgba(255,255,255,.09));border:1px solid rgba(255,255,255,.36);border-radius:16px;box-shadow:0 10px 28px rgba(0,0,0,.14),0 1px 0 rgba(255,255,255,.25) inset}
     .post-card.hidden{display:none}
     .anim-item{}
 
@@ -109,7 +109,7 @@
       <details class="section accordion" open><summary class="section-title">Mini Post</summary><div class="section-body">
         <div class="field"><label style="display:flex;align-items:center;gap:8px;color:rgba(255,255,255,.72)"><input id="postVisible" type="checkbox" checked> 미니 게시글 표시</label></div>
         <div class="field"><label>게시글 이미지</label><input id="postFile" type="file" accept="image/*"></div>
-        <div class="field"><label>사진 제목</label><input id="postCaption" type="text" maxlength="60" value="midnight post" placeholder="사진 제목을 입력해 주세요."></div>
+        <div class="field"><label>사진 제목</label><textarea id="postCaption" rows="2" maxlength="60" placeholder="사진 제목을 입력해 주세요.">midnight post</textarea><div class="hint">Enter를 눌러 최대 두 줄로 입력할 수 있어요.</div></div>
         <div class="field"><label>제목 입력 속도</label><div class="range-row"><input id="postTypingSpeed" type="range" min="6" max="30" step="1" value="16"><span class="value" id="postTypingSpeedV">16</span></div></div>
         <div class="field"><label>이미지 확대</label><div class="range-row"><input id="postZoom" type="range" min="0.7" max="2.2" step="0.01" value="1"><span class="value" id="postZoomV">1.00×</span></div></div>
         <div class="grid2"><div class="field"><label>이미지 가로 위치</label><input id="postX" type="range" min="-80" max="80" value="0"></div><div class="field"><label>이미지 세로 위치</label><input id="postY" type="range" min="-80" max="80" value="0"></div></div>
@@ -319,7 +319,26 @@
     updateMusicWidgetWidth();
     updateMusicPlayback(0);
     updatePlaylist();updateSearchPreview();updateDday();updatePost();
-  } ['ddayLabel','ddayDate','song','artist','trackDuration','progress','searchTextInput','typingSpeed','queueTitle1','queueArtist1','queueTitle2','queueArtist2','queueTitle3','queueArtist3','postCaption','postTypingSpeed'].forEach(id=>$('#'+id).addEventListener('input',updateText));$('#postVisible').addEventListener('change',()=>{updateText();updateCanvasLayout();});$('#commissionText')?.addEventListener('input',updateCommission);
+  }
+
+  function limitPostCaptionLines(){
+    const el=$('#postCaption');
+    if(!el)return;
+
+    const lines=el.value.replace(/\r/g,'').split('\n');
+
+    if(lines.length>2){
+      el.value=(
+        lines.slice(0,2).join('\n')+
+        ' '+
+        lines.slice(2).join(' ')
+      ).slice(0,60);
+    }
+  }
+
+  $('#postCaption')?.addEventListener('input',limitPostCaptionLines);
+
+  ['ddayLabel','ddayDate','song','artist','trackDuration','progress','searchTextInput','typingSpeed','queueTitle1','queueArtist1','queueTitle2','queueArtist2','queueTitle3','queueArtist3','postCaption','postTypingSpeed'].forEach(id=>$('#'+id).addEventListener('input',updateText));$('#postVisible').addEventListener('change',()=>{updateText();updateCanvasLayout();});$('#commissionText')?.addEventListener('input',updateCommission);
   function updateGlass(){const v=+$('#glassOpacity').value,a1=Math.min(.60,v/100+.07),a2=Math.max(.04,v/100*.28);glassEls.forEach(el=>{el.style.background=`linear-gradient(145deg,rgba(255,255,255,${a1}),rgba(255,255,255,${a2}))`;el.style.borderColor=`rgba(255,255,255,${Math.min(.62,v/100+.16)})`});$('#glassV').textContent=v+'%'} $('#glassOpacity').addEventListener('input',updateGlass);updateGlass();$('#duration').addEventListener('input',()=>$('#durationV').textContent=(+$('#duration').value).toFixed(1)+'s');$('#animEffect')?.addEventListener('change',()=>{startTime=performance.now();status.textContent='등장 효과를 바꿨어요.'});
   const accordions=[...document.querySelectorAll('details.accordion')];
   $('#expandAll')?.addEventListener('click',()=>accordions.forEach(d=>d.open=true));
@@ -365,7 +384,28 @@
   const searchMeasureCtx=searchMeasureCanvas.getContext('2d');
   function measureSearchWidth(text=''){if(searchMeasureCtx){searchMeasureCtx.font='500 14px Inter, Pretendard, Arial, sans-serif'; const tw=searchMeasureCtx.measureText(text||'').width; return Math.max(88,Math.min(300,Math.ceil(tw+86)));} return Math.max(88,Math.min(300,86+(text||'').length*8));}
   function setSearchTypingState(elapsed=0,forceFull=false){const full=$('#searchTextInput')?.value||'';const factor=(+$('#duration')?.value||5)/5;const start=.42*factor+.32*factor;const available=Math.max(.25,(+$('#duration')?.value||5)-start-.18*factor);const requested=+$('#typingSpeed')?.value||18;const speed=Math.max(requested,full.length/available);const visible=forceFull?full.length:Math.max(0,Math.min(full.length,Math.floor(Math.max(0,elapsed)*speed)));const shown=full.slice(0,visible);if(searchWidget)searchWidget.style.width=measureSearchWidth(shown)+'px';const out=$('#searchTextOut');if(out)out.innerHTML=`${shown}<span class="typing-caret"></span>`;}
-  function setPostTypingState(elapsed=0,forceFull=false){const full=$('#postCaption')?.value||'midnight post';const factor=(+$('#duration')?.value||5)/5;const start=3.05*factor+.28*factor;const available=Math.max(.25,(+$('#duration')?.value||5)-start-.18*factor);const requested=+$('#postTypingSpeed')?.value||16;const speed=Math.max(requested,full.length/available);const visible=forceFull?full.length:Math.max(0,Math.min(full.length,Math.floor(Math.max(0,elapsed)*speed)));const shown=full.slice(0,visible);const out=$('#postCaptionOut');if(out)out.innerHTML=`${shown}${forceFull?'':'<span class="typing-caret"></span>'}`;}
+  function setPostTypingState(elapsed=0,forceFull=false){
+    const full=$('#postCaption')?.value||'midnight post';
+    const factor=(+$('#duration')?.value||5)/5;
+    const start=3.05*factor+.28*factor;
+    const available=Math.max(.25,(+$('#duration')?.value||5)-start-.18*factor);
+    const requested=+$('#postTypingSpeed')?.value||16;
+    const speed=Math.max(requested,full.length/available);
+    const visible=forceFull
+      ? full.length
+      : Math.max(0,Math.min(full.length,Math.floor(Math.max(0,elapsed)*speed)));
+    const shown=full.slice(0,visible);
+    const out=$('#postCaptionOut');
+
+    if(out){
+      out.textContent=shown;
+      if(!forceFull){
+        const caret=document.createElement('span');
+        caret.className='typing-caret';
+        out.appendChild(caret);
+      }
+    }
+  }
   let lastDdayShown='';
   function setDdayAnimatedState(elapsed=0,forceFull=false){const count=$('#ddayCount'),finalText=ddayWidget.dataset.finalText||count.textContent||'D+000',animate=ddayWidget.dataset.animate==='1',target=+ddayWidget.dataset.abs||0,prefix=ddayWidget.dataset.prefix||'D+',startDays=Math.min(10,Math.max(1,+$('#ddayStartDays')?.value||5));if(forceFull||!animate){count.textContent=finalText;count.style.transform='';lastDdayShown=finalText;return;}const start=Math.max(0,target-startDays),stepDur=+$('#ddayFlipSpeed')?.value||.13,maxSteps=Math.min(startDays,target),steps=Math.min(maxSteps,Math.floor(Math.max(0,elapsed)/stepDur)),v=Math.min(target,start+steps),shown=`${prefix}${v}`;if(shown!==lastDdayShown){count.textContent=shown;count.classList.remove('flip-tick');void count.offsetWidth;count.classList.add('flip-tick');lastDdayShown=shown;}}
   function updateDdayFlipSpeedUI(){const v=+$('#ddayFlipSpeed')?.value||.13;$('#ddayFlipSpeedV').textContent=v.toFixed(2)+'s';document.documentElement.style.setProperty('--dday-flip-speed',v+'s');}
@@ -1223,10 +1263,50 @@
       }
       function drawPost(ctx,s,t,final=false){
         if(!s.postVisible)return;
-        const imgR=s.rects.postImage,titleR=s.rects.postTitle;
-        fitImage(ctx,s.images.post,imgR,'contain',s.controls.postZoom,s.controls.postX,s.controls.postY,22);
-        glass(ctx,titleR,Math.min(.26,s.glassAlpha+.02),16);
-        const title=postState(s,t,final);if(title)drawText(ctx,title,titleR.x+12,titleR.y+titleR.h/2,12,620,'#fff','left','middle');
+
+        const imgR=s.rects.postImage,
+              titleR=s.rects.postTitle;
+
+        fitImage(
+          ctx,
+          s.images.post,
+          imgR,
+          'contain',
+          s.controls.postZoom,
+          s.controls.postX,
+          s.controls.postY,
+          22
+        );
+
+        glass(
+          ctx,
+          titleR,
+          Math.min(.26,s.glassAlpha+.02),
+          16
+        );
+
+        const title=postState(s,t,final);
+
+        if(title){
+          const lines=title.replace(/\r/g,'').split('\n').slice(0,2),
+                lineH=16.2,
+                totalH=lines.length*lineH,
+                firstY=titleR.y+(titleR.h-totalH)/2+lineH/2;
+
+          lines.forEach((line,i)=>{
+            drawText(
+              ctx,
+              line,
+              titleR.x+12,
+              firstY+i*lineH,
+              12,
+              620,
+              '#fff',
+              'left',
+              'middle'
+            );
+          });
+        }
       }
       function drawCommission(ctx,s){
         const text=(s.text.commission||'').trim();
@@ -1328,10 +1408,10 @@
         if(state.postVisible)drawMotion(ctx,state,t,'post',drawPost,final);
         drawCommission(ctx,state);return canvas;
       }
-      window.PairExportRenderer={version:'20261009-43',captureState,render};
+      window.PairExportRenderer={version:'20261009-44',captureState,render};
   }
 
-  const EXPECTED_RENDERER_VERSION='20261009-43';
+  const EXPECTED_RENDERER_VERSION='20261009-44';
   let rendererLoadPromise=null;
   async function ensureExportRenderer(){
     if(
